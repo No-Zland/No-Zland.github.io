@@ -232,6 +232,7 @@
 }
 .section-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .section-tags span {
+  max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   padding: 2px 8px; border: 1px solid var(--border); border-radius: 999px;
   background: var(--bg-soft); color: var(--text-soft); font-size: 10.5px;
 }

@@ -75,6 +75,29 @@
   font-size: 10px; font-variant-numeric: tabular-nums;
 }
 
+.doc-copyright {
+  margin-top: 24px; padding-top: 13px;
+  border-top: 1px dashed var(--border);
+  color: var(--text-soft); font-size: 11px; line-height: 1.8;
+}
+.copyright-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  margin-bottom: 3px; color: var(--text); font-size: 10px; font-weight: 700;
+  letter-spacing: .08em;
+}
+.doc-copyright p { margin: 3px 0; }
+.doc-copyright a { color: var(--brand); text-decoration: none; border-bottom: 1px solid color-mix(in srgb, var(--brand) 35%, transparent); }
+.doc-copyright a:hover { color: var(--accent-cyan); }
+.copyright-meta { font-size: 10px; word-break: break-all; }
+html.is-bot .doc-body,
+html.is-bot .doc-copyright { display: none !important; }
+html.is-bot body::before {
+  content: "本文受版权保护。检测到自动抓取工具，内容不对外展示。";
+  display: block; margin: 96px auto 0; max-width: 720px; padding: 20px 24px;
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--card); color: var(--text); font-size: 14px; text-align: center;
+}
+
 @media (max-width: 860px) {
   .reading-toc { max-height: 180px; }
 }

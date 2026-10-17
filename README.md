@@ -29,6 +29,8 @@
 | 音乐播放器 | 独立卡片，支持顺序、随机、单曲循环、可拖动进度条、播放歌单；切换页面时播放器节点不重建，音乐连续播放；顺序播完最后一首自动回到第一首 |
 | 软导航 | 站内链接用 `fetch` 替换主内容与侧栏卡片，保留播放器、搜索、抽屉，避免整页刷新；支持前进/后退 |
 | 顶栏搜索 | 搜索按钮放在首页按钮旁边；搜索浮层在所有页面可用，结果可跳到对应文章锚点 |
+| 文章版权 | 每篇文章底部包含作者、CC BY-NC-SA 4.0 许可、原文链接和更新时间 |
+| 防爬虫 | `robots.txt` 拒绝常见 AI/批量抓取器；页面带 `noai` / `noimageai` / `noarchive`；复制正文自动附加出处，图片禁止拖拽保存 |
 | GitHub Pages | `.github/workflows/pages.yml` 在 push 后构建 `site/` 并部署 GitHub Pages |
 | 动画与无障碍 | 入场/悬浮动画、`prefers-reduced-motion`、键盘 Esc、aria 标签 |
 
@@ -75,6 +77,7 @@ d:\My Personal Blogs\
 │   ├── media.css / media.js
 │   ├── music.css / music.js
 │   ├── quotes.js
+│   ├── anti-crawler.js
 │   └── spa.js
 ├── music/                 # 播放列表、音频与 LRC 歌词
 │   ├── playlist.json
@@ -83,8 +86,9 @@ d:\My Personal Blogs\
 │   ├── ARCHITECTURE.md    # 架构、生成流程与维护约定
 │   └── previews/          # 界面预览图
 ├── content/post/          # Obsidian 笔记库（数据源）
-│   ├── 竞赛/  项目/  书籍资料/  ...
-│   └── ...
+│   ├── 竞赛经历/  项目经历/  科研经历/
+│   ├── 技能学习/  课程学习/  阅读经历/
+│   └── 个人与总结/        # 顶层目录即板块，子目录是分类
 ├── layouts/index.html     # Hugo 首页模板：直接读取 site/index.html
 ├── hugo.toml              # Hugo 配置（服务 site/ 为静态站点）
 ├── requirements.txt       # Python 依赖
@@ -106,7 +110,7 @@ d:\My Personal Blogs\
 ## 实现要点
 
 - **渲染**：`build_blog.py` 用 `python-markdown` + `pymdownx`（`mark`/`tilde`/`caret`/`tasklist`/`arithmatex`）复刻 Obsidian 语法；`fix_tables` 合并被空行打断的表格；MathJax 3 渲染公式。
-- **板块导航**：`content/post` 的分类目录按 `SECTION_SPECS` 归入“竞赛经历 / 项目经历 / 科研经历 / 技能学习 / 课程学习 / 阅读经历 / 个人与总结”，首页生成板块卡片，每个板块页再列出其分类。
+- **板块导航**：`content/post` 的**顶层目录就是板块**（竞赛经历 / 项目经历 / 科研经历 / 技能学习 / 课程学习 / 阅读经历 / 个人与总结），板块下的子目录就是分类；首页生成板块卡片，板块页列出分类。
 - **层级侧栏**：`src/search.css` 与生成器共同输出左侧导航；进入板块、分类、子分类时自动展开当前路径，并高亮当前节点。
 - **阅读页**：`src/reading-mode.js` 一次只显示一篇文章，左侧生成文章列表、当前文章目录，并提供独立的上一篇/下一篇卡片；不再按长度切分文章。
 - **软导航**：`src/spa.js` 拦截站内链接，拉取目标页后只替换 `main` 与侧栏卡片，播放器的 `<audio>` 节点始终保留；搜索浮层、抽屉、日历等公共组件不重建。
@@ -125,7 +129,7 @@ d:\My Personal Blogs\
 
 ## 名言警句
 
-- 句子放在 [content/post/书籍资料/名人名言.md](content/post/书籍资料/名人名言.md)，每行一条，格式：
+- 句子放在 [content/post/阅读经历/书籍资料/名人名言.md](content/post/阅读经历/书籍资料/名人名言.md)，每行一条，格式：
   `- 句子｜作者`
 - 首页从这份文件随机抽取，每次打开都不同；也可以点“换一句”立即更换。
 - 文件本身同时是「阅读经历」里的一篇文章，方便阅读和继续追加。
@@ -137,7 +141,7 @@ d:\My Personal Blogs\
 - 文章里的图片点击会打开大图弹层，Esc 或点击背景关闭。
 - 音乐播放列表在 `music/playlist.json`，音频和 `.lrc` 放 `music/`；支持顺序、随机、单曲循环。
 - 播放器按钮全部使用符号；进度条可拖动；`≡` 打开播放歌单，`♪` 打开可拖动的悬浮歌词。
-- 默认是两首 SoundHelix 测试曲，没有歌词文件；换成自己的音乐和 LRC 即可。
+- 默认播放 `music/playlist.json` 中的本地歌曲，没有歌词文件；要显示歌词，放同名 `.lrc` 并填写 `lyrics`。
 
 ## GitHub Pages
 
@@ -163,4 +167,4 @@ d:\My Personal Blogs\
 ## 更多实现细节
 
 架构与 GitHub 维护约定见 [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)。
-各功能的完整实现说明见笔记：[个人博客实现笔记](content/post/项目/个人博客/个人博客实现笔记.md)。
+各功能的完整实现说明见笔记：[个人博客实现笔记](content/post/项目经历/个人博客/个人博客实现笔记.md)。

@@ -17,7 +17,7 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
 ```
 
 - `content/post/`：Obsidian 笔记库，唯一内容源。
-- `src/`：生成器使用的样式和脚本（日历、搜索、软导航、阅读目录、媒体查看、音乐、名言）。
+- `src/`：生成器使用的样式和脚本（日历、搜索、软导航、阅读目录、媒体查看、音乐、名言、防爬）。
 - `music/`：播放列表、音频与 LRC 歌词；构建时复制到 `site/assets/music/`。
 - `build_blog.py`：扫描笔记、渲染 Markdown、复制图片/PDF、生成 `site/` 与搜索索引。
 - `layouts/index.html`：Hugo 首页模板，直接读取 `site/index.html`。
@@ -35,7 +35,7 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
             └─ 阅读页（一篇文章一页；左侧目录 + 上一篇/下一篇）
 ```
 
-板块是**导航层**，不移动 `content/post` 的物理目录，因此文章 URL 保持不变。板块与分类的归属集中在 `build_blog.py` 的 `SECTION_SPECS`：
+板块是 **`content/post` 的顶层物理目录**，板块下的子目录就是分类；例如 `content/post/竞赛经历/202609...`、`content/post/技能学习/C++/`。这样不再有“虚拟板块 + 同名分类”的重复层级。`build_blog.py` 的 `SECTION_SPECS` 只负责板块顺序、标题、描述和颜色：
 
 ```python
 {
@@ -43,11 +43,10 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
     "title": "科研经历",
     "desc": "...",
     "color": "#db2777",
-    "cats": ["疲倦程度识别参考文献"],
 }
 ```
 
-新增内容目录后，如果它不在任何板块的 `cats` 中，会自动进入“其他”板块。建议新增后同步更新 `SECTION_SPECS` 和 README。
+新增板块时在 `content/post` 建顶层目录并同步 `SECTION_SPECS`；新增分类时直接在板块目录下建子目录。板块下没有分类时，板块首页本身就是阅读页。
 
 ## 阅读页
 
@@ -68,6 +67,13 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
 - 搜索索引使用根路径 `/assets/search-index.json`，搜索浮层在所有页面通用。
 - 整页刷新或直接从外部进入时，`sessionStorage` 仍会恢复曲目、进度、模式和播放状态作为兜底。
 
+## 版权与防爬
+
+- 每篇文章由 `doc_copyright()` 生成底部版权块，包含作者、CC BY-NC-SA 4.0 许可、原文 URL 和更新时间。
+- `build_blog.py` 生成 `site/robots.txt`，对常见 AI 训练/批量抓取器设置 `Disallow: /`，并保护 PDF、音频和搜索索引。
+- 页面 `<head>` 带 `noai, noimageai, noarchive` 提示；`src/anti-crawler.js` 对已声明爬虫 UA 隐藏正文，并在复制正文时自动追加出处。
+- GitHub Pages 是纯静态托管，无法做真正的服务端鉴权或限流；上述机制是声明、版权提示和客户端层面的门槛，不能替代登录/服务端访问控制。
+
 ## 媒体与音乐
 
 - `build_blog.py` 扫描 `content/post` 下的 PDF，单文件 ≤10MB 时复制到 `site/assets/files/pdf/`，并生成 `资料库/index.html`。
@@ -77,7 +83,7 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
 - 播放模式（顺序/随机/单曲循环）保存在 localStorage；悬浮歌词由 `.lrc` 时间轴驱动，拖动位置也保存在 localStorage。
 - 播放器在每页都是独立卡片；软导航时 `<audio>` 节点不重建，整页刷新时用 `sessionStorage` 恢复曲目、进度和播放状态。
 - 顺序播放到最后一首后会回到第一首，随机与单曲循环分别保持各自行为。
-- 首页名言从 `content/post/书籍资料/名人名言.md` 读取，每行格式 `- 句子｜作者`；`src/quotes.js` 用当前分钟 + 随机数抽取，按钮可立即换一句。
+- 首页名言从 `content/post/阅读经历/书籍资料/名人名言.md` 读取，每行格式 `- 句子｜作者`；`src/quotes.js` 用当前分钟 + 随机数抽取，按钮可立即换一句。
 
 ## 任务状态与主人模式
 

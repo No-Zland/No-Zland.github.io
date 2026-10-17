@@ -48,49 +48,42 @@ SECTION_SPECS = [
         "title": "竞赛经历",
         "desc": "数学建模、程序设计、嵌入式与算法竞赛的参赛记录、复盘和资料。",
         "color": "#7c3aed",
-        "cats": ["竞赛", "数学建模"],
     },
     {
         "slug": "项目经历",
         "title": "项目经历",
         "desc": "从需求、设计到实现的项目记录。",
         "color": "#0ea5b7",
-        "cats": ["项目"],
     },
     {
         "slug": "科研经历",
         "title": "科研经历",
         "desc": "参考文献、研究调研与科研训练记录。",
         "color": "#db2777",
-        "cats": ["疲倦程度识别参考文献"],
     },
     {
         "slug": "技能学习",
         "title": "技能学习",
         "desc": "编程语言、Linux、AI、IT 素养与算法刷题的持续积累。",
         "color": "#2563eb",
-        "cats": ["AI", "C++", "Python", "Linux系统", "IT素养", "算法与刷题"],
     },
     {
         "slug": "课程学习",
         "title": "课程学习",
         "desc": "计算机专业课程笔记、实验与知识整理。",
         "color": "#16a34a",
-        "cats": ["C语言", "数字电路", "汇编语言与接口技术", "计算机组成原理", "通信协议"],
     },
     {
         "slug": "阅读经历",
         "title": "阅读经历",
         "desc": "书目、阅读计划，以及读书过程中的零散感悟。",
         "color": "#c2410c",
-        "cats": ["书籍资料"],
     },
     {
         "slug": "个人与总结",
         "title": "个人与总结",
         "desc": "个人档案、阶段总结和实验报告合集。",
         "color": "#d4af37",
-        "cats": ["个人", "实验总结"],
     },
 ]
 
@@ -99,18 +92,21 @@ def build_nav_sections(sections, docs, child_dirs):
     nav = []
     for section in sections:
         cats = []
-        total = 0
-        for cat in section["cats"]:
-            count = len(docs_under(docs, cat))
-            total += count
+        total = len(docs_under(docs, section["slug"]))
+        for cat_rel in child_dirs.get(section["slug"], []):
             subs = []
-            for sub in child_dirs.get(cat, []):
+            for sub in child_dirs.get(cat_rel, []):
                 subs.append({
                     "rel": sub,
                     "name": os.path.basename(sub),
                     "count": len(docs_under(docs, sub)),
                 })
-            cats.append({"name": cat, "count": count, "subs": subs})
+            cats.append({
+                "rel": cat_rel,
+                "name": os.path.basename(cat_rel),
+                "count": len(docs_under(docs, cat_rel)),
+                "subs": subs,
+            })
         nav.append({
             "slug": section["slug"],
             "title": section["title"],
@@ -122,32 +118,29 @@ def build_nav_sections(sections, docs, child_dirs):
 
 
 def section_for_category(cat):
+    first = cat.split(os.sep)[0]
     for spec in SECTION_SPECS:
-        if cat in spec["cats"]:
+        if spec["slug"] == first:
             return spec
     return None
 
 
 def build_sections(l1):
-    """按配置生成当前实际存在的大板块，未知分类归入“其他”。"""
+    """顶层目录就是板块；板块下的子目录是分类。"""
     sections = []
     used = set()
     for spec in SECTION_SPECS:
-        cats = [cat for cat in spec["cats"] if cat in l1]
-        if not cats:
+        if spec["slug"] in l1:
+            sections.append(dict(spec))
+            used.add(spec["slug"])
+    for name in l1:
+        if name in used or name.startswith(".") or name == "资料库":
             continue
-        section = dict(spec)
-        section["cats"] = cats
-        sections.append(section)
-        used.update(cats)
-    unknown = [cat for cat in l1 if cat not in used and not cat.startswith(".")]
-    if unknown:
         sections.append({
-            "slug": "其他",
-            "title": "其他",
-            "desc": "暂未归入其他板块的内容。",
+            "slug": name,
+            "title": name,
+            "desc": "其他内容。",
             "color": "#64748b",
-            "cats": unknown,
         })
     return sections
 
@@ -155,6 +148,72 @@ IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".ico"}
 SKIP_DIRS = {"bin", "node_modules", "__pycache__"}
 
 MATHJAX_HEAD = '<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>'
+
+ROBOTS_TXT = """# 允许正常搜索引擎索引，但拒绝 AI 训练/批量抓取，并保护原始资源与搜索索引。
+User-agent: *
+Allow: /
+Disallow: /assets/files/
+Disallow: /assets/music/
+Disallow: /assets/search-index.json
+Crawl-delay: 10
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: OAI-SearchBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: Omgilibot
+Disallow: /
+
+User-agent: Scrapy
+Disallow: /
+
+User-agent: python-requests
+Disallow: /
+
+User-agent: curl
+Disallow: /
+
+User-agent: wget
+Disallow: /
+"""
 
 
 def natural_key(s):
@@ -358,8 +417,8 @@ def load_music_playlist():
 
 
 def load_quotes():
-    """从阅读及感悟的《名人名言》里读取句子，每行格式：- 句子｜作者。"""
-    path = os.path.join(POST_DIR, "书籍资料", "名人名言.md")
+    """从阅读经历的《名人名言》里读取句子，每行格式：- 句子｜作者。"""
+    path = os.path.join(POST_DIR, "阅读经历", "书籍资料", "名人名言.md")
     quotes = []
     try:
         text = read_text(path)
@@ -1237,6 +1296,10 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="梁双宇">
+<meta name="robots" content="noai, noimageai, noarchive">
+<meta name="googlebot" content="noarchive">
+<meta name="copyright" content="© 2026 梁双宇 · CC BY-NC-SA 4.0">
 <title>{esc(title)} · 梁双宇</title>
 <link rel="stylesheet" href="{style_href}">
 {math}
@@ -1280,16 +1343,17 @@ def breadcrumb(d, out_dir):
     home_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html")))
     parts = [f'<a href="{home_href}">首页</a>']
     if d:
-        top = d.split(os.sep)[0]
-        section = section_for_category(top)
-        if section:
-            section_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, section["slug"], "index.html")))
-            parts.append(f'<a href="{section_href}">{esc(section["title"])}</a>')
+        comps = [c for c in d.split(os.sep) if c]
         rel = ""
-        for c in d.split(os.sep):
+        for i, c in enumerate(comps):
             rel = os.path.join(rel, c) if rel else c
             href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, rel, "index.html")))
-            parts.append(f'<a href="{href}">{esc(c)}</a>')
+            label = c
+            if i == 0:
+                section = section_for_category(c)
+                if section:
+                    label = section["title"]
+            parts.append(f'<a href="{href}">{esc(label)}</a>')
     return '<div class="crumb">' + " / ".join(parts) + "</div>"
 
 
@@ -1306,12 +1370,10 @@ def side_nav_for(out_dir):
         first = parts[0]
         if any(section["slug"] == first for section in NAV_SECTIONS):
             active_section = first
-        else:
-            active_cat = first
-            section = section_for_category(first)
-            active_section = section["slug"] if section else None
             if len(parts) > 1:
-                active_sub = parts[1]
+                active_cat = parts[1]
+            if len(parts) > 2:
+                active_sub = parts[2]
 
     home_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html")))
     library_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "资料库", "index.html")))
@@ -1331,8 +1393,8 @@ def side_nav_for(out_dir):
         if section_active:
             cat_rows = []
             for cat in section["cats"]:
-                cat_active = cat["name"] == active_cat
-                cat_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, cat["name"], "index.html")))
+                cat_active = active_cat is not None and cat["rel"] == os.path.join(active_section, active_cat)
+                cat_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, cat["rel"], "index.html")))
                 cat_rows.append(
                     f'<a class="page-nav-cat{" is-active" if cat_active else ""}" href="{cat_href}">'
                     f'<span class="page-nav-name">{esc(cat["name"])}</span>'
@@ -1366,19 +1428,22 @@ def side_nav_for(out_dir):
 def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
     l1 = child_dirs.get("", [])
     sections = build_sections(l1)
+    for section in sections:
+        section["cats"] = child_dirs.get(section["slug"], [])
     section_items = []
     quick_items = []
     article_total = 0
     for i, section in enumerate(sections):
-        total = sum(len(docs_under(docs, cat)) for cat in section["cats"])
+        total = len(docs_under(docs, section["slug"]))
         article_total += total
         href = os.path.join(section["slug"], "index.html")
-        tags = ''.join(f'<span>{esc(cat)}</span>' for cat in section["cats"])
+        tags = ''.join(f'<span>{esc(os.path.basename(cat))}</span>' for cat in section["cats"])
+        meta = f"{len(section['cats'])} 个分类 · {total} 篇文章" if section["cats"] else f"{total} 篇文章"
         section_items.append(f"""
 <a class="section-card" href="{quote_url(href)}" style="--i:{min(i, 8)};--section-color:{section['color']}">
   <div class="section-card-top">
     <span class="section-num">{i + 1:02d}</span>
-    <span class="section-card-meta">{len(section['cats'])} 个分类 · {total} 篇文章</span>
+    <span class="section-card-meta">{meta}</span>
   </div>
   <div class="section-card-title">{esc(section['title'])}</div>
   <div class="section-card-desc">{esc(section['desc'])}</div>
@@ -1434,12 +1499,12 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
 
 
 def parent_href_for(d, out_dir):
+    if not d:
+        return quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html")))
     parent = os.path.dirname(d)
-    if parent:
-        target_dir = os.path.join(SITE_DIR, parent)
-    else:
-        section = section_for_category(d) if d else None
-        target_dir = os.path.join(SITE_DIR, section["slug"]) if section else SITE_DIR
+    if not parent:
+        return quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html")))
+    target_dir = os.path.join(SITE_DIR, parent)
     return quote_url(rel_from(out_dir, os.path.join(target_dir, "index.html")))
 
 
@@ -1474,17 +1539,20 @@ def music_player_html():
 
 def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, out_dir):
     items = []
-    total = 0
-    for i, cat in enumerate(section["cats"]):
-        if cat not in l1:
-            continue
-        count = len(docs_under(docs, cat))
-        total += count
-        href = rel_from(out_dir, os.path.join(SITE_DIR, cat, "index.html"))
-        intro = folder_intro(cat, dir_docs, child_dirs)
-        created = folder_created(cat, dir_earliest)
-        items.append(cat_item(cat, href, count, created, intro, i))
+    cats = section.get("cats", [])
+    for i, cat_rel in enumerate(cats):
+        count = len(docs_under(docs, cat_rel))
+        href = rel_from(out_dir, os.path.join(SITE_DIR, cat_rel, "index.html"))
+        intro = folder_intro(cat_rel, dir_docs, child_dirs)
+        created = folder_created(cat_rel, dir_earliest)
+        items.append(cat_item(os.path.basename(cat_rel), href, count, created, intro, i))
 
+    direct = dir_docs.get(section["slug"], [])
+    if direct:
+        created = folder_created(section["slug"], dir_earliest)
+        items.append(cat_item("散篇", "direct.html", len(direct), created, "未归入分类的散篇笔记", len(cats)))
+
+    total = len(docs_under(docs, section["slug"]))
     home_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html")))
     body = f"""
 <div class="crumb"><a href="{home_href}">首页</a> / {esc(section["title"])}</div>
@@ -1492,7 +1560,7 @@ def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, ou
   <div class="section-hero-kicker">Section</div>
   <h1>{esc(section["title"])}</h1>
   <p>{esc(section["desc"])}</p>
-  <div class="section-hero-meta">{len(section["cats"])} 个分类 · {total} 篇文章</div>
+  <div class="section-hero-meta">{len(cats)} 个分类 · {total} 篇文章</div>
 </section>
 <div class="cat-list section-cats" style="--section-color:{section["color"]}">{''.join(items)}</div>
 """
@@ -1581,14 +1649,33 @@ def build_folder_page(d, docs, dir_docs, child_dirs, dir_earliest, out_dir):
     return page(out_dir, name, body, parent_href=parent_href_for(d, out_dir))
 
 
-def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=None):
+def doc_copyright(rel, out_dir):
+    """文章底部版权说明；canonical 指向分类页里的文章锚点。"""
+    page_dir = os.path.relpath(out_dir, SITE_DIR).replace(os.sep, "/")
+    page_path = "" if page_dir == "." else page_dir + "/"
+    canonical = "https://no-zland.github.io/" + urllib.parse.quote(page_path + "index.html", safe="/") + "#" + doc_anchor(rel)
+    try:
+        updated = datetime.fromtimestamp(os.path.getmtime(os.path.join(POST_DIR, rel))).strftime("%Y-%m-%d")
+    except OSError:
+        updated = ""
+    updated_html = f" · 更新于 {esc(updated)}" if updated else ""
+    return f"""
+<footer class="doc-copyright">
+  <div class="copyright-head"><span>版权说明</span><span>© 2026 梁双宇</span></div>
+  <p>本文由梁双宇原创，采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener license">CC BY-NC-SA 4.0</a> 许可。非商业转载请注明作者和原文链接；禁止未经授权的商业转载、批量复制或爬虫抓取。</p>
+  <p class="copyright-meta">原文：<a href="{canonical}">{canonical}</a>{updated_html}</p>
+</footer>
+"""
+
+
+def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=None, parent_href=None):
     name = os.path.basename(d) if d else "全部文章"
     if doc_list is None:
         doc_list = docs_under(docs, d)
     articles = []
     for rel in doc_list:
         r = render_doc(rel, out_dir, images)
-        articles.append(f'<article class="doc" id="{doc_anchor(rel)}" data-title="{esc(r["title"])}"><div class="doc-body">{r["body"]}</div></article>')
+        articles.append(f'<article class="doc" id="{doc_anchor(rel)}" data-title="{esc(r["title"])}"><div class="doc-body">{r["body"]}</div>{doc_copyright(rel, out_dir)}</article>')
 
     content = ''.join(articles) if articles else '<div class="doc"><p>暂无文章</p></div>'
     side_extra = f"""
@@ -1618,7 +1705,9 @@ def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=
   <div class="doc-stack" data-doc-stack>{content}</div>
 </div>
 """
-    return page(out_dir, name, body, with_math=True, parent_href=parent_href_for(d, out_dir), side_extra=side_extra)
+    if parent_href is None:
+        parent_href = parent_href_for(d, out_dir)
+    return page(out_dir, name, body, with_math=True, parent_href=parent_href, side_extra=side_extra)
 
 
 # --------------------------------------------------------------------------- #
@@ -1636,6 +1725,7 @@ def main():
     os.makedirs(ASSET_DIR, exist_ok=True)
     os.makedirs(RES_DIR, exist_ok=True)
     write_text(os.path.join(SITE_DIR, ".nojekyll"), "")
+    write_text(os.path.join(SITE_DIR, "robots.txt"), ROBOTS_TXT)
 
     calendar_css = read_text(os.path.join(SRC_DIR, "calendar.css"))
     calendar_js = read_text(os.path.join(SRC_DIR, "calendar.js"))
@@ -1648,9 +1738,10 @@ def main():
     music_css = read_text(os.path.join(SRC_DIR, "music.css"))
     music_js = read_text(os.path.join(SRC_DIR, "music.js"))
     quotes_js = read_text(os.path.join(SRC_DIR, "quotes.js"))
+    anti_crawler_js = read_text(os.path.join(SRC_DIR, "anti-crawler.js"))
     spa_js = read_text(os.path.join(SRC_DIR, "spa.js"))
     style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css
-    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + spa_js
+    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + anti_crawler_js + "\n" + spa_js
     write_text(os.path.join(ASSET_DIR, "style.css"), style_text)
     write_text(os.path.join(ASSET_DIR, "app.js"), app_text)
     ASSET_VERSION = hashlib.md5((style_text + app_text).encode("utf-8")).hexdigest()[:8]
@@ -1663,19 +1754,74 @@ def main():
     copy_music()
     AVATAR_NAME = copy_avatar()
 
-    l1_categories = child_dirs.get("", [])
-    sections = build_sections(l1_categories)
+    l1_sections = child_dirs.get("", [])
+    sections = build_sections(l1_sections)
+    for section in sections:
+        section["cats"] = child_dirs.get(section["slug"], [])
     NAV_SECTIONS = build_nav_sections(sections, docs, child_dirs)
 
     home_html = build_home(docs, dir_docs, child_dirs, dir_earliest, SITE_DIR)
     write_text(os.path.join(SITE_DIR, "index.html"), home_html)
 
     page_count = 1
+    doc_page_urls = {}
+    home_index = os.path.join(SITE_DIR, "index.html")
+
     for section in sections:
-        section_out = os.path.join(SITE_DIR, section["slug"])
-        html = build_section_page(section, l1_categories, docs, dir_docs, child_dirs, dir_earliest, section_out)
-        write_text(os.path.join(section_out, "index.html"), html)
-        page_count += 1
+        slug = section["slug"]
+        section_out = os.path.join(SITE_DIR, slug)
+        cats = section["cats"]
+        direct = dir_docs.get(slug, [])
+
+        if cats:
+            html = build_section_page(section, l1_sections, docs, dir_docs, child_dirs, dir_earliest, section_out)
+            write_text(os.path.join(section_out, "index.html"), html)
+            page_count += 1
+
+            if direct:
+                parent = quote_url(rel_from(section_out, os.path.join(section_out, "index.html")))
+                for rel in direct:
+                    doc_page_urls[rel] = quote_url(os.path.join(slug, "direct.html"))
+                html = build_reading_page(slug, docs, dir_docs, child_dirs, images, section_out, doc_list=direct, parent_href=parent)
+                write_text(os.path.join(section_out, "direct.html"), html)
+                page_count += 1
+
+            for cat_rel in cats:
+                cat_out = os.path.join(SITE_DIR, cat_rel)
+                cat_subs = child_dirs.get(cat_rel, [])
+                cat_direct = dir_docs.get(cat_rel, [])
+                cat_parent = quote_url(rel_from(cat_out, os.path.join(SITE_DIR, slug, "index.html")))
+
+                if cat_subs:
+                    html = build_folder_page(cat_rel, docs, dir_docs, child_dirs, dir_earliest, cat_out)
+                    write_text(os.path.join(cat_out, "index.html"), html)
+                    page_count += 1
+                    if cat_direct:
+                        for rel in cat_direct:
+                            doc_page_urls[rel] = quote_url(os.path.join(cat_rel, "direct.html"))
+                        html = build_reading_page(cat_rel, docs, dir_docs, child_dirs, images, cat_out, doc_list=cat_direct, parent_href=cat_parent)
+                        write_text(os.path.join(cat_out, "direct.html"), html)
+                        page_count += 1
+                    for sub_rel in cat_subs:
+                        sub_out = os.path.join(SITE_DIR, sub_rel)
+                        for rel in docs_under(docs, sub_rel):
+                            doc_page_urls[rel] = quote_url(os.path.join(sub_rel, "index.html"))
+                        html = build_reading_page(sub_rel, docs, dir_docs, child_dirs, images, sub_out, parent_href=cat_parent)
+                        write_text(os.path.join(sub_out, "index.html"), html)
+                        page_count += 1
+                else:
+                    for rel in docs_under(docs, cat_rel):
+                        doc_page_urls[rel] = quote_url(os.path.join(cat_rel, "index.html"))
+                    html = build_reading_page(cat_rel, docs, dir_docs, child_dirs, images, cat_out, parent_href=cat_parent)
+                    write_text(os.path.join(cat_out, "index.html"), html)
+                    page_count += 1
+        else:
+            for rel in docs_under(docs, slug):
+                doc_page_urls[rel] = quote_url(os.path.join(slug, "index.html"))
+            parent = quote_url(rel_from(section_out, home_index))
+            html = build_reading_page(slug, docs, dir_docs, child_dirs, images, section_out, parent_href=parent)
+            write_text(os.path.join(section_out, "index.html"), html)
+            page_count += 1
 
     pdfs = collect_pdfs()
     if os.path.isdir(PDF_DIR):
@@ -1687,36 +1833,6 @@ def main():
     write_text(os.path.join(library_out, "index.html"), build_library_page(pdfs, library_out))
     page_count += 1
 
-    doc_page_urls = {}
-    for l1 in l1_categories:
-        l1_out = os.path.join(SITE_DIR, l1)
-        subs = child_dirs.get(l1, [])
-        direct = dir_docs.get(l1, [])
-
-        if subs:
-            html = build_folder_page(l1, docs, dir_docs, child_dirs, dir_earliest, l1_out)
-            write_text(os.path.join(l1_out, "index.html"), html)
-            page_count += 1
-            if direct:
-                for rel in direct:
-                    doc_page_urls[rel] = quote_url(os.path.join(l1, "direct.html"))
-                html = build_reading_page(l1, docs, dir_docs, child_dirs, images, l1_out, doc_list=direct)
-                write_text(os.path.join(l1_out, "direct.html"), html)
-                page_count += 1
-            for l2 in subs:
-                l2_out = os.path.join(SITE_DIR, l2)
-                for rel in docs_under(docs, l2):
-                    doc_page_urls[rel] = quote_url(os.path.join(l2, "index.html"))
-                html = build_reading_page(l2, docs, dir_docs, child_dirs, images, l2_out)
-                write_text(os.path.join(l2_out, "index.html"), html)
-                page_count += 1
-        else:
-            for rel in docs_under(docs, l1):
-                doc_page_urls[rel] = quote_url(os.path.join(l1, "index.html"))
-            html = build_reading_page(l1, docs, dir_docs, child_dirs, images, l1_out)
-            write_text(os.path.join(l1_out, "index.html"), html)
-            page_count += 1
-
     search_index = []
     for rel in docs:
         page_url = doc_page_urls.get(rel)
@@ -1727,10 +1843,13 @@ def main():
         except OSError:
             mtime = 0
         category_parts = [p for p in os.path.dirname(rel).split(os.sep) if p]
-        category = category_parts[0] if category_parts else "未分类"
-        section = section_for_category(category)
-        if section:
-            category = f"{section['title']} / {category}"
+        section = section_for_category(category_parts[0]) if category_parts else None
+        if section and len(category_parts) > 1:
+            category = f"{section['title']} / {category_parts[1]}"
+        elif section:
+            category = section["title"]
+        else:
+            category = category_parts[0] if category_parts else "未分类"
         search_index.append({
             "title": DOC_TITLE.get(rel, os.path.splitext(os.path.basename(rel))[0]),
             "url": "/" + page_url.lstrip("/") + "#" + doc_anchor(rel),

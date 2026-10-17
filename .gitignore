@@ -22,9 +22,9 @@ Thumbs.db
 **/.obsidian/workspace*.json
 
 # 大体积教材 PDF：超过 GitHub 单文件/仓库限制，仅在本地保留
-content/post/书籍资料/*.pdf
+content/post/阅读经历/书籍资料/*.pdf
 content/post/**/Books/*.pdf
-content/post/数字电路/Teach/第二章 逻辑代数基础（1）(1).pdf
+content/post/课程学习/数字电路/Teach/第二章 逻辑代数基础（1）(1).pdf
 
 # 大型演示文稿与模型文件：博客不渲染，避免仓库过大
 content/post/**/pic/*.pptx
