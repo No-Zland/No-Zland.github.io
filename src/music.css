@@ -13,10 +13,6 @@
   content: ""; display: inline-block; width: 5px; height: 5px; border-radius: 50%;
   background: var(--accent-cyan); margin-right: 5px; vertical-align: 1px;
 }
-.music-mode {
-  font-size: 9px; color: var(--text-soft);
-  border: 1px solid var(--border); border-radius: 999px; padding: 1px 6px;
-}
 .music-track { margin-top: 9px; min-width: 0; }
 .music-title {
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;

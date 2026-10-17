@@ -7,7 +7,6 @@
   var base = window.MUSIC_BASE || '';
   var titleEl = player.querySelector('[data-music-title]');
   var artistEl = player.querySelector('[data-music-artist]');
-  var modeEl = player.querySelector('[data-music-mode]');
   var modeBtn = player.querySelector('[data-music-mode-btn]');
   var playBtn = player.querySelector('[data-music-play]');
   var prevBtn = player.querySelector('[data-music-prev]');
@@ -25,6 +24,12 @@
   var current = 0;
   var mode = 'sequence';
   var MODE_KEY = 'blogMusicMode.v1';
+  var STATE_KEY = 'blogMusicState.v1';
+  var pendingTime = 0;
+  var pendingPlay = false;
+  var resumeArmed = false;
+  var leaving = false;
+  var lastStateSave = 0;
 
   var TEXT = {
     zh: {
@@ -47,6 +52,40 @@
     if (!src) return '';
     if (/^https?:\/\//i.test(src) || /^data:/i.test(src)) return src;
     return (base ? base.replace(/\/$/, '') + '/' : '') + src;
+  }
+
+  function saveState() {
+    if (!playlist.length) return;
+    try {
+      sessionStorage.setItem(STATE_KEY, JSON.stringify({
+        index: current,
+        time: audio.currentTime || 0,
+        playing: !audio.paused,
+        mode: mode
+      }));
+    } catch (e) {}
+  }
+
+  function readState() {
+    try {
+      var raw = JSON.parse(sessionStorage.getItem(STATE_KEY) || 'null');
+      if (!raw || !isFinite(raw.index)) return null;
+      return raw;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function armResume() {
+    if (resumeArmed) return;
+    resumeArmed = true;
+    function resume() {
+      document.removeEventListener('pointerdown', resume);
+      document.removeEventListener('keydown', resume);
+      if (audio.paused) audio.play().catch(function () {});
+    }
+    document.addEventListener('pointerdown', resume, { once: true });
+    document.addEventListener('keydown', resume, { once: true });
   }
 
   function fmt(seconds) {
@@ -79,8 +118,6 @@
   function updateMode() {
     var key = mode === 'random' ? 'random' : (mode === 'loop' ? 'loop' : 'sequence');
     var symbol = key === 'random' ? '⇄' : (key === 'loop' ? '↻' : '→');
-    modeEl.textContent = symbol;
-    modeEl.title = t(key);
     modeBtn.textContent = symbol;
     modeBtn.title = t(key);
     modeBtn.setAttribute('aria-label', t('sequence') + ' / ' + t('random') + ' / ' + t('loop'));
@@ -253,7 +290,7 @@
     if (lyricPanel) lyricPanel.querySelector('[data-lyrics-title]').textContent = entry ? entry.title : t('empty');
   }
 
-  function setTrack(nextIndex, autoPlay) {
+  function setTrack(nextIndex, autoPlay, restoreTime) {
     if (!playlist.length) {
       player.classList.add('is-empty');
       updateMeta(null);
@@ -267,6 +304,8 @@
       renderPlaylist();
       return;
     }
+    pendingTime = isFinite(restoreTime) ? restoreTime : 0;
+    pendingPlay = !!autoPlay;
     player.classList.remove('is-empty');
     playBtn.disabled = false;
     prevBtn.disabled = false;
@@ -289,9 +328,6 @@
     lyricIndex = -1;
     if (lyricPanel) setLyricsPlaceholder();
     loadLyrics(entry);
-    if (autoPlay) {
-      audio.play().catch(function () {});
-    }
   }
 
   function playPause() {
@@ -339,6 +375,7 @@
   modeBtn.addEventListener('click', function () {
     mode = mode === 'sequence' ? 'random' : (mode === 'random' ? 'loop' : 'sequence');
     updateMode();
+    saveState();
   });
   lyricsBtn.addEventListener('click', toggleLyrics);
   if (playlistBtn && playlistEl) {
@@ -365,11 +402,13 @@
     playBtn.textContent = '⏸';
     playBtn.setAttribute('aria-label', t('pause'));
     playBtn.title = t('pause');
+    saveState();
   });
   audio.addEventListener('pause', function () {
     playBtn.textContent = '▶';
     playBtn.setAttribute('aria-label', t('play'));
     playBtn.title = t('play');
+    if (!leaving) saveState();
   });
   audio.addEventListener('timeupdate', function () {
     var duration = audio.duration || 0;
@@ -380,12 +419,35 @@
     }
     timeEl.textContent = fmt(audio.currentTime);
     updateLyrics(audio.currentTime);
+    var now = Date.now();
+    if (!leaving && now - lastStateSave > 1000) {
+      lastStateSave = now;
+      saveState();
+    }
   });
   audio.addEventListener('loadedmetadata', function () {
     timeEl.textContent = fmt(audio.currentTime);
     if (seekEl) {
       seekEl.value = String(Math.round((audio.currentTime / (audio.duration || 1)) * 1000));
       seekEl.style.setProperty('--music-seek', '0%');
+    }
+    saveState();
+  });
+  audio.addEventListener('canplay', function () {
+    if (pendingTime > 0 && isFinite(audio.duration)) {
+      audio.currentTime = Math.min(pendingTime, Math.max(0, audio.duration - 0.25));
+      pendingTime = 0;
+      timeEl.textContent = fmt(audio.currentTime);
+      if (seekEl) {
+        var ratio = audio.duration ? audio.currentTime / audio.duration : 0;
+        seekEl.value = String(Math.round(ratio * 1000));
+        seekEl.style.setProperty('--music-seek', (ratio * 100) + '%');
+      }
+      saveState();
+    }
+    if (pendingPlay) {
+      pendingPlay = false;
+      audio.play().catch(function () { armResume(); });
     }
   });
   audio.addEventListener('ended', function () {
@@ -429,7 +491,31 @@
   currentLang = document.documentElement.lang === 'en' ? 'en' : 'zh';
   try { mode = localStorage.getItem(MODE_KEY) || 'sequence'; } catch (e) {}
   if (mode !== 'random' && mode !== 'loop') mode = 'sequence';
+  var savedState = readState();
+  if (savedState && (savedState.mode === 'sequence' || savedState.mode === 'random' || savedState.mode === 'loop')) {
+    mode = savedState.mode;
+  }
   applyLabels();
-  if (playlist.length) setTrack(0, false);
-  else setTrack(-1, false);
+  if (playlist.length) {
+    var startIndex = savedState && isFinite(savedState.index) ? parseInt(savedState.index, 10) : 0;
+    if (startIndex < 0 || startIndex >= playlist.length) startIndex = 0;
+    setTrack(
+      startIndex,
+      !!(savedState && savedState.playing),
+      savedState && isFinite(savedState.time) ? parseFloat(savedState.time) : 0
+    );
+  } else {
+    setTrack(-1, false);
+  }
+  document.addEventListener('pointerdown', function () {
+    if (!audio.paused) saveState();
+  }, true);
+  window.addEventListener('pagehide', function () {
+    leaving = true;
+    saveState();
+  });
+  window.addEventListener('beforeunload', function () {
+    leaving = true;
+    saveState();
+  });
 })();

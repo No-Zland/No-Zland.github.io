@@ -17,6 +17,8 @@
 
     var tocCard = document.querySelector('[data-reading-toc-card]');
     var tocEl = document.querySelector('[data-reading-toc]');
+    var listCard = document.querySelector('[data-reading-list-card]');
+    var listEl = document.querySelector('[data-reading-list]');
     var pagerCard = document.querySelector('[data-reading-pager-card]');
     var pagerTitle = document.querySelector('[data-reading-pager-title]');
     var pagerCount = document.querySelector('[data-reading-count]');
@@ -47,6 +49,33 @@
       if (nextBtn) nextBtn.disabled = current === articles.length - 1;
     }
 
+    function renderList() {
+      if (!listCard || !listEl) return;
+      if (articles.length < 2) {
+        listCard.hidden = true;
+        return;
+      }
+      listCard.hidden = false;
+      listEl.innerHTML = articles.map(function (article, index) {
+        return '<button type="button" class="reading-list-item" data-reading-index="' + index + '">' +
+          '<span class="reading-list-num">' + String(index + 1).padStart(2, '0') + '</span>' +
+          '<span class="reading-list-name">' + escapeHtml(articleTitle(index)) + '</span>' +
+          '</button>';
+      }).join('');
+      listEl.querySelectorAll('[data-reading-index]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          show(parseInt(button.getAttribute('data-reading-index'), 10) || 0, { hash: true, scroll: true });
+        });
+      });
+    }
+
+    function updateListActive() {
+      if (!listEl) return;
+      listEl.querySelectorAll('[data-reading-index]').forEach(function (button) {
+        button.classList.toggle('is-current', parseInt(button.getAttribute('data-reading-index'), 10) === current);
+      });
+    }
+
     function renderToc() {
       if (!tocCard || !tocEl) return;
       var body = articles[current].querySelector('.doc-body');
@@ -70,6 +99,7 @@
       articles.forEach(function (article, i) { article.hidden = i !== current; });
       renderPager();
       renderToc();
+      updateListActive();
       if (options && options.hash) {
         try {
           history.replaceState(null, '', '#' + articles[current].id);
@@ -108,6 +138,7 @@
         if (articles[i].id === hash) { initial = i; break; }
       }
     }
+    renderList();
     if (initial >= 0) show(initial, { scroll: true });
     else show(0, {});
   }

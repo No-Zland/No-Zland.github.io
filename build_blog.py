@@ -1317,7 +1317,6 @@ def side_nav_for(out_dir):
     <div class="quick-kicker">导航栏</div>
     <div class="quick-total">{len(NAV_SECTIONS)} 个板块</div>
   </div>
-  <a class="page-nav-home" href="{home_href}">← 全部板块</a>
   <nav class="page-nav-list">{''.join(rows)}</nav>
   <a class="page-nav-home page-nav-library{' is-active' if library_active else ''}" href="{library_href}">PDF / 图片资料</a>
 </aside>
@@ -1362,10 +1361,6 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
       <div class="quick-kicker" data-i18n="quick-title">导航栏</div>
       <div class="quick-total">{len(sections)} 个板块</div>
     </div>
-    <a class="quick-link" href="#sections">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-      <span data-i18n="quick-all">全部板块</span>
-    </a>
     <a class="quick-link" href="资料库/index.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
       <span>PDF / 图片资料</span>
@@ -1445,7 +1440,6 @@ def music_player_html():
 <div class="music-player" id="musicPlayer">
   <div class="music-head">
     <span class="music-kicker">音乐</span>
-    <span class="music-mode" data-music-mode title="顺序播放">→</span>
   </div>
   <div class="music-track">
     <div class="music-title" data-music-title>暂无曲目</div>
@@ -1590,6 +1584,10 @@ def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=
 
     content = ''.join(articles) if articles else '<div class="doc"><p>暂无文章</p></div>'
     side_extra = f"""
+<div class="side-card reading-list-card" data-reading-list-card hidden>
+  <div class="side-card-kicker">文章列表</div>
+  <nav class="reading-list" data-reading-list></nav>
+</div>
 <div class="side-card reading-toc-card" data-reading-toc-card hidden>
   <div class="side-card-kicker">本篇目录</div>
   <nav class="reading-toc" data-reading-toc></nav>
