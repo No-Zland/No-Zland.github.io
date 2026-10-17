@@ -1,5 +1,7 @@
 # 个人博客 · 梁双宇（Shine Leong）
 
+在线访问：<https://no-zland.github.io/>
+
 一个**板块式个人博客**：把 Obsidian 笔记库 `content/post` 按竞赛经历、项目经历、科研经历、技能学习、课程学习、阅读及感悟、个人与总结七个大板块组织，再用 Python 静态生成器渲染成站点，交给 Hugo 本地预览与服务。
 
 - 首页：座右铭 + 左侧板块导航 + 顶栏搜索 + 音乐播放器 + 大板块卡片
@@ -131,6 +133,8 @@ d:\My Personal Blogs\
 2. 仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。
 3. push 后 `.github/workflows/pages.yml` 会执行 `python build_blog.py --clean`，把 `site/` 发布到 Pages。
 4. 访问地址通常是 `https://<用户名>.github.io/<仓库名>/`；如果是 `<用户名>.github.io` 仓库，则是 `https://<用户名>.github.io/`。
+
+当前部署：<https://no-zland.github.io/>
 
 > `site/` 和 `public/` 都是生成物，不入库；`public/` 仅用于本地 Hugo 首页渲染，Pages 部署的是 `site/`。
 
