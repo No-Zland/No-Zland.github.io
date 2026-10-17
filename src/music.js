@@ -328,6 +328,10 @@
     lyricIndex = -1;
     if (lyricPanel) setLyricsPlaceholder();
     loadLyrics(entry);
+    // 自动连播/下一首：先发起 play，浏览器会在数据就绪后尽快开始，而不是干等 canplay。
+    if (autoPlay && !pendingTime) {
+      audio.play().catch(function () { armResume(); });
+    }
   }
 
   function playPause() {
@@ -348,11 +352,8 @@
       return;
     }
     if (current === playlist.length - 1) {
-      if (manual) setTrack(0, true);
-      else {
-        audio.pause();
-        audio.currentTime = 0;
-      }
+      // 顺序播放到最后一首后回到第一首，保证自动连播不中断。
+      setTrack(0, true);
       return;
     }
     setTrack(current + 1, true);

@@ -1,7 +1,10 @@
 (function () {
-  var roots = document.querySelectorAll('[data-reading-root]');
-  if (!roots.length) return;
-  roots.forEach(init);
+  function initAll() {
+    var roots = document.querySelectorAll('[data-reading-root]');
+    roots.forEach(init);
+  }
+  window.BlogReading = { init: initAll };
+  initAll();
 
   function escapeHtml(value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) {

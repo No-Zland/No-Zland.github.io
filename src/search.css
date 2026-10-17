@@ -15,6 +15,9 @@
 }
 .side-column > .quick-nav { position: static; top: auto; max-height: none; overflow: visible; }
 .side-column > .music-player { margin-top: 0; }
+.topbar .back-btn[hidden] { display: none; }
+.main { transition: opacity .14s ease; }
+.main.is-page-fading { opacity: .45; }
 
 /* 递进页面：左侧层级导航 */
 .main-wide { max-width: 1140px; }

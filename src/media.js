@@ -43,16 +43,27 @@
     openLightbox(img.getAttribute('src'), img.getAttribute('alt'));
   });
 
-  var viewer = document.getElementById('pdfViewer');
-  var frame = document.getElementById('pdfViewerFrame');
-  var viewerTitle = document.getElementById('pdfViewerTitle');
-  var viewerLink = document.getElementById('pdfViewerLink');
+  function getViewer() {
+    return document.getElementById('pdfViewer');
+  }
 
   function closePdf() {
+    var viewer = getViewer();
     if (!viewer) return;
     viewer.hidden = true;
+    var frame = document.getElementById('pdfViewerFrame');
     if (frame) frame.removeAttribute('src');
     document.body.style.overflow = '';
+  }
+
+  function bindViewer(viewer) {
+    if (!viewer || viewer.dataset.mediaBound === '1') return;
+    viewer.dataset.mediaBound = '1';
+    viewer.addEventListener('click', function (event) {
+      if (event.target === viewer) closePdf();
+    });
+    var close = document.getElementById('pdfViewerClose');
+    if (close) close.addEventListener('click', closePdf);
   }
 
   document.addEventListener('click', function (event) {
@@ -61,29 +72,30 @@
     var url = trigger.getAttribute('data-pdf-url');
     var title = trigger.getAttribute('data-pdf-title') || 'PDF';
     if (!url) return;
-    if (!viewer || !frame) {
+    var viewer = getViewer();
+    if (!viewer) {
       window.open(url, '_blank', 'noopener');
       return;
     }
-    viewerTitle.textContent = title;
-    viewerLink.href = url;
+    var frame = document.getElementById('pdfViewerFrame');
+    var viewerTitle = document.getElementById('pdfViewerTitle');
+    var viewerLink = document.getElementById('pdfViewerLink');
+    if (!frame) {
+      window.open(url, '_blank', 'noopener');
+      return;
+    }
+    bindViewer(viewer);
+    if (viewerTitle) viewerTitle.textContent = title;
+    if (viewerLink) viewerLink.href = url;
     frame.src = url;
     viewer.hidden = false;
     document.body.style.overflow = 'hidden';
-    viewerLink.focus();
+    if (viewerLink) viewerLink.focus();
   });
-
-  if (viewer) {
-    viewer.addEventListener('click', function (event) {
-      if (event.target === viewer) closePdf();
-    });
-    var close = document.getElementById('pdfViewerClose');
-    if (close) close.addEventListener('click', closePdf);
-  }
 
   document.addEventListener('keydown', function (event) {
     if (event.key !== 'Escape') return;
     if (lightbox && !lightbox.hidden) closeLightbox();
-    if (viewer && !viewer.hidden) closePdf();
+    closePdf();
   });
 })();

@@ -10,6 +10,7 @@
 """
 import os
 import re
+import hashlib
 import sys
 import json
 import html
@@ -33,6 +34,7 @@ AVATAR_NAME = None  # 站点头像文件名（位于 assets 下），main() 中�
 UPDATES_JSON = "{}"  # 博客更新日期统计，main() 中写入
 MUSIC_JSON = "[]"  # 音乐播放列表，main() 中写入
 QUOTES_JSON = "[]"  # 名言警句，main() 中写入
+ASSET_VERSION = "0"  # 样式/脚本缓存版本，main() 中写入
 QUOTES = []  # 名言列表，main() 中写入
 DOC_TITLE = {}  # 文章标题，渲染时收集
 DOC_TEXT = {}  # 文章纯文本，渲染时收集
@@ -1171,19 +1173,56 @@ SEARCH_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 BACK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>'
 
 
+def search_overlay_html():
+    return """
+<div class="search-overlay" id="searchOverlay" hidden>
+  <div class="search-modal" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
+    <button type="button" class="search-close" id="searchClose" aria-label="关闭搜索" data-i18n-aria-label="search-close">&times;</button>
+    <div class="search-head">
+      <h2 id="searchTitle" data-i18n="search-title">搜索文章</h2>
+    </div>
+    <form class="search-form" id="searchForm" role="search">
+      <span class="search-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      </span>
+      <input id="searchInput" type="search" placeholder="搜索标题或正文，例如：指针、数学建模…" autocomplete="off" aria-label="搜索文章" data-i18n-aria-label="search-title">
+      <button type="button" class="search-clear" id="searchClear" aria-label="清空搜索" hidden>&times;</button>
+      <button type="submit" class="search-submit" data-i18n="search-submit">搜索</button>
+    </form>
+    <div class="search-bottom">
+      <div class="search-tip" data-i18n="search-tip">完全匹配要求整段文字连续出现；模糊匹配按空格拆词，命中任一关键词即可。</div>
+      <div class="search-mode" role="group" aria-label="匹配模式">
+        <button type="button" class="mode-btn" data-mode="fuzzy" aria-pressed="true" data-i18n="search-mode-fuzzy">模糊匹配</button>
+        <button type="button" class="mode-btn" data-mode="exact" aria-pressed="false" data-i18n="search-mode-exact">完全匹配</button>
+      </div>
+    </div>
+    <div class="search-suggest" id="searchSuggest">
+      <span data-i18n="search-suggest">试试：</span>
+      <button type="button" data-query="C++">C++</button>
+      <button type="button" data-query="指针">指针</button>
+      <button type="button" data-query="Python">Python</button>
+      <button type="button" data-query="数学建模">数学建模</button>
+      <button type="button" data-query="实验报告">实验报告</button>
+    </div>
+    <div class="search-results" id="searchResults" aria-live="polite"></div>
+  </div>
+</div>
+"""
+
+
 def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None, side_extra=""):
-    style_href = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "style.css")))
-    script_src = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "app.js")))
-    music_base = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "music")))
-    home_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html")))
+    style_href = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "style.css"))) + "?v=" + ASSET_VERSION
+    script_src = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "app.js"))) + "?v=" + ASSET_VERSION
+    music_base = "/assets/music"
+    home_href = "/"
     drawer_html = build_drawer(out_dir)
     math = MATHJAX_HEAD if with_math else ""
-    back_html = ""
-    if parent_href:
-        back_html = (
-            f'<a class="icon-btn back-btn" href="{parent_href}" title="返回上一级" '
-            f'aria-label="返回上一级" data-i18n-title="back" data-i18n-aria-label="back">{BACK_SVG}</a>'
-        )
+    back_href = parent_href or "/"
+    back_hidden = "" if parent_href else " hidden"
+    back_html = (
+        f'<a class="icon-btn back-btn" href="{back_href}" title="返回上一级" '
+        f'aria-label="返回上一级" data-i18n-title="back" data-i18n-aria-label="back"{back_hidden}>{BACK_SVG}</a>'
+    )
     body_class = ' class="page-home"' if is_home else ""
     nav_html = "" if is_home else side_nav_for(out_dir)
     if nav_html:
@@ -1204,6 +1243,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
 </head>
 <body{body_class}>
 {drawer_html}
+{search_overlay_html()}
 <header class="topbar">
   <button class="icon-btn" id="menuBtn" aria-label="打开个人主页">&#9776;</button>
   <a class="home-btn" href="{home_href}" title="返回首页" aria-label="返回首页" data-i18n-title="home" data-i18n-aria-label="home">{HOME_SVG}</a>
@@ -1387,38 +1427,6 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
       <div class="count">{len(sections)} 个板块 · {article_total} 篇文章</div>
     </div>
     <div class="section-grid">{''.join(section_items)}</div>
-  </div>
-</div>
-<div class="search-overlay" id="searchOverlay" hidden>
-  <div class="search-modal" role="dialog" aria-modal="true" aria-labelledby="searchTitle">
-    <button type="button" class="search-close" id="searchClose" aria-label="关闭搜索" data-i18n-aria-label="search-close">&times;</button>
-    <div class="search-head">
-      <h2 id="searchTitle" data-i18n="search-title">搜索文章</h2>
-    </div>
-    <form class="search-form" id="searchForm" role="search">
-      <span class="search-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      </span>
-      <input id="searchInput" type="search" placeholder="搜索标题或正文，例如：指针、数学建模…" autocomplete="off" aria-label="搜索文章" data-i18n-aria-label="search-title">
-      <button type="button" class="search-clear" id="searchClear" aria-label="清空搜索" hidden>&times;</button>
-      <button type="submit" class="search-submit" data-i18n="search-submit">搜索</button>
-    </form>
-    <div class="search-bottom">
-      <div class="search-tip" data-i18n="search-tip">完全匹配要求整段文字连续出现；模糊匹配按空格拆词，命中任一关键词即可。</div>
-      <div class="search-mode" role="group" aria-label="匹配模式">
-        <button type="button" class="mode-btn" data-mode="fuzzy" aria-pressed="true" data-i18n="search-mode-fuzzy">模糊匹配</button>
-        <button type="button" class="mode-btn" data-mode="exact" aria-pressed="false" data-i18n="search-mode-exact">完全匹配</button>
-      </div>
-    </div>
-    <div class="search-suggest" id="searchSuggest">
-      <span data-i18n="search-suggest">试试：</span>
-      <button type="button" data-query="C++">C++</button>
-      <button type="button" data-query="指针">指针</button>
-      <button type="button" data-query="Python">Python</button>
-      <button type="button" data-query="数学建模">数学建模</button>
-      <button type="button" data-query="实验报告">实验报告</button>
-    </div>
-    <div class="search-results" id="searchResults" aria-live="polite"></div>
   </div>
 </div>
 """
@@ -1617,7 +1625,7 @@ def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=
 # 主流程
 # --------------------------------------------------------------------------- #
 def main():
-    global AVATAR_NAME, UPDATES_JSON, NAV_SECTIONS, MUSIC_JSON, QUOTES_JSON, QUOTES
+    global AVATAR_NAME, UPDATES_JSON, NAV_SECTIONS, MUSIC_JSON, QUOTES_JSON, QUOTES, ASSET_VERSION
     docs, images, dir_earliest = scan()
     dir_docs, child_dirs = build_tree(docs)
 
@@ -1640,14 +1648,12 @@ def main():
     music_css = read_text(os.path.join(SRC_DIR, "music.css"))
     music_js = read_text(os.path.join(SRC_DIR, "music.js"))
     quotes_js = read_text(os.path.join(SRC_DIR, "quotes.js"))
-    write_text(
-        os.path.join(ASSET_DIR, "style.css"),
-        CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css,
-    )
-    write_text(
-        os.path.join(ASSET_DIR, "app.js"),
-        JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js,
-    )
+    spa_js = read_text(os.path.join(SRC_DIR, "spa.js"))
+    style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css
+    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + spa_js
+    write_text(os.path.join(ASSET_DIR, "style.css"), style_text)
+    write_text(os.path.join(ASSET_DIR, "app.js"), app_text)
+    ASSET_VERSION = hashlib.md5((style_text + app_text).encode("utf-8")).hexdigest()[:8]
     UPDATES_JSON = json.dumps(collect_updates(docs), ensure_ascii=False, sort_keys=True)
     MUSIC_JSON = load_music_playlist()
     QUOTES = load_quotes()
@@ -1727,7 +1733,7 @@ def main():
             category = f"{section['title']} / {category}"
         search_index.append({
             "title": DOC_TITLE.get(rel, os.path.splitext(os.path.basename(rel))[0]),
-            "url": page_url + "#" + doc_anchor(rel),
+            "url": "/" + page_url.lstrip("/") + "#" + doc_anchor(rel),
             "category": category or "未分类",
             "date": datetime.fromtimestamp(mtime).strftime("%Y-%m-%d") if mtime else "",
             "text": DOC_TEXT.get(rel, ""),

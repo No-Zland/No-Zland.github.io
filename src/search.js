@@ -19,7 +19,7 @@
   var clearBtn = document.getElementById('searchClear');
   var modeBtns = document.querySelectorAll('.mode-btn');
 
-  var INDEX_URL = 'assets/search-index.json';
+  var INDEX_URL = '/assets/search-index.json';
   var indexPromise = null;
   var entries = null;
   var mode = 'fuzzy';

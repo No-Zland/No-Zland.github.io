@@ -17,7 +17,7 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
 ```
 
 - `content/post/`：Obsidian 笔记库，唯一内容源。
-- `src/`：生成器使用的样式和脚本（日历、搜索、阅读目录、媒体查看、音乐、名言）。
+- `src/`：生成器使用的样式和脚本（日历、搜索、软导航、阅读目录、媒体查看、音乐、名言）。
 - `music/`：播放列表、音频与 LRC 歌词；构建时复制到 `site/assets/music/`。
 - `build_blog.py`：扫描笔记、渲染 Markdown、复制图片/PDF、生成 `site/` 与搜索索引。
 - `layouts/index.html`：Hugo 首页模板，直接读取 `site/index.html`。
@@ -58,6 +58,16 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
 - 打开带 `#doc-...` 的链接（例如搜索结果）会直接定位到对应文章。
 - 目录、文章列表、翻页、音乐播放器、层级导航都是独立卡片，堆叠在 `.side-column` 中。
 
+## 软导航与全局音乐
+
+- `src/spa.js` 拦截同源站内链接，`fetch` 目标页后用 `DOMParser` 解析。
+- 只替换 `main` 中的布局内容与 `.side-column` 里播放器以外的卡片；播放器 DOM 及 `<audio>` 节点保持原位，因此音乐不中断。
+- 顶栏、搜索浮层、抽屉、日历、歌词、PDF/图片查看器都是公共组件，不随导航重建。
+- 阅读页与首页名言提供 `window.BlogReading.init()` / `window.BlogQuotes.init()`，软导航后重新初始化。
+- 支持 `pushState` 与 `popstate`，浏览器前进/后退也能保持播放器。
+- 搜索索引使用根路径 `/assets/search-index.json`，搜索浮层在所有页面通用。
+- 整页刷新或直接从外部进入时，`sessionStorage` 仍会恢复曲目、进度、模式和播放状态作为兜底。
+
 ## 媒体与音乐
 
 - `build_blog.py` 扫描 `content/post` 下的 PDF，单文件 ≤10MB 时复制到 `site/assets/files/pdf/`，并生成 `资料库/index.html`。
@@ -65,7 +75,8 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
 - 文章图片由 `src/media.js` 接管：点击打开全屏弹层，Esc / 点击背景关闭。
 - 音乐播放器读取 `music/playlist.json`，构建时把 `music/` 复制到 `site/assets/music/`。
 - 播放模式（顺序/随机/单曲循环）保存在 localStorage；悬浮歌词由 `.lrc` 时间轴驱动，拖动位置也保存在 localStorage。
-- 播放器在每页底部/侧栏都是独立卡片；曲目、进度和播放状态写入 `sessionStorage`，切换页面后自动恢复并续播。
+- 播放器在每页都是独立卡片；软导航时 `<audio>` 节点不重建，整页刷新时用 `sessionStorage` 恢复曲目、进度和播放状态。
+- 顺序播放到最后一首后会回到第一首，随机与单曲循环分别保持各自行为。
 - 首页名言从 `content/post/书籍资料/名人名言.md` 读取，每行格式 `- 句子｜作者`；`src/quotes.js` 用当前分钟 + 随机数抽取，按钮可立即换一句。
 
 ## 任务状态与主人模式
