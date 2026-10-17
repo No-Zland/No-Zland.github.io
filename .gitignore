@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 生成产物（由 build_blog.py / Hugo 生成，不入库）
+site/
+public/
+.hugo_build.lock
+resources/
+
+# 本地临时文件
+_*.txt
+_*.py
+*.log
+
+# 编辑器 / 系统
+.DS_Store
+Thumbs.db
+.obsidian/workspace*.json
+
+# 大体积教材 PDF：超过 GitHub 单文件/仓库限制，仅在本地保留
+content/post/书籍资料/*.pdf
+content/post/**/Books/*.pdf
+content/post/数字电路/Teach/第二章 逻辑代数基础（1）(1).pdf
+
+# 大型演示文稿与模型文件：博客不渲染，避免仓库过大
+content/post/**/pic/*.pptx
+content/post/**/code/models/*.pkl
+content/post/**/code/output/*.zip
+content/post/**/code/*.zip

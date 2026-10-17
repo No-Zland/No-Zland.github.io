@@ -1,0 +1,113 @@
+/* 图片放大 / PDF 资料库 */
+.doc-body img { cursor: zoom-in; }
+
+.media-lightbox {
+  position: fixed; inset: 0; z-index: 120;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px; background: rgba(9, 12, 20, .78);
+  backdrop-filter: blur(6px);
+  animation: media-in .2s ease;
+}
+.media-lightbox[hidden] { display: none; }
+.media-lightbox img {
+  max-width: min(94vw, 1200px); max-height: 88vh;
+  border-radius: 10px; background: #fff;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .45);
+  cursor: zoom-out;
+}
+.media-lightbox-close {
+  position: absolute; top: 18px; right: 20px;
+  width: 38px; height: 38px; border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: 50%; background: rgba(255, 255, 255, .12); color: #fff;
+  font-size: 24px; line-height: 1; cursor: pointer;
+}
+@keyframes media-in { from { opacity: 0; } to { opacity: 1; } }
+
+.library-lede {
+  margin: -8px 0 20px; color: var(--text-soft); font-size: 13px; line-height: 1.8;
+}
+.pdf-group { margin-bottom: 22px; }
+.pdf-group h2 {
+  margin: 0 0 10px; font-size: 16px; letter-spacing: .02em;
+  color: var(--text);
+}
+.pdf-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px;
+}
+.pdf-card {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto auto; align-items: center; gap: 2px 10px;
+  width: 100%; padding: 12px 13px; text-align: left;
+  border: 1px solid var(--border); border-left: 3px solid #dc2626;
+  border-radius: 10px; background: var(--card); color: var(--text);
+  font: inherit; cursor: pointer;
+  transition: transform .2s var(--ease), border-color .2s ease, box-shadow .2s ease;
+}
+.pdf-card:hover {
+  transform: translateY(-2px); border-color: #dc2626;
+  box-shadow: var(--shadow-hover);
+}
+.pdf-card.is-local {
+  cursor: default; opacity: .6; border-left-color: var(--text-soft);
+}
+.pdf-card.is-local:hover { transform: none; box-shadow: none; border-color: var(--border); }
+.pdf-card.is-local .pdf-icon { background: var(--bg-soft); color: var(--text-soft); }
+.pdf-card.is-local .pdf-open { color: var(--text-soft); }
+.pdf-icon {
+  grid-row: 1 / 3; display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 8px;
+  background: rgba(220, 38, 38, .10); color: #dc2626;
+  font-size: 9px; font-weight: 800; letter-spacing: .06em;
+}
+.pdf-name {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 12.5px; font-weight: 600;
+}
+.pdf-meta { grid-column: 2; font-size: 10px; color: var(--text-soft); }
+.pdf-open {
+  grid-column: 3; grid-row: 1 / 3; color: var(--brand);
+  font-size: 10px; font-weight: 700;
+}
+.pdf-empty { padding: 26px; text-align: center; color: var(--text-soft); font-size: 13px; }
+
+.pdf-viewer {
+  position: fixed; inset: 0; z-index: 130;
+  display: flex; align-items: center; justify-content: center;
+  padding: 22px; background: rgba(9, 12, 20, .72);
+  backdrop-filter: blur(5px);
+}
+.pdf-viewer[hidden] { display: none; }
+.pdf-viewer-box {
+  display: flex; flex-direction: column;
+  width: min(1100px, 96vw); height: min(86vh, 900px);
+  overflow: hidden; border-radius: 12px; background: var(--card);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, .5);
+}
+.pdf-viewer-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 9px 12px; border-bottom: 1px solid var(--border);
+  font-size: 12px; font-weight: 600;
+}
+.pdf-viewer-actions { display: flex; align-items: center; gap: 10px; }
+.pdf-viewer-actions a { color: var(--brand); font-size: 11px; font-weight: 600; }
+.pdf-viewer-actions button {
+  width: 28px; height: 28px; border: 1px solid var(--border); border-radius: 7px;
+  background: var(--card); color: var(--text-soft); font-size: 18px; line-height: 1; cursor: pointer;
+}
+.pdf-viewer-head span {
+  min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.pdf-viewer iframe { flex: 1; width: 100%; border: 0; background: #fff; }
+
+.page-nav-library {
+  display: flex; width: 100%; margin-top: 8px;
+  border-top: 1px solid var(--border); border-radius: 0;
+}
+.page-nav-library.is-active { color: var(--brand); background: var(--brand-soft); }
+
+@media (max-width: 760px) {
+  .pdf-grid { grid-template-columns: 1fr; }
+  .media-lightbox { padding: 12px; }
+  .pdf-viewer { padding: 10px; }
+  .pdf-viewer-box { height: 88vh; }
+}

@@ -1,0 +1,11 @@
+baseURL = '/'
+title = 'Shine Leong Personal Blogs'
+
+# 笔记源目录由 build_blog.py 读取并生成 site/，
+# Hugo 这里只负责把 site/ 当作静态站点直接服务，
+# 因此把 contentDir 指向一个空目录，避免 Hugo 二次渲染 content/post。
+contentDir = 'hugo_src'
+staticDir = ['site']
+
+# 关闭除 home 外的内容渲染类型；home 由 layouts/index.html 直接读取 site/index.html 输出。
+disableKinds = ['page', 'section', 'taxonomy', 'term', 'RSS', 'sitemap', 'robotsTXT', '404']

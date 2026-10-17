@@ -1,0 +1,7 @@
+pandas>=2.0
+numpy>=1.24
+matplotlib>=3.7
+openpyxl>=3.1
+scipy>=1.9
+artifact_tool_v2>=2.8.22
+pytest>=8.0
