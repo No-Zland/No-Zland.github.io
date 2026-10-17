@@ -17,7 +17,7 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
 ```
 
 - `content/post/`：Obsidian 笔记库，唯一内容源。
-- `src/`：生成器使用的样式和脚本（日历、搜索、长文分页、阅读模式、媒体查看、音乐）。
+- `src/`：生成器使用的样式和脚本（日历、搜索、长文分页、阅读模式、媒体查看、音乐、名言）。
 - `music/`：播放列表、音频与 LRC 歌词；构建时复制到 `site/assets/music/`。
 - `build_blog.py`：扫描笔记、渲染 Markdown、复制图片/PDF、生成 `site/` 与搜索索引。
 - `layouts/index.html`：Hugo 首页模板，直接读取 `site/index.html`。
@@ -63,6 +63,7 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
 - 文章图片由 `src/media.js` 接管：点击打开全屏弹层，Esc / 点击背景关闭。
 - 音乐播放器读取 `music/playlist.json`，构建时把 `music/` 复制到 `site/assets/music/`。
 - 播放模式（顺序/随机/单曲循环）保存在 localStorage；悬浮歌词由 `.lrc` 时间轴驱动，拖动位置也保存在 localStorage。
+- 首页名言从 `content/post/书籍资料/名人名言.md` 读取，每行格式 `- 句子｜作者`；`src/quotes.js` 用当前分钟 + 随机数抽取，按钮可立即换一句。
 
 ## 任务状态与主人模式
 

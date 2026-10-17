@@ -4,5 +4,11 @@
     "artist": "SoundHelix",
     "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
     "lyrics": ""
+  },
+  {
+    "title": "SoundHelix Demo 2",
+    "artist": "SoundHelix",
+    "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+    "lyrics": ""
   }
 ]

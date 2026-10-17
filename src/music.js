@@ -13,8 +13,11 @@
   var prevBtn = player.querySelector('[data-music-prev]');
   var nextBtn = player.querySelector('[data-music-next]');
   var lyricsBtn = player.querySelector('[data-music-lyrics]');
-  var progressEl = player.querySelector('[data-music-progress]');
+  var playlistBtn = player.querySelector('[data-music-playlist-btn]');
+  var playlistEl = player.querySelector('[data-music-playlist]');
+  var seekEl = player.querySelector('[data-music-seek]');
   var timeEl = player.querySelector('[data-music-time]');
+  var isSeeking = false;
   var lyricIndex = -1;
   var lyricData = [];
   var lyricPanel = null;
@@ -26,12 +29,12 @@
   var TEXT = {
     zh: {
       play: '播放', pause: '暂停', sequence: '顺序', random: '随机', loop: '单曲循环',
-      lyrics: '歌词', noLyrics: '暂无歌词', lyricsHint: '把 .lrc 放到 music/，并在 playlist.json 里填写 lyrics。',
+      lyrics: '歌词', playlist: '播放歌单', noLyrics: '暂无歌词', lyricsHint: '把 .lrc 放到 music/，并在 playlist.json 里填写 lyrics。',
       empty: '暂无曲目', error: '加载失败', loading: '加载中…', closeLyrics: '关闭歌词', drag: '拖动歌词'
     },
     en: {
       play: 'Play', pause: 'Pause', sequence: 'Sequence', random: 'Shuffle', loop: 'Repeat one',
-      lyrics: 'Lyrics', noLyrics: 'No lyrics yet', lyricsHint: 'Put an .lrc file in music/ and set its name in playlist.json.',
+      lyrics: 'Lyrics', playlist: 'Playlist', noLyrics: 'No lyrics yet', lyricsHint: 'Put an .lrc file in music/ and set its name in playlist.json.',
       empty: 'No tracks', error: 'Failed to load', loading: 'Loading…', closeLyrics: 'Close lyrics', drag: 'Drag lyrics'
     }
   };
@@ -53,10 +56,33 @@
     return m + ':' + (s < 10 ? '0' : '') + s;
   }
 
+  function renderPlaylist() {
+    if (!playlistEl) return;
+    if (!playlist.length) {
+      playlistEl.innerHTML = '<div class="music-playlist-empty">' + t('empty') + '</div>';
+      return;
+    }
+    playlistEl.innerHTML = playlist.map(function (entry, index) {
+      var active = index === current ? ' is-current' : '';
+      return '<button type="button" class="music-playlist-item' + active + '" data-track-index="' + index + '">' +
+        '<span class="music-playlist-name">' + escapeHtml(entry.title || ('Track ' + (index + 1))) + '</span>' +
+        '<span class="music-playlist-artist">' + escapeHtml(entry.artist || '') + '</span>' +
+        '</button>';
+    }).join('');
+    playlistEl.querySelectorAll('[data-track-index]').forEach(function (item) {
+      item.addEventListener('click', function () {
+        setTrack(parseInt(item.getAttribute('data-track-index'), 10) || 0, true);
+      });
+    });
+  }
+
   function updateMode() {
     var key = mode === 'random' ? 'random' : (mode === 'loop' ? 'loop' : 'sequence');
-    modeEl.textContent = t(key);
-    modeBtn.textContent = t(key);
+    var symbol = key === 'random' ? '⇄' : (key === 'loop' ? '↻' : '→');
+    modeEl.textContent = symbol;
+    modeEl.title = t(key);
+    modeBtn.textContent = symbol;
+    modeBtn.title = t(key);
     modeBtn.setAttribute('aria-label', t('sequence') + ' / ' + t('random') + ' / ' + t('loop'));
     try { localStorage.setItem(MODE_KEY, mode); } catch (e) {}
   }
@@ -236,6 +262,9 @@
       nextBtn.disabled = true;
       modeBtn.disabled = true;
       lyricsBtn.disabled = true;
+      playlistBtn.disabled = true;
+      if (seekEl) seekEl.disabled = true;
+      renderPlaylist();
       return;
     }
     player.classList.remove('is-empty');
@@ -244,9 +273,16 @@
     nextBtn.disabled = false;
     modeBtn.disabled = false;
     lyricsBtn.disabled = false;
+    playlistBtn.disabled = false;
+    if (seekEl) seekEl.disabled = false;
     current = (nextIndex + playlist.length) % playlist.length;
     var entry = playlist[current];
     updateMeta(entry);
+    renderPlaylist();
+    if (seekEl) {
+      seekEl.value = '0';
+      seekEl.style.setProperty('--music-seek', '0%');
+    }
     audio.src = resolve(entry.src);
     audio.load();
     lyricData = [];
@@ -305,18 +341,52 @@
     updateMode();
   });
   lyricsBtn.addEventListener('click', toggleLyrics);
+  if (playlistBtn && playlistEl) {
+    playlistBtn.addEventListener('click', function () {
+      playlistEl.hidden = !playlistEl.hidden;
+      playlistBtn.setAttribute('aria-expanded', playlistEl.hidden ? 'false' : 'true');
+      if (!playlistEl.hidden) renderPlaylist();
+    });
+  }
+  if (seekEl) {
+    seekEl.addEventListener('input', function () {
+      isSeeking = true;
+      var duration = audio.duration || 0;
+      if (!duration) return;
+      var ratio = Math.max(0, Math.min(1, parseInt(seekEl.value, 10) / 1000));
+      audio.currentTime = ratio * duration;
+      seekEl.style.setProperty('--music-seek', (ratio * 100) + '%');
+      timeEl.textContent = fmt(audio.currentTime);
+    });
+    seekEl.addEventListener('change', function () { isSeeking = false; });
+  }
 
-  audio.addEventListener('play', function () { playBtn.textContent = t('pause'); });
-  audio.addEventListener('pause', function () { playBtn.textContent = t('play'); });
+  audio.addEventListener('play', function () {
+    playBtn.textContent = '⏸';
+    playBtn.setAttribute('aria-label', t('pause'));
+    playBtn.title = t('pause');
+  });
+  audio.addEventListener('pause', function () {
+    playBtn.textContent = '▶';
+    playBtn.setAttribute('aria-label', t('play'));
+    playBtn.title = t('play');
+  });
   audio.addEventListener('timeupdate', function () {
     var duration = audio.duration || 0;
     var ratio = duration ? Math.min(1, audio.currentTime / duration) : 0;
-    progressEl.style.width = (ratio * 100) + '%';
+    if (seekEl && !isSeeking) {
+      seekEl.value = String(Math.round(ratio * 1000));
+      seekEl.style.setProperty('--music-seek', (ratio * 100) + '%');
+    }
     timeEl.textContent = fmt(audio.currentTime);
     updateLyrics(audio.currentTime);
   });
   audio.addEventListener('loadedmetadata', function () {
     timeEl.textContent = fmt(audio.currentTime);
+    if (seekEl) {
+      seekEl.value = String(Math.round((audio.currentTime / (audio.duration || 1)) * 1000));
+      seekEl.style.setProperty('--music-seek', '0%');
+    }
   });
   audio.addEventListener('ended', function () {
     if (mode === 'loop') {
@@ -331,9 +401,18 @@
   });
 
   function applyLabels() {
-    playBtn.textContent = audio.paused ? t('play') : t('pause');
-    lyricsBtn.textContent = t('lyrics');
+    playBtn.textContent = audio.paused ? '▶' : '⏸';
+    playBtn.setAttribute('aria-label', audio.paused ? t('play') : t('pause'));
+    playBtn.title = audio.paused ? t('play') : t('pause');
+    lyricsBtn.textContent = '♪';
     lyricsBtn.setAttribute('aria-label', t('lyrics'));
+    lyricsBtn.title = t('lyrics');
+    if (playlistBtn) {
+      playlistBtn.textContent = '≡';
+      playlistBtn.setAttribute('aria-label', t('playlist'));
+      playlistBtn.title = t('playlist');
+      playlistBtn.setAttribute('aria-expanded', playlistEl && !playlistEl.hidden ? 'true' : 'false');
+    }
     updateMode();
     if (lyricPanel) {
       lyricPanel.querySelector('.lyrics-kicker').textContent = t('lyrics');

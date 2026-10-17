@@ -31,6 +31,8 @@ PDF_DIR = os.path.join(RES_DIR, "pdf")  # 复制的 PDF 资料
 AVATAR_NAME = None  # 站点头像文件名（位于 assets 下），main() 中检测
 UPDATES_JSON = "{}"  # 博客更新日期统计，main() 中写入
 MUSIC_JSON = "[]"  # 音乐播放列表，main() 中写入
+QUOTES_JSON = "[]"  # 名言警句，main() 中写入
+QUOTES = []  # 名言列表，main() 中写入
 DOC_TITLE = {}  # 文章标题，渲染时收集
 DOC_TEXT = {}  # 文章纯文本，渲染时收集
 NAV_SECTIONS = []  # 侧栏层级导航数据，main 中构建
@@ -313,6 +315,33 @@ def load_music_playlist():
     except (OSError, ValueError):
         pass
     return "[]"
+
+
+def load_quotes():
+    """从阅读及感悟的《名人名言》里读取句子，每行格式：- 句子｜作者。"""
+    path = os.path.join(POST_DIR, "书籍资料", "名人名言.md")
+    quotes = []
+    try:
+        text = read_text(path)
+    except OSError:
+        return quotes
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line.startswith("- "):
+            continue
+        line = line[2:].strip()
+        if not line:
+            continue
+        sep = "｜" if "｜" in line else ("|" if "|" in line else None)
+        if sep:
+            quote, author = line.rsplit(sep, 1)
+        else:
+            quote, author = line, "佚名"
+        quote = re.sub(r"[*_`]", "", quote).strip()
+        author = re.sub(r"[*_`]", "", author).strip()
+        if quote:
+            quotes.append({"text": quote, "author": author or "佚名"})
+    return quotes
 
 
 def collect_pdfs():
@@ -976,8 +1005,8 @@ JS = """
       'quick-all': '全部板块',
       'quick-cats': '板块',
       'quick-profile': '个人信息 / 日历',
-      'home-motto-label': '座右铭',
-      'home-motto': '有时我想，要是人们把活着的每一天都看作是生命的最后一天该有多好哦！',
+      'quotes-label': '名言警句',
+      'quote-refresh': '换一句',
       'search-title': '搜索文章',
       'search-mode-fuzzy': '模糊匹配',
       'search-mode-exact': '完全匹配',
@@ -999,8 +1028,8 @@ JS = """
       'quick-all': 'All sections',
       'quick-cats': 'Sections',
       'quick-profile': 'Profile & calendar',
-      'home-motto-label': 'Motto',
-      'home-motto': 'Sometimes I think how wonderful it would be if people treated every day as the last day of their lives.',
+      'quotes-label': 'Quotes',
+      'quote-refresh': 'Another',
       'search-title': 'Search articles',
       'search-mode-fuzzy': 'Fuzzy',
       'search-mode-exact': 'Exact',
@@ -1147,6 +1176,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None)
 </main>
 <script>window.BLOG_UPDATES = {UPDATES_JSON};</script>
 <script>window.MUSIC_BASE = "{music_base}"; window.MUSIC_PLAYLIST = {MUSIC_JSON};</script>
+<script>window.BLOG_QUOTES = {QUOTES_JSON};</script>
 <script src="{script_src}"></script>
 </body>
 </html>
@@ -1309,8 +1339,12 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
   </aside>
   <div class="home-content">
     <div class="home-motto-block" id="sections">
-      <div class="home-motto-kicker" data-i18n="home-motto-label">座右铭</div>
-      <h2 class="home-motto-text" data-i18n="home-motto">有时我想，要是人们把活着的每一天都看作是生命的最后一天该有多好哦！</h2>
+      <div class="home-motto-head">
+        <div class="home-motto-kicker" data-i18n="quotes-label">名言警句</div>
+        <button type="button" class="quote-refresh" id="quoteRefresh" aria-label="换一句" data-i18n-aria-label="quote-refresh">↻ <span data-i18n="quote-refresh">换一句</span></button>
+      </div>
+      <h2 class="home-motto-text" id="homeQuote">{esc(QUOTES[0]["text"])}</h2>
+      <div class="quote-author" id="homeQuoteAuthor">—— {esc(QUOTES[0]["author"])}</div>
       <div class="count">{len(sections)} 个板块 · {article_total} 篇文章</div>
     </div>
     <div class="section-grid">{''.join(section_items)}</div>
@@ -1367,23 +1401,25 @@ def music_player_html():
 <div class="music-player" id="musicPlayer">
   <div class="music-head">
     <span class="music-kicker">音乐</span>
-    <span class="music-mode" data-music-mode>顺序</span>
+    <span class="music-mode" data-music-mode title="顺序播放">→</span>
   </div>
   <div class="music-track">
     <div class="music-title" data-music-title>暂无曲目</div>
     <div class="music-artist" data-music-artist>—</div>
   </div>
   <div class="music-progress">
-    <div class="music-bar"><span data-music-progress></span></div>
+    <input class="music-seek" data-music-seek type="range" min="0" max="1000" step="1" value="0" aria-label="播放进度">
     <span class="music-time" data-music-time>0:00</span>
   </div>
   <div class="music-controls">
-    <button type="button" data-music-prev aria-label="上一首">‹</button>
-    <button type="button" data-music-play>播放</button>
-    <button type="button" data-music-next aria-label="下一首">›</button>
-    <button type="button" data-music-mode-btn aria-label="切换播放模式">顺序</button>
-    <button type="button" data-music-lyrics aria-label="歌词">歌词</button>
+    <button type="button" data-music-prev aria-label="上一首" title="上一首">⏮</button>
+    <button type="button" data-music-play aria-label="播放" title="播放">▶</button>
+    <button type="button" data-music-next aria-label="下一首" title="下一首">⏭</button>
+    <button type="button" data-music-mode-btn aria-label="切换播放模式" title="顺序 / 随机 / 单曲循环">→</button>
+    <button type="button" data-music-playlist-btn aria-label="播放歌单" title="播放歌单">≡</button>
+    <button type="button" data-music-lyrics aria-label="歌词" title="歌词">♪</button>
   </div>
+  <div class="music-playlist" data-music-playlist hidden></div>
   <audio id="musicAudio" preload="metadata"></audio>
 </div>
 """
@@ -1553,7 +1589,7 @@ def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=
 # 主流程
 # --------------------------------------------------------------------------- #
 def main():
-    global AVATAR_NAME, UPDATES_JSON, NAV_SECTIONS, MUSIC_JSON
+    global AVATAR_NAME, UPDATES_JSON, NAV_SECTIONS, MUSIC_JSON, QUOTES_JSON, QUOTES
     docs, images, dir_earliest = scan()
     dir_docs, child_dirs = build_tree(docs)
 
@@ -1576,16 +1612,21 @@ def main():
     media_js = read_text(os.path.join(SRC_DIR, "media.js"))
     music_css = read_text(os.path.join(SRC_DIR, "music.css"))
     music_js = read_text(os.path.join(SRC_DIR, "music.js"))
+    quotes_js = read_text(os.path.join(SRC_DIR, "quotes.js"))
     write_text(
         os.path.join(ASSET_DIR, "style.css"),
         CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css,
     )
     write_text(
         os.path.join(ASSET_DIR, "app.js"),
-        JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js,
+        JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js,
     )
     UPDATES_JSON = json.dumps(collect_updates(docs), ensure_ascii=False, sort_keys=True)
     MUSIC_JSON = load_music_playlist()
+    QUOTES = load_quotes()
+    if not QUOTES:
+        QUOTES = [{"text": "生活不是等待暴风雨过去，而是学会在雨中跳舞。", "author": "维维安·格林"}]
+    QUOTES_JSON = json.dumps(QUOTES, ensure_ascii=False, separators=(",", ":"))
     copy_music()
     AVATAR_NAME = copy_avatar()
 

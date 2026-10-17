@@ -16,11 +16,29 @@
 }
 .page-main { min-width: 0; }
 
-/* 首页座右铭 */
+/* 首页名言警句 */
 .home-motto-block {
   margin: 6px 0 24px; padding: 2px 0 0 18px;
   border-left: 3px solid var(--brand);
   animation: card-in .5s .03s var(--ease) backwards;
+}
+.home-motto-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.quote-refresh {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border: 1px solid var(--border); border-radius: 999px;
+  background: var(--card); color: var(--text-soft);
+  font: inherit; font-size: 10px; cursor: pointer;
+  transition: color .18s ease, border-color .18s ease, background .18s ease;
+}
+.quote-refresh:hover { color: var(--brand); border-color: var(--brand); background: var(--brand-soft); }
+.quote-author {
+  margin: 0 0 9px; color: var(--text-soft); font-size: 12px;
+  text-align: right;
+}
+.quote-swap { animation: quote-swap .35s var(--ease); }
+@keyframes quote-swap {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
 }
 .home-motto-kicker {
   font-size: 10px; font-weight: 700; letter-spacing: .16em;
