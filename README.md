@@ -149,7 +149,7 @@ d:\My Personal Blogs\
 
 ## 预览
 
-![首页板块与座右铭](docs/previews/home.png)
+![首页板块与名言警句](docs/previews/home.png)
 
 ![板块页与层级导航](docs/previews/section.png)
 
