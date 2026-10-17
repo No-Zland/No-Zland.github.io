@@ -1,14 +1,20 @@
 [
   {
-    "title": "SoundHelix Demo",
-    "artist": "SoundHelix",
-    "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    "title": "记念",
+    "artist": "奶酪ovo",
+    "src": "jinian.mp3",
     "lyrics": ""
   },
   {
-    "title": "SoundHelix Demo 2",
-    "artist": "SoundHelix",
-    "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+    "title": "为爱追寻",
+    "artist": "朱婧汐Akini Jing",
+    "src": "weiaizhuixun.mp3",
+    "lyrics": ""
+  },
+  {
+    "title": "我不想上学",
+    "artist": "洛天依 / 拙劣骑士",
+    "src": "wobuxiangshangxue.flac",
     "lyrics": ""
   }
 ]

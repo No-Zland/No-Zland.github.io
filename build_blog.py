@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 板块式个人博客静态生成器
-- 首页: 座右铭 + 大板块卡片（竞赛 / 项目 / 科研 / 技能 / 课程 / 阅读 / 个人）
+- 首页: 名言警句 + 大板块卡片（竞赛 / 项目 / 科研 / 技能 / 课程 / 阅读 / 个人）
 - 板块页: 该板块下的分类列表
 - 分类页: 子分类列表，或文章阅读页
-- 阅读页: 多篇文章默认分页阅读，可切换连续阅读；长文按章节分页
+- 阅读页: 一篇文章一页，左侧目录与上一篇/下一篇组件，不再截断文章
 - 左侧抽屉: 对外个人主页（GitHub / 哔哩哔哩 / 邮箱）与更新日历
 - 支持浅色/暗色主题、中英切换（梁双宇 / Shine Leong）
 """
@@ -15,6 +15,7 @@ import json
 import html
 import hashlib
 import shutil
+import stat
 import urllib.parse
 from collections import defaultdict
 from datetime import datetime
@@ -76,8 +77,8 @@ SECTION_SPECS = [
         "cats": ["C语言", "数字电路", "汇编语言与接口技术", "计算机组成原理", "通信协议"],
     },
     {
-        "slug": "阅读及感悟",
-        "title": "阅读及感悟",
+        "slug": "阅读经历",
+        "title": "阅读经历",
         "desc": "书目、阅读计划，以及读书过程中的零散感悟。",
         "color": "#c2410c",
         "cats": ["书籍资料"],
@@ -182,8 +183,21 @@ def read_text(path):
 
 def write_text(path, text):
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write(text)
+
+
+def force_rmtree(path):
+    """Windows 下 read-only 文件会让 rmtree 失败，先去掉只读属性。"""
+    if not os.path.isdir(path):
+        return
+    for dirpath, dirnames, filenames in os.walk(path):
+        for name in filenames:
+            try:
+                os.chmod(os.path.join(dirpath, name), stat.S_IWRITE)
+            except OSError:
+                pass
+    shutil.rmtree(path)
 
 
 def is_image(path):
@@ -281,7 +295,16 @@ def copy_asset(src_abs, out_dir):
     rel = os.path.relpath(src_abs, POST_DIR)
     dest = os.path.join(RES_DIR, rel)
     os.makedirs(os.path.dirname(dest), exist_ok=True)
+    if os.path.exists(dest):
+        try:
+            os.chmod(dest, stat.S_IWRITE)
+        except OSError:
+            pass
     shutil.copy2(src_abs, dest)
+    try:
+        os.chmod(dest, stat.S_IWRITE)
+    except OSError:
+        pass
     return quote_url(rel_from(out_dir, dest))
 
 
@@ -303,7 +326,22 @@ def copy_music():
     if not os.path.isdir(src):
         return
     dest = os.path.join(ASSET_DIR, "music")
-    shutil.copytree(src, dest, dirs_exist_ok=True)
+    for dirpath, dirnames, filenames in os.walk(src):
+        rel = os.path.relpath(dirpath, src)
+        out_dir = dest if rel == "." else os.path.join(dest, rel)
+        os.makedirs(out_dir, exist_ok=True)
+        for name in filenames:
+            target = os.path.join(out_dir, name)
+            if os.path.exists(target):
+                try:
+                    os.chmod(target, stat.S_IWRITE)
+                except OSError:
+                    pass
+            shutil.copy2(os.path.join(dirpath, name), target)
+            try:
+                os.chmod(target, stat.S_IWRITE)
+            except OSError:
+                pass
 
 
 def load_music_playlist():
@@ -377,6 +415,10 @@ def copy_pdf(rel):
     dest = os.path.join(PDF_DIR, digest + ".pdf")
     os.makedirs(PDF_DIR, exist_ok=True)
     shutil.copy2(src, dest)
+    try:
+        os.chmod(dest, stat.S_IWRITE)
+    except OSError:
+        pass
     return "assets/files/pdf/" + digest + ".pdf"
 
 
@@ -1129,7 +1171,7 @@ SEARCH_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 BACK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>'
 
 
-def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None):
+def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None, side_extra=""):
     style_href = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "style.css")))
     script_src = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "app.js")))
     music_base = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "music")))
@@ -1146,7 +1188,8 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None)
     nav_html = "" if is_home else side_nav_for(out_dir)
     if nav_html:
         main_class = "main main-wide"
-        main_inner = f'<div class="page-layout">{nav_html}<div class="page-main">{body}</div></div>'
+        side_html = f'<div class="side-column">{nav_html}{side_extra}{music_player_html()}</div>'
+        main_inner = f'<div class="page-layout">{side_html}<div class="page-main">{body}</div></div>'
     else:
         main_class = "main"
         main_inner = body
@@ -1277,7 +1320,6 @@ def side_nav_for(out_dir):
   <a class="page-nav-home" href="{home_href}">← 全部板块</a>
   <nav class="page-nav-list">{''.join(rows)}</nav>
   <a class="page-nav-home page-nav-library{' is-active' if library_active else ''}" href="{library_href}">PDF / 图片资料</a>
-  {music_player_html()}
 </aside>
 """
 
@@ -1314,6 +1356,7 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
     body = f"""
 <h1 class="sr-only" data-i18n="home-title">梁双宇的个人博客</h1>
 <div class="home-layout">
+  <div class="side-column">
   <aside class="quick-nav" aria-label="导航栏" data-i18n-aria-label="quick-title">
     <div class="quick-head">
       <div class="quick-kicker" data-i18n="quick-title">导航栏</div>
@@ -1335,8 +1378,9 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-4 3.6-6 7-6s6.2 2 7 6"/></svg>
       <span data-i18n="quick-profile">个人信息 / 日历</span>
     </a>
-    {music_player_html()}
   </aside>
+  {music_player_html()}
+  </div>
   <div class="home-content">
     <div class="home-motto-block" id="sections">
       <div class="home-motto-head">
@@ -1540,49 +1584,35 @@ def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=
     if doc_list is None:
         doc_list = docs_under(docs, d)
     articles = []
-    titles = []
     for rel in doc_list:
         r = render_doc(rel, out_dir, images)
-        titles.append(r["title"])
         articles.append(f'<article class="doc" id="{doc_anchor(rel)}" data-title="{esc(r["title"])}"><div class="doc-body">{r["body"]}</div></article>')
 
     content = ''.join(articles) if articles else '<div class="doc"><p>暂无文章</p></div>'
-
-    mode = ""
-    if len(articles) > 1:
-        options = ''.join(
-            f'<option value="{i}">{i + 1}. {esc(title)}</option>'
-            for i, title in enumerate(titles)
-        )
-        mode = f"""
-<div class="reading-mode" data-reading-mode>
-  <div class="reading-mode-bar">
-    <div class="reading-mode-info">
-      <span class="reading-mode-badge">阅读模式</span>
-      <span class="reading-mode-count" data-read-count>第 1 / {len(articles)} 篇</span>
-      <span class="reading-mode-title" data-read-title>{esc(titles[0])}</span>
-    </div>
-    <div class="reading-mode-controls" data-read-controls>
-      <button type="button" class="reading-mode-btn" data-read-prev>上一篇</button>
-      <select data-read-select aria-label="选择文章">{options}</select>
-      <button type="button" class="reading-mode-btn" data-read-next>下一篇</button>
-    </div>
-    <div class="reading-mode-toggle" role="group" aria-label="阅读模式">
-      <button type="button" data-read-mode="paged" aria-pressed="true">分页阅读</button>
-      <button type="button" data-read-mode="continuous" aria-pressed="false">连续阅读</button>
-    </div>
+    side_extra = f"""
+<div class="side-card reading-toc-card" data-reading-toc-card hidden>
+  <div class="side-card-kicker">本篇目录</div>
+  <nav class="reading-toc" data-reading-toc></nav>
+</div>
+<div class="side-card reading-pager-card" data-reading-pager-card hidden>
+  <div class="side-card-kicker">文章</div>
+  <div class="reading-pager-title" data-reading-pager-title></div>
+  <div class="reading-pager-row">
+    <button type="button" class="reading-pager-btn" data-reading-prev aria-label="上一篇">⏮</button>
+    <span class="reading-pager-count" data-reading-count>第 1 / {len(articles)} 篇</span>
+    <button type="button" class="reading-pager-btn" data-reading-next aria-label="下一篇">⏭</button>
   </div>
-  <div class="doc-stack" data-doc-stack>{content}</div>
-</div>"""
-    else:
-        mode = f'<div class="doc-stack" data-doc-stack>{content}</div>'
+</div>
+"""
 
     body = f"""
 {breadcrumb(d, out_dir)}
 <div class="page-head"><h1>{esc(name)}</h1><div class="count">共 {len(doc_list)} 篇文章</div></div>
-{mode}
+<div class="reading-root" data-reading-root>
+  <div class="doc-stack" data-doc-stack>{content}</div>
+</div>
 """
-    return page(out_dir, name, body, with_math=True, parent_href=parent_href_for(d, out_dir))
+    return page(out_dir, name, body, with_math=True, parent_href=parent_href_for(d, out_dir), side_extra=side_extra)
 
 
 # --------------------------------------------------------------------------- #
@@ -1595,7 +1625,7 @@ def main():
 
     # 默认不删除 site 根目录：Hugo server 可能占用文件。需要全量清理时使用 --clean。
     if "--clean" in sys.argv and os.path.exists(SITE_DIR):
-        shutil.rmtree(SITE_DIR)
+        force_rmtree(SITE_DIR)
     os.makedirs(SITE_DIR, exist_ok=True)
     os.makedirs(ASSET_DIR, exist_ok=True)
     os.makedirs(RES_DIR, exist_ok=True)
@@ -1606,7 +1636,6 @@ def main():
     search_css = read_text(os.path.join(SRC_DIR, "search.css"))
     search_js = read_text(os.path.join(SRC_DIR, "search.js"))
     reading_css = read_text(os.path.join(SRC_DIR, "reading.css"))
-    reading_js = read_text(os.path.join(SRC_DIR, "reading.js"))
     reading_mode_js = read_text(os.path.join(SRC_DIR, "reading-mode.js"))
     media_css = read_text(os.path.join(SRC_DIR, "media.css"))
     media_js = read_text(os.path.join(SRC_DIR, "media.js"))
@@ -1619,7 +1648,7 @@ def main():
     )
     write_text(
         os.path.join(ASSET_DIR, "app.js"),
-        JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js,
+        JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js,
     )
     UPDATES_JSON = json.dumps(collect_updates(docs), ensure_ascii=False, sort_keys=True)
     MUSIC_JSON = load_music_playlist()
@@ -1646,7 +1675,7 @@ def main():
 
     pdfs = collect_pdfs()
     if os.path.isdir(PDF_DIR):
-        shutil.rmtree(PDF_DIR, ignore_errors=True)
+        force_rmtree(PDF_DIR)
     for pdf in pdfs:
         if pdf.get("available", True):
             pdf["path"] = copy_pdf(pdf["rel"])

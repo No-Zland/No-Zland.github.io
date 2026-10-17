@@ -7,6 +7,14 @@
   align-items: start;
 }
 .home-content { min-width: 0; }
+.side-column {
+  display: flex; flex-direction: column; gap: 14px;
+  position: sticky; top: 80px; align-self: start;
+  max-height: calc(100vh - 96px); overflow-y: auto;
+  scrollbar-width: thin;
+}
+.side-column > .quick-nav { position: static; top: auto; max-height: none; overflow: visible; }
+.side-column > .music-player { margin-top: 0; }
 
 /* 递进页面：左侧层级导航 */
 .main-wide { max-width: 1140px; }
@@ -75,7 +83,7 @@
 .page-nav-cat, .page-nav-subcat {
   display: flex; align-items: center; gap: 7px;
   padding: 5px 7px; border-radius: 7px;
-  color: var(--text-soft); font-size: 11.5px;
+  color: var(--text-soft); font-size: 13px;
   transition: color .18s ease, background .18s ease, transform .18s var(--ease);
 }
 .page-nav-cat:hover, .page-nav-subcat:hover {
@@ -89,7 +97,7 @@
   margin: 1px 0 4px 8px; padding-left: 8px;
   border-left: 1px solid var(--border);
 }
-.page-nav-subcat { font-size: 10.5px; padding: 4px 6px; }
+.page-nav-subcat { font-size: 11.5px; padding: 4px 6px; }
 .page-nav-subcat.is-active { color: var(--brand); background: var(--brand-soft); font-weight: 600; }
 .page-nav-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .page-nav-count {
@@ -101,6 +109,7 @@
 @media (max-width: 860px) {
   .page-layout { grid-template-columns: 1fr; }
   .page-nav { position: static; max-height: none; }
+  .side-column { position: static; max-height: none; overflow: visible; }
 }
 
 .quick-nav {
@@ -148,8 +157,8 @@
 .quick-list { display: flex; flex-direction: column; gap: 2px; }
 .quick-cat {
   display: flex; align-items: center; gap: 8px;
-  padding: 6px 9px; border-radius: 8px;
-  color: var(--text); font-size: 12px;
+  padding: 7px 9px; border-radius: 8px;
+  color: var(--text); font-size: 13.5px;
   transition: background .18s ease, color .18s ease, transform .18s var(--ease);
 }
 .quick-cat:hover { background: var(--bg-soft); color: var(--brand); transform: translateX(2px); }

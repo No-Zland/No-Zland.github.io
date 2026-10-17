@@ -1,72 +1,75 @@
 (function () {
-  var roots = document.querySelectorAll('[data-reading-mode]');
+  var roots = document.querySelectorAll('[data-reading-root]');
   if (!roots.length) return;
-
   roots.forEach(init);
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
 
   function init(root) {
     var stack = root.querySelector('[data-doc-stack]');
     if (!stack) return;
-
     var articles = Array.prototype.slice.call(stack.querySelectorAll(':scope > .doc'));
-    if (articles.length < 2) return;
+    if (!articles.length) return;
 
-    var count = root.querySelector('[data-read-count]');
-    var title = root.querySelector('[data-read-title]');
-    var prev = root.querySelector('[data-read-prev]');
-    var next = root.querySelector('[data-read-next]');
-    var select = root.querySelector('[data-read-select]');
-    var modeButtons = root.querySelectorAll('[data-read-mode]');
+    var tocCard = document.querySelector('[data-reading-toc-card]');
+    var tocEl = document.querySelector('[data-reading-toc]');
+    var pagerCard = document.querySelector('[data-reading-pager-card]');
+    var pagerTitle = document.querySelector('[data-reading-pager-title]');
+    var pagerCount = document.querySelector('[data-reading-count]');
+    var prevBtn = document.querySelector('[data-reading-prev]');
+    var nextBtn = document.querySelector('[data-reading-next]');
     var current = 0;
-    var mode = 'paged';
 
     function articleTitle(index) {
       return articles[index].getAttribute('data-title') || ('文章 ' + (index + 1));
     }
 
-    function updateControls() {
-      if (prev) prev.disabled = current === 0;
-      if (next) next.disabled = current === articles.length - 1;
-      if (select) select.value = String(current);
-    }
-
     function scrollToArticle() {
-      var target = articles[current];
-      if (!target) return;
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var top = target.getBoundingClientRect().top + window.scrollY - 90;
+      var top = articles[current].getBoundingClientRect().top + window.scrollY - 90;
       window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
     }
 
-    function setMode(value, scroll) {
-      mode = value === 'continuous' ? 'continuous' : 'paged';
-      root.setAttribute('data-mode', mode);
-      stack.setAttribute('data-mode', mode);
-      modeButtons.forEach(function (btn) {
-        btn.setAttribute('aria-pressed', btn.getAttribute('data-read-mode') === mode ? 'true' : 'false');
-      });
-
-      if (mode === 'paged') {
-        articles.forEach(function (article, index) { article.hidden = index !== current; });
-        if (count) count.textContent = '第 ' + (current + 1) + ' / ' + articles.length + ' 篇';
-        if (title) title.textContent = articleTitle(current);
-        updateControls();
-      } else {
-        articles.forEach(function (article) { article.hidden = false; });
-        if (count) count.textContent = '共 ' + articles.length + ' 篇';
-        if (title) title.textContent = '连续阅读';
+    function renderPager() {
+      if (!pagerCard) return;
+      if (articles.length < 2) {
+        pagerCard.hidden = true;
+        return;
       }
-      if (scroll) scrollToArticle();
+      pagerCard.hidden = false;
+      if (pagerTitle) pagerTitle.textContent = articleTitle(current);
+      if (pagerCount) pagerCount.textContent = '第 ' + (current + 1) + ' / ' + articles.length + ' 篇';
+      if (prevBtn) prevBtn.disabled = current === 0;
+      if (nextBtn) nextBtn.disabled = current === articles.length - 1;
+    }
+
+    function renderToc() {
+      if (!tocCard || !tocEl) return;
+      var body = articles[current].querySelector('.doc-body');
+      var headings = body ? Array.prototype.slice.call(body.querySelectorAll('h2, h3')) : [];
+      if (!headings.length) {
+        tocCard.hidden = true;
+        tocEl.innerHTML = '';
+        return;
+      }
+      tocCard.hidden = false;
+      tocEl.innerHTML = headings.map(function (heading, index) {
+        var id = heading.id || ('toc-' + articles[current].id + '-' + index);
+        heading.id = id;
+        return '<a class="reading-toc-link" href="#' + escapeHtml(id) + '">' +
+          escapeHtml(heading.textContent.trim()) + '</a>';
+      }).join('');
     }
 
     function show(index, options) {
       current = Math.max(0, Math.min(articles.length - 1, index));
-      if (mode === 'paged') {
-        articles.forEach(function (article, i) { article.hidden = i !== current; });
-        if (count) count.textContent = '第 ' + (current + 1) + ' / ' + articles.length + ' 篇';
-        if (title) title.textContent = articleTitle(current);
-      }
-      updateControls();
+      articles.forEach(function (article, i) { article.hidden = i !== current; });
+      renderPager();
+      renderToc();
       if (options && options.hash) {
         try {
           history.replaceState(null, '', '#' + articles[current].id);
@@ -77,26 +80,35 @@
       if (options && options.scroll) scrollToArticle();
     }
 
-    modeButtons.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        setMode(btn.getAttribute('data-read-mode'), true);
+    if (tocEl) {
+      tocEl.addEventListener('click', function (event) {
+        var link = event.target.closest('a[href^="#"]');
+        if (!link) return;
+        var target = document.getElementById(link.getAttribute('href').slice(1));
+        if (!target) return;
+        event.preventDefault();
+        var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
       });
-    });
-
-    if (prev) prev.addEventListener('click', function () { show(current - 1, { hash: true, scroll: true }); });
-    if (next) next.addEventListener('click', function () { show(current + 1, { hash: true, scroll: true }); });
-    if (select) select.addEventListener('change', function (event) {
-      show(parseInt(event.target.value, 10) || 0, { hash: true, scroll: true });
-    });
+    }
+    if (prevBtn) prevBtn.addEventListener('click', function () { show(current - 1, { hash: true, scroll: true }); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { show(current + 1, { hash: true, scroll: true }); });
 
     var hash = location.hash ? location.hash.slice(1) : '';
     var initial = -1;
-    for (var i = 0; i < articles.length; i += 1) {
-      if (articles[i].id === hash) { initial = i; break; }
+    if (hash) {
+      var hashEl = document.getElementById(hash);
+      if (hashEl) {
+        var hashArticle = hashEl.closest('.doc');
+        if (hashArticle) initial = articles.indexOf(hashArticle);
+      }
     }
-    if (initial >= 0) current = initial;
-
-    setMode('paged', false);
-    if (initial >= 0) show(initial, { hash: false, scroll: true });
+    if (initial < 0) {
+      for (var i = 0; i < articles.length; i += 1) {
+        if (articles[i].id === hash) { initial = i; break; }
+      }
+    }
+    if (initial >= 0) show(initial, { scroll: true });
+    else show(0, {});
   }
 })();
