@@ -19,6 +19,7 @@ _*.py
 .DS_Store
 Thumbs.db
 .obsidian/workspace*.json
+**/.obsidian/workspace*.json
 
 # 大体积教材 PDF：超过 GitHub 单文件/仓库限制，仅在本地保留
 content/post/书籍资料/*.pdf
