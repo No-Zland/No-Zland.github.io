@@ -1188,7 +1188,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
     nav_html = "" if is_home else side_nav_for(out_dir)
     if nav_html:
         main_class = "main main-wide"
-        side_html = f'<div class="side-column">{nav_html}{side_extra}{music_player_html()}</div>'
+        side_html = f'<div class="side-column">{nav_html}{music_player_html()}{side_extra}</div>'
         main_inner = f'<div class="page-layout">{side_html}<div class="page-main">{body}</div></div>'
     else:
         main_class = "main"
