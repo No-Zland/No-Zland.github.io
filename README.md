@@ -193,6 +193,8 @@ d:\My Personal Blogs\
 
 ![在线写笔记](docs/previews/note.png)
 
+![服务器发布模式](docs/previews/note-server.png)
+
 ![阅读页目录与上下篇](docs/previews/reading-mode.png)
 
 ![PDF 资料库](docs/previews/library.png)

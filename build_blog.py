@@ -256,7 +256,7 @@ def force_rmtree(path):
     for dirpath, dirnames, filenames in os.walk(path):
         for name in filenames:
             try:
-                os.chmod(os.path.join(dirpath, name), stat.S_IREAD | stat.S_IWRITE)
+                os.chmod(os.path.join(dirpath, name), 0o644)
             except OSError:
                 pass
     shutil.rmtree(path)
@@ -359,12 +359,12 @@ def copy_asset(src_abs, out_dir):
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     if os.path.exists(dest):
         try:
-            os.chmod(dest, stat.S_IREAD | stat.S_IWRITE)
+            os.chmod(dest, 0o644)
         except OSError:
             pass
     shutil.copy2(src_abs, dest)
     try:
-        os.chmod(dest, stat.S_IREAD | stat.S_IWRITE)
+        os.chmod(dest, 0o644)
     except OSError:
         pass
     return quote_url(rel_from(out_dir, dest))
@@ -396,12 +396,12 @@ def copy_music():
             target = os.path.join(out_dir, name)
             if os.path.exists(target):
                 try:
-                    os.chmod(target, stat.S_IREAD | stat.S_IWRITE)
+                    os.chmod(target, 0o644)
                 except OSError:
                     pass
             shutil.copy2(os.path.join(dirpath, name), target)
             try:
-                os.chmod(target, stat.S_IREAD | stat.S_IWRITE)
+                os.chmod(target, 0o644)
             except OSError:
                 pass
 
@@ -478,7 +478,7 @@ def copy_pdf(rel):
     os.makedirs(PDF_DIR, exist_ok=True)
     shutil.copy2(src, dest)
     try:
-        os.chmod(dest, stat.S_IREAD | stat.S_IWRITE)
+        os.chmod(dest, 0o644)
     except OSError:
         pass
     return "assets/files/pdf/" + digest + ".pdf"
