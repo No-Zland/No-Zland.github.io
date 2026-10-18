@@ -84,6 +84,11 @@
 .note-draft-meta { font-size: 9px; color: var(--text-soft); }
 .note-draft-empty { color: var(--text-soft); font-size: 10.5px; padding: 4px; }
 .note-token-box { padding-top: 10px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; }
+.note-server-state { color: var(--text-soft); font-size: 10px; line-height: 1.6; }
+.note-server-state.is-ok { color: var(--brand); }
+.note-server-state.is-error { color: #dc2626; }
+.note-server-login { display: flex; flex-direction: column; gap: 5px; }
+.note-server-login[hidden], .note-server-publish[hidden] { display: none; }
 .note-token-box input[type=password] { width: 100%; box-sizing: border-box; }
 .note-token-hint { color: var(--text-soft); font-size: 9.5px; line-height: 1.6; }
 .note-token-hint a { color: var(--brand); }

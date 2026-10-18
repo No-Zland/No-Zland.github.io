@@ -350,6 +350,8 @@
             '<button type="button" class="task-mode-btn" id="taskAuthBtn"></button>' +
             '<button type="button" class="task-mode-btn" id="taskLogoutBtn" hidden></button>' +
             '<button type="button" class="task-mode-btn" id="taskExportBtn" hidden></button>' +
+            '<button type="button" class="task-mode-btn" id="taskServerSave" hidden>同步到服务器</button>' +
+            '<button type="button" class="task-mode-btn" id="taskServerLoad" hidden>从服务器恢复</button>' +
             '<label class="task-mode-btn" id="taskImportLabel" hidden><span id="taskImportText"></span>' +
               '<input type="file" id="taskImport" accept=".json,application/json" hidden>' +
             '</label>' +
@@ -390,6 +392,8 @@
     document.getElementById('taskAuthBtn').addEventListener('click', openAuthDialog);
     document.getElementById('taskLogoutBtn').addEventListener('click', logoutMaster);
     document.getElementById('taskExportBtn').addEventListener('click', exportTasks);
+    document.getElementById('taskServerSave').addEventListener('click', function () { syncTasks('save'); });
+    document.getElementById('taskServerLoad').addEventListener('click', function () { syncTasks('load'); });
     document.getElementById('taskImport').addEventListener('change', function (event) {
       var file = event.target.files && event.target.files[0];
       if (file) importTasks(file);
@@ -421,6 +425,8 @@
     var authBtn = document.getElementById('taskAuthBtn');
     var logoutBtn = document.getElementById('taskLogoutBtn');
     var exportBtn = document.getElementById('taskExportBtn');
+    var serverSaveBtn = document.getElementById('taskServerSave');
+    var serverLoadBtn = document.getElementById('taskServerLoad');
     var importLabel = document.getElementById('taskImportLabel');
     var form = document.getElementById('taskForm');
     var list = document.getElementById('taskList');
@@ -436,6 +442,8 @@
     logoutBtn.hidden = !master;
     exportBtn.textContent = t('mode-export');
     exportBtn.hidden = !master;
+    if (serverSaveBtn) serverSaveBtn.hidden = !master;
+    if (serverLoadBtn) serverLoadBtn.hidden = !master;
     document.getElementById('taskImportText').textContent = t('mode-import');
     importLabel.hidden = !master;
     form.hidden = !master;
@@ -549,6 +557,41 @@
     renderTasks();
     hideToast();
     showToast(t('mode-visitor'), t('auth-logout'));
+  }
+
+  function syncTasks(action) {
+    if (!state.master) return;
+    var url = '/api/tasks';
+    var options = { credentials: 'same-origin', headers: { 'Content-Type': 'application/json' } };
+    if (action === 'save') {
+      options.method = 'PUT';
+      options.body = JSON.stringify({ tasks: state.tasks });
+    } else {
+      options.method = 'GET';
+    }
+    fetch(url, options)
+      .then(function (response) {
+        return response.json().catch(function () { return {}; }).then(function (data) {
+          if (!response.ok) throw new Error(data.detail || ('服务器返回 ' + response.status));
+          return data;
+        });
+      })
+      .then(function (data) {
+        if (action === 'load') {
+          state.tasks = normalizeTasks(Array.isArray(data.tasks) ? data.tasks : []);
+          saveTasks();
+          renderCalendar();
+          renderTasks();
+          showToast(t('mode-master'), '已从服务器恢复 ' + state.tasks.length + ' 个任务');
+        } else {
+          showToast(t('mode-master'), '已同步 ' + state.tasks.length + ' 个任务到服务器');
+        }
+      })
+      .catch(function (error) {
+        var message = error && error.message ? error.message : '同步失败';
+        if (/401|登录/.test(message)) message = '请先到 /写笔记/ 登录博客服务器';
+        showToast(t('mode-master'), message);
+      });
   }
 
   function exportTasks() {

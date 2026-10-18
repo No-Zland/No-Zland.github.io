@@ -135,6 +135,12 @@
     var tokenEl = root.querySelector('[data-note-token]');
     var rememberEl = root.querySelector('[data-note-remember]');
     var statusEl = root.querySelector('[data-note-status]');
+    var serverState = root.querySelector('[data-note-server-state]');
+    var serverLogin = root.querySelector('[data-note-server-login]');
+    var serverPassword = root.querySelector('[data-note-server-password]');
+    var serverLoginBtn = root.querySelector('[data-note-server-login-btn]');
+    var serverPublishBtn = root.querySelector('[data-note-server-publish]');
+    var serverStatus = root.querySelector('[data-note-server-status]');
     var publishBtn = root.querySelector('[data-note-publish]');
     var drafts = loadDrafts();
     var currentId = null;
@@ -153,6 +159,121 @@
       } else {
         statusEl.textContent = message;
       }
+    }
+
+    function setServerStatus(message, kind, link) {
+      if (!serverStatus) return;
+      serverStatus.className = 'note-status' + (kind ? ' is-' + kind : '');
+      serverStatus.textContent = '';
+      if (link) {
+        var a = document.createElement('a');
+        a.href = link;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = message;
+        serverStatus.appendChild(a);
+      } else {
+        serverStatus.textContent = message;
+      }
+    }
+
+    function showServer(auth) {
+      if (!serverState) return;
+      if (auth) {
+        serverState.textContent = '已登录服务器，可直接发布。';
+        serverState.className = 'note-server-state is-ok';
+        if (serverLogin) serverLogin.hidden = true;
+        if (serverPublishBtn) serverPublishBtn.hidden = false;
+      } else {
+        serverState.textContent = '登录后可直接写入服务器，不需要 GitHub Token。';
+        serverState.className = 'note-server-state';
+        if (serverLogin) serverLogin.hidden = false;
+        if (serverPublishBtn) serverPublishBtn.hidden = true;
+      }
+    }
+
+    function checkServer() {
+      if (!serverState) return;
+      fetch('/api/me', { credentials: 'same-origin', cache: 'no-store' })
+        .then(function (response) {
+          if (!response.ok) throw new Error('no api');
+          return response.json();
+        })
+        .then(function (data) {
+          showServer(!!(data && data.authenticated));
+        })
+        .catch(function () {
+          serverState.textContent = '当前未连接服务器 API（GitHub Pages 模式可继续用下方 Token 发布）。';
+          serverState.className = 'note-server-state is-error';
+          if (serverLogin) serverLogin.hidden = true;
+          if (serverPublishBtn) serverPublishBtn.hidden = true;
+        });
+    }
+
+    function loginServer() {
+      var password = (serverPassword && serverPassword.value || '').trim();
+      if (!password) { setServerStatus('请输入博客后台密码。', 'error'); return; }
+      if (serverLoginBtn) serverLoginBtn.disabled = true;
+      setServerStatus('正在登录…');
+      fetch('/api/login', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: password })
+      })
+        .then(function (response) {
+          return response.json().catch(function () { return {}; }).then(function (data) {
+            if (!response.ok) throw new Error(data.detail || ('登录失败（' + response.status + '）'));
+            return data;
+          });
+        })
+        .then(function () {
+          if (serverPassword) serverPassword.value = '';
+          setServerStatus('登录成功。', 'ok');
+          showServer(true);
+        })
+        .catch(function (error) {
+          setServerStatus(error.message || '登录失败。', 'error');
+        })
+        .finally(function () {
+          if (serverLoginBtn) serverLoginBtn.disabled = false;
+        });
+    }
+
+    function publishServer() {
+      var state = currentState();
+      if (!state.title) { setServerStatus('请先填写标题。', 'error'); titleEl.focus(); return; }
+      if (!state.body.trim()) { setServerStatus('正文不能为空。', 'error'); bodyEl.focus(); return; }
+      if (!serverPublishBtn) return;
+      serverPublishBtn.disabled = true;
+      setServerStatus('正在写入服务器并构建…');
+      saveDraft();
+      fetch('/api/notes', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: state.title,
+          section: state.section,
+          category: state.category,
+          body: state.body
+        })
+      })
+        .then(function (response) {
+          return response.json().catch(function () { return {}; }).then(function (data) {
+            if (!response.ok) throw new Error(data.detail || ('发布失败（' + response.status + '）'));
+            return data;
+          });
+        })
+        .then(function (data) {
+          setServerStatus('已发布并完成构建。', 'ok', data.url || null);
+        })
+        .catch(function (error) {
+          setServerStatus(error.message || '发布失败。', 'error');
+        })
+        .finally(function () {
+          serverPublishBtn.disabled = false;
+        });
     }
 
     function loadDrafts() {
@@ -391,6 +512,9 @@
     root.querySelector('[data-note-export]').addEventListener('click', download);
     root.querySelector('[data-note-copy]').addEventListener('click', copyBody);
     publishBtn.addEventListener('click', publish);
+    if (serverLoginBtn) serverLoginBtn.addEventListener('click', loginServer);
+    if (serverPublishBtn) serverPublishBtn.addEventListener('click', publishServer);
+    checkServer();
   }
 
   window.BlogNoteEditor = { init: init };

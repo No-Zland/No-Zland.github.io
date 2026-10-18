@@ -1615,10 +1615,20 @@ def build_note_page(out_dir):
     <div class="note-side-kicker">本地草稿</div>
     <div class="note-drafts" data-note-drafts></div>
     <div class="note-token-box">
-      <div class="note-side-kicker">发布到 GitHub</div>
+      <div class="note-side-kicker">服务器发布</div>
+      <div class="note-server-state" data-note-server-state>正在检测服务器…</div>
+      <div class="note-server-login" data-note-server-login hidden>
+        <input class="note-input" type="password" data-note-server-password placeholder="博客后台密码" autocomplete="off">
+        <button type="button" class="note-publish" data-note-server-login-btn>登录服务器</button>
+      </div>
+      <button type="button" class="note-publish" data-note-server-publish hidden>发布到服务器</button>
+      <div class="note-status" data-note-server-status></div>
+    </div>
+    <div class="note-token-box">
+      <div class="note-side-kicker">GitHub 备用发布</div>
       <input class="note-input" type="password" data-note-token placeholder="Fine-grained GitHub Token" autocomplete="off">
       <label class="note-check"><input type="checkbox" data-note-remember>记住本次会话</label>
-      <button type="button" class="note-publish" data-note-publish>发布到博客</button>
+      <button type="button" class="note-publish" data-note-publish>发布到 GitHub</button>
       <div class="note-token-hint">
         需要只授权本仓库 <strong>Contents: Read and write</strong> 的 fine-grained token；令牌默认只放在当前标签页的 sessionStorage，不写入 localStorage。
         <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">创建 Token</a>

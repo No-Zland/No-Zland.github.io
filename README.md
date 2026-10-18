@@ -84,6 +84,11 @@ d:\My Personal Blogs\
 ├── music/                 # 播放列表、音频与 LRC 歌词
 │   ├── playlist.json
 │   └── README.md
+├── server/                # 阿里云 FastAPI + SQLite 后端
+│   ├── app/main.py
+│   ├── requirements.txt
+│   ├── blog-api.service
+│   └── nginx-blog.conf
 ├── docs/
 │   ├── ARCHITECTURE.md    # 架构、生成流程与维护约定
 │   └── previews/          # 界面预览图
@@ -128,16 +133,17 @@ d:\My Personal Blogs\
 - 主人模式：首次点击“设置主人密码”，之后用密码登录；密码用 PBKDF2-SHA256 加盐哈希保存，只存在本机。
 - 这是**界面保护**，不是数据加密：能打开浏览器开发者工具的人仍可读取 localStorage。请把它当作“防误看/防误改”，不要把高度敏感信息放进去。
 - 主人模式提供“导出备份 / 导入备份”，建议定期导出 JSON；忘记密码只能清站点数据或导入备份。
-- 需要跨设备同步时，才需要服务器、数据库或云同步服务。
+- 需要跨设备同步时，可在主人模式里使用“同步到服务器 / 从服务器恢复”；服务器登录入口在 `/写笔记/`。
 
 ## 在线写笔记
 
 - 入口：左侧导航「在线写笔记」，或直接访问 `/写笔记/`。
 - 草稿默认自动保存在当前浏览器的 `localStorage`，支持多份草稿、标题/板块/分类、Markdown 实时预览、导出 `.md` 和复制。
-- 发布到博客需要填入 GitHub **fine-grained token**（仅授权本仓库 `Contents: Read and write`），通过 GitHub Contents API 写入 `content/post/<板块>/<分类>/<标题>.md`。
-- Token 默认只放在当前标签页的 `sessionStorage`；勾选“记住本次会话”才会保留到该标签页关闭。页面源码不包含 token。
-- 发布后 GitHub Actions 会重新构建；构建完成后文章才会出现在站点上。
-- 没有服务器就无法做到真正的账号登录/权限校验；不要把高权限 token 交给不可信设备。
+- **服务器发布（推荐）**：登录博客后台后，直接调用 `/api/notes` 写入容器内 `content/post`，并自动重新构建站点。
+- **GitHub 备用发布**：填入 GitHub fine-grained token（仅授权本仓库 `Contents: Read and write`），通过 Contents API 写入。
+- GitHub Token 默认只放在当前标签页的 `sessionStorage`；勾选“记住本次会话”才会保留到该标签页关闭。
+- 发布后 GitHub Actions 或服务器构建完成后，文章才会出现在站点上。
+- 没有 HTTPS 时不要在公共网络输入后台密码或高权限 token。
 
 ## 名言警句
 
@@ -154,6 +160,19 @@ d:\My Personal Blogs\
 - 音乐播放列表在 `music/playlist.json`，音频和 `.lrc` 放 `music/`；支持顺序、随机、单曲循环。
 - 播放器按钮全部使用符号；进度条可拖动；`≡` 打开播放歌单，`♪` 打开可拖动的悬浮歌词。
 - 默认播放 `music/playlist.json` 中的本地歌曲，没有歌词文件；要显示歌词，放同名 `.lrc` 并填写 `lyrics`。
+
+## 阿里云后端
+
+- 服务器：`root@47.93.173.214`（Ubuntu 22.04，Nginx 80）
+- 静态站点：`/opt/blog/src/site`
+- API：FastAPI + SQLite，`127.0.0.1:8001`，由 Nginx `/api/` 反向代理
+- systemd：`blog-api.service`
+- 后台密码和会话密钥在 `/opt/blog/.env`（root:blog 640），不提交仓库
+- 登录入口：服务器上的 `/写笔记/` → “服务器发布”
+- 任务同步：主人模式 → “同步到服务器 / 从服务器恢复”
+- 当前只有 IP，没有 HTTPS；后台密码和笔记会明文经过公网，建议尽快加备案域名与证书
+
+详细部署步骤见 [server/README.md](server/README.md)。
 
 ## GitHub Pages
 
