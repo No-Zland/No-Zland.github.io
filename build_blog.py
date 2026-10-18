@@ -1582,7 +1582,7 @@ def build_note_page(out_dir):
 <div class="crumb"><a href="{home_href}">首页</a> / 在线写笔记</div>
 <div class="note-page-head">
   <h1>在线写笔记</h1>
-  <div class="count">本地自动保存 · 可导出 Markdown · 可选发布到 GitHub</div>
+  <div class="count">本地自动保存 · 可导出 Markdown · 发布到服务器或 GitHub</div>
 </div>
 <div class="note-grid" data-note-editor>
   <section class="note-card note-main">
