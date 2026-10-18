@@ -67,6 +67,14 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
 - 搜索索引使用根路径 `/assets/search-index.json`，搜索浮层在所有页面通用。
 - 整页刷新或直接从外部进入时，`sessionStorage` 仍会恢复曲目、进度、模式和播放状态作为兜底。
 
+## 在线写笔记
+
+- `build_note_page()` 生成 `/写笔记/index.html`；`NOTE_SECTIONS` 在页面脚本中注入板块/分类选项。
+- `src/note-editor.js` 负责本地草稿（`localStorage`）、Markdown 预览、导出/复制和 GitHub 发布。
+- 发布使用 GitHub Contents API：先 GET 检查文件是否存在，再 PUT 创建/更新到 `content/post/<板块>/<分类>/<标题>.md`。
+- Token 只放 `sessionStorage`，可选“记住本次会话”，不写入 `localStorage` 或仓库；提交后由 GitHub Actions 重建。
+- 这是纯前端功能，没有服务端鉴权；token 权限应限制到单一仓库的 Contents。
+
 ## 版权与防爬
 
 - 每篇文章由 `doc_copyright()` 生成底部版权块，包含作者、CC BY-NC-SA 4.0 许可、原文 URL 和更新时间。

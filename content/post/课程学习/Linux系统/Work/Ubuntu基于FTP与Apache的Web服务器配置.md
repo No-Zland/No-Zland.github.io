@@ -32,7 +32,7 @@
 
 - vsftpd 3.0.5 为 Ubuntu 20.04 LTS 默认稳定版本，Apache2 2.4.52 为对应系统适配版本，无需手动升级，避免兼容性问题。
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image000.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image000.png)
 
 # 实验步骤
 
@@ -76,7 +76,7 @@
 
 - 私有目录/home/ftpuser/private后续将与 Apache 私有站点目录关联，提前创建并绑定用户组，为后续权限联动铺垫。
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image001.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image001.png)
 
 ## vsftpd 精细化安装与配置
 
@@ -86,7 +86,7 @@
 
 |---|
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image002.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image002.png)
 
 ### 配置文件分层优化
 
@@ -96,7 +96,7 @@
 
 |---|
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image003.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image003.png)
 
 核心配置（新增安全与功能项）：
 
@@ -152,7 +152,7 @@
 
 | sudo nano /etc/vsftpd/user_conf/ftpuser  # 为ftpuser创建专属配置 |
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image004.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image004.png)
 
 内容：
 
@@ -162,7 +162,7 @@
 
 | write_enable=YES |
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image005.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image005.png)
 
 ### 用户创建与权限绑定
 
@@ -182,7 +182,7 @@
 
 - 私有目录/home/ftpuser/private权限设为 750（用户读 / 写 / 执行，组读 / 执行，其他无权限），仅允许 ftpuser 本人和 ftpgroup 组内用户访问，增强数据安全性。
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image006.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image006.png)
 
 ### 防火墙与服务启动
 
@@ -210,9 +210,9 @@
 
 - 执行ufw status后需确认所有端口状态为 “ALLOW”，且防火墙状态为 “active”，否则客户端无法连接。
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image007.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image007.png)
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image008.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image008.png)
 
 ## Apache2 深度配置与联动
 
@@ -228,7 +228,7 @@
 
 - 私有站点/var/www/private所有者设为 ftpuser:ftpgroup，且权限为 775（组可写），允许 FTP 用户（ftpuser）上传文件到该目录，同时 Apache 服务（www-data 属于 www-data 组，需确保 www-data 组有读权限）能读取文件并提供 Web 访问。
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image009.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image009.png)
 
 ### Apache 多站点与权限配置
 
@@ -244,7 +244,7 @@
 
 | sudo chmod 775 /var/www/private  # 组可写（便于FTP用户上传） |
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image010.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image010.png)
 
 #### 配置公共站点（001-public.conf）：
 
@@ -252,7 +252,7 @@
 
 |---|
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image011.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image011.png)
 
 内容：
 
@@ -276,7 +276,7 @@
 
 | </VirtualHost> |
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image012.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image012.png)
 
 #### 配置私有站点（002-private.conf）：
 
@@ -284,7 +284,7 @@
 
 |---|
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image013.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image013.png)
 
 内容：
 
@@ -322,7 +322,7 @@
 
 - AuthUserFile /etc/apache2/.htpasswd：指定认证密码文件路径，后续通过htpasswd命令创建该文件并设置密码。
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image014.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image014.png)
 
 #### 创建 Apache 认证文件：
 
@@ -330,7 +330,7 @@
 
 |---|
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image015.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image015.png)
 
 ### 联动 FTP 与 Apache 目录
 
@@ -352,7 +352,7 @@
 
 注意：修改配置后必须重启 vsftpd 服务（sudo systemctl restart vsftpd），否则配置不生效，可通过sudo systemctl status vsftpd确认服务状态为 “active (running)”。
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image016.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image016.png)
 
 #### 重启 vsftpd 使配置生效：
 
@@ -362,7 +362,7 @@
 
 | sudo systemctl status vsftpd |
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image017.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image017.png)
 
 ### Apache 服务启动与模块启用
 
@@ -386,7 +386,7 @@
 
 - 重启 Apache 服务后，需通过sudo systemctl status apache2确认服务正常运行，否则需检查站点配置文件语法（可通过sudo apache2ctl configtest排查语法错误）。
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image018.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image018.png)
 
 ## 多场景验证
 
@@ -424,17 +424,17 @@
 
 若执行命令时出现 “Permission denied”，需检查目录权限（如/var/www/private是否为 ftpuser:ftpgroup 所有，且权限为 775）；若出现 “Connection refused”，需检查 vsftpd 服务是否启动、防火墙端口是否开放。
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image019.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image019.png)
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image020.png)
+![](课程学习/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image020.png)
 
 #### FileZilla 图形化连接测试：
 
 配置主机为192.168.77.128，用户名ftpuser，密码为设置值，测试目录切换、文件上传下载。
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image021.png)
+![](image021.png)
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image022.png)
+![](image022.png)
 
 ### Apache 联动验证
 
@@ -468,9 +468,9 @@
 
 - 浏览器会弹出认证窗口，输入 ftpuser 的 Web 密码（通过htpasswd命令设置的密码）后，可看到 “Private Site” 页面，未输入密码或密码错误则无法访问。
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image023.png)
+![](image023.png)
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image024.png)
+![](image024.png)
 
 私有站点访问：（需要共享文件夹，先到这吧）在 FTP 私有目录上传private.html（内容<h1>Private Site</h1>），浏览器访问http://192.168.227.128（或private.example.com），验证需输入ftpuser的 Web 密码，且页面正常显示。
 
@@ -480,7 +480,7 @@
 
 ## Q1:虚拟机始终无法连上主机的虚拟网关
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image025.png)
+![](image025.png)
 
 ### 问题分析：
 
@@ -500,27 +500,27 @@
 
 #### 重装虚拟机；
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image026.png)
+![](image026.png)
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image027.png)
+![](image027.png)
 
 ##### 结果：失败，甚至导致产生接下来的一堆问题
 
 #### 重启主机系统；重新配置Ubuntu环境；
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image028.png)
+![](image028.png)
 
 ##### 结果：失败
 
 #### 重启本地服务；
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image029.png)
+![](image029.png)
 
 ##### 结果：失败
 
 ## Q2 sudo: vim: command not found
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image030.jpeg)
+![](image030.jpeg)
 
 在Ubuntu系统中下载安装vim的步骤如下：
 
@@ -544,7 +544,7 @@
 
 ## Q3 mkdir: cannot create directory ‘XXXXXX’: No such file or directory
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image031.jpeg)
+![](image031.jpeg)
 
 这是在Ubuntu终端操作中出现的目录创建失败问题，核心信息及分析如下：
 
@@ -592,7 +592,7 @@ mkdir: cannot create directory '/etc/vsftpd/user_conf': No such file or director
 
 ## Q5 与vmx86驱动程序的版本不匹配：预期为XX，实际为XX。
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image032.jpeg)
+![](image032.jpeg)
 
 ### 问题分析
 
@@ -626,7 +626,7 @@ mkdir: cannot create directory '/etc/vsftpd/user_conf': No such file or director
 
 ## Q6 无法解析软件源域名
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image033.jpeg)
+![](image033.jpeg)
 
 ### 问题分析
 
@@ -714,7 +714,7 @@ sudo nano /etc/apt/sources.list
 
 ## Q7 WMware Virual Ethemet Adapter for VMnet1
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image034.jpeg)
+![](image034.jpeg)
 
 ### 问题分析
 
@@ -780,7 +780,7 @@ netsh winsock reset
 
 ## Q8 VMware虚拟机界面的右下角（无法解析更新服务器域名（softwareupdate.vmware.com））
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image035.jpeg)
+![](image035.jpeg)
 
 ### 问题分析
 
@@ -824,7 +824,7 @@ netsh winsock reset
 
 ## Q9 无法连接虚拟设备sata0:1，因为主机上没有对应的设备
 
-![](Ubuntu基于FTP与Apache的Web服务器配置_assets/image036.jpeg)
+![](image036.jpeg)
 
 ### 问题分析
 

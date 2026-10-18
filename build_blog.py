@@ -34,6 +34,7 @@ AVATAR_NAME = None  # 站点头像文件名（位于 assets 下），main() 中�
 UPDATES_JSON = "{}"  # 博客更新日期统计，main() 中写入
 MUSIC_JSON = "[]"  # 音乐播放列表，main() 中写入
 QUOTES_JSON = "[]"  # 名言警句，main() 中写入
+NOTE_SECTIONS_JSON = "[]"  # 在线笔记的板块/分类选项
 ASSET_VERSION = "0"  # 样式/脚本缓存版本，main() 中写入
 QUOTES = []  # 名言列表，main() 中写入
 DOC_TITLE = {}  # 文章标题，渲染时收集
@@ -1322,6 +1323,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
 </main>
 <script>window.BLOG_UPDATES = {UPDATES_JSON};</script>
 <script>window.MUSIC_BASE = "{music_base}"; window.MUSIC_PLAYLIST = {MUSIC_JSON};</script>
+<script>window.NOTE_SECTIONS = {NOTE_SECTIONS_JSON};</script>
 <script>window.BLOG_QUOTES = {QUOTES_JSON};</script>
 <script src="{script_src}"></script>
 </body>
@@ -1377,7 +1379,9 @@ def side_nav_for(out_dir):
 
     home_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html")))
     library_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "资料库", "index.html")))
+    note_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "写笔记", "index.html")))
     library_active = os.path.basename(out_dir.rstrip(os.sep)) == "资料库"
+    note_active = os.path.basename(out_dir.rstrip(os.sep)) == "写笔记"
     rows = []
     for section in NAV_SECTIONS:
         section_active = section["slug"] == active_section
@@ -1420,6 +1424,7 @@ def side_nav_for(out_dir):
     <div class="quick-total">{len(NAV_SECTIONS)} 个板块</div>
   </div>
   <nav class="page-nav-list">{''.join(rows)}</nav>
+  <a class="page-nav-home page-nav-note{' is-active' if note_active else ''}" href="{note_href}">在线写笔记</a>
   <a class="page-nav-home page-nav-library{' is-active' if library_active else ''}" href="{library_href}">PDF / 图片资料</a>
 </aside>
 """
@@ -1469,6 +1474,10 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
     <a class="quick-link" href="资料库/index.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
       <span>PDF / 图片资料</span>
+    </a>
+    <a class="quick-link" href="写笔记/index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="m13.5 6.5 4 4"/></svg>
+      <span>在线写笔记</span>
     </a>
     <div class="quick-label" data-i18n="quick-cats">板块</div>
     <nav class="quick-list" aria-label="板块目录">
@@ -1565,6 +1574,61 @@ def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, ou
 <div class="cat-list section-cats" style="--section-color:{section["color"]}">{''.join(items)}</div>
 """
     return page(out_dir, section["title"], body, parent_href=home_href)
+
+
+def build_note_page(out_dir):
+    home_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html")))
+    body = f"""
+<div class="crumb"><a href="{home_href}">首页</a> / 在线写笔记</div>
+<div class="note-page-head">
+  <h1>在线写笔记</h1>
+  <div class="count">本地自动保存 · 可导出 Markdown · 可选发布到 GitHub</div>
+</div>
+<div class="note-grid" data-note-editor>
+  <section class="note-card note-main">
+    <div class="note-toolbar">
+      <button type="button" data-note-new>新建</button>
+      <button type="button" data-note-save>保存草稿</button>
+      <button type="button" data-note-delete>删除草稿</button>
+      <button type="button" data-note-export>导出 .md</button>
+      <button type="button" data-note-copy>复制 Markdown</button>
+    </div>
+    <div class="note-fields">
+      <div class="note-field">
+        <label for="noteTitle">标题</label>
+        <input class="note-input" id="noteTitle" data-note-title placeholder="例如：今天学到的一个新方法" maxlength="120">
+      </div>
+      <div class="note-field">
+        <label for="noteSection">板块</label>
+        <select class="note-select" id="noteSection" data-note-section></select>
+      </div>
+      <div class="note-field">
+        <label for="noteCategory">分类</label>
+        <select class="note-select" id="noteCategory" data-note-category></select>
+      </div>
+    </div>
+    <textarea class="note-textarea" data-note-body placeholder="# 在这里写 Markdown&#10;&#10;支持标题、列表、代码块、链接和图片引用；写完后可导出或发布。"></textarea>
+    <div class="note-preview-head"><span>实时预览</span><span data-note-count>0 字符</span></div>
+    <div class="note-preview" data-note-preview></div>
+  </section>
+  <aside class="note-card note-side">
+    <div class="note-side-kicker">本地草稿</div>
+    <div class="note-drafts" data-note-drafts></div>
+    <div class="note-token-box">
+      <div class="note-side-kicker">发布到 GitHub</div>
+      <input class="note-input" type="password" data-note-token placeholder="Fine-grained GitHub Token" autocomplete="off">
+      <label class="note-check"><input type="checkbox" data-note-remember>记住本次会话</label>
+      <button type="button" class="note-publish" data-note-publish>发布到博客</button>
+      <div class="note-token-hint">
+        需要只授权本仓库 <strong>Contents: Read and write</strong> 的 fine-grained token；令牌默认只放在当前标签页的 sessionStorage，不写入 localStorage。
+        <a href="https://github.com/settings/tokens?type=beta" target="_blank" rel="noopener">创建 Token</a>
+      </div>
+      <div class="note-status" data-note-status></div>
+    </div>
+  </aside>
+</div>
+"""
+    return page(out_dir, "在线写笔记", body, parent_href=home_href)
 
 
 def build_library_page(pdfs, out_dir):
@@ -1714,7 +1778,7 @@ def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=
 # 主流程
 # --------------------------------------------------------------------------- #
 def main():
-    global AVATAR_NAME, UPDATES_JSON, NAV_SECTIONS, MUSIC_JSON, QUOTES_JSON, QUOTES, ASSET_VERSION
+    global AVATAR_NAME, UPDATES_JSON, NAV_SECTIONS, MUSIC_JSON, QUOTES_JSON, QUOTES, ASSET_VERSION, NOTE_SECTIONS_JSON
     docs, images, dir_earliest = scan()
     dir_docs, child_dirs = build_tree(docs)
 
@@ -1737,11 +1801,13 @@ def main():
     media_js = read_text(os.path.join(SRC_DIR, "media.js"))
     music_css = read_text(os.path.join(SRC_DIR, "music.css"))
     music_js = read_text(os.path.join(SRC_DIR, "music.js"))
+    note_css = read_text(os.path.join(SRC_DIR, "note.css"))
+    note_js = read_text(os.path.join(SRC_DIR, "note-editor.js"))
     quotes_js = read_text(os.path.join(SRC_DIR, "quotes.js"))
     anti_crawler_js = read_text(os.path.join(SRC_DIR, "anti-crawler.js"))
     spa_js = read_text(os.path.join(SRC_DIR, "spa.js"))
-    style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css
-    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + anti_crawler_js + "\n" + spa_js
+    style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css + "\n" + note_css
+    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + note_js + "\n" + anti_crawler_js + "\n" + spa_js
     write_text(os.path.join(ASSET_DIR, "style.css"), style_text)
     write_text(os.path.join(ASSET_DIR, "app.js"), app_text)
     ASSET_VERSION = hashlib.md5((style_text + app_text).encode("utf-8")).hexdigest()[:8]
@@ -1758,6 +1824,18 @@ def main():
     sections = build_sections(l1_sections)
     for section in sections:
         section["cats"] = child_dirs.get(section["slug"], [])
+    note_sections_data = []
+    for spec in SECTION_SPECS:
+        section_path = os.path.join(POST_DIR, spec["slug"])
+        if not os.path.isdir(section_path):
+            continue
+        note_sections_data.append({
+            "slug": spec["slug"],
+            "title": spec["title"],
+            "cats": [d for d in sorted(os.listdir(section_path))
+                     if os.path.isdir(os.path.join(section_path, d)) and not d.startswith(".")],
+        })
+    NOTE_SECTIONS_JSON = json.dumps(note_sections_data, ensure_ascii=False, separators=(",", ":"))
     NAV_SECTIONS = build_nav_sections(sections, docs, child_dirs)
 
     home_html = build_home(docs, dir_docs, child_dirs, dir_earliest, SITE_DIR)
@@ -1831,6 +1909,10 @@ def main():
             pdf["path"] = copy_pdf(pdf["rel"])
     library_out = os.path.join(SITE_DIR, "资料库")
     write_text(os.path.join(library_out, "index.html"), build_library_page(pdfs, library_out))
+    page_count += 1
+
+    note_out = os.path.join(SITE_DIR, "写笔记")
+    write_text(os.path.join(note_out, "index.html"), build_note_page(note_out))
     page_count += 1
 
     search_index = []

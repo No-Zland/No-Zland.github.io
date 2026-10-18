@@ -26,6 +26,7 @@
 | 更新日历 + 任务提醒 | 按文章修改日期统计更新热力；任务默认访客不可见，主人登录后可增删、提醒、导出/导入 |
 | 访客 / 主人模式 | 任务清单默认隐藏；主人模式用本地 PBKDF2 密码解锁，密码只保存在本机，不上传服务器 |
 | PDF / 图片 | 资料库在线预览 10MB 以内 PDF；文章图片点击后弹层放大 |
+| 在线写笔记 | `/写笔记/` 本地自动保存草稿，Markdown 实时预览、导出/复制；可填入仅限本仓库 Contents 权限的 GitHub Token 直接提交到 `content/post` |
 | 音乐播放器 | 独立卡片，支持顺序、随机、单曲循环、可拖动进度条、播放歌单；切换页面时播放器节点不重建，音乐连续播放；顺序播完最后一首自动回到第一首 |
 | 软导航 | 站内链接用 `fetch` 替换主内容与侧栏卡片，保留播放器、搜索、抽屉，避免整页刷新；支持前进/后退 |
 | 顶栏搜索 | 搜索按钮放在首页按钮旁边；搜索浮层在所有页面可用，结果可跳到对应文章锚点 |
@@ -76,6 +77,7 @@ d:\My Personal Blogs\
 │   ├── reading.css / reading-mode.js
 │   ├── media.css / media.js
 │   ├── music.css / music.js
+│   ├── note.css / note-editor.js
 │   ├── quotes.js
 │   ├── anti-crawler.js
 │   └── spa.js
@@ -115,6 +117,7 @@ d:\My Personal Blogs\
 - **阅读页**：`src/reading-mode.js` 一次只显示一篇文章，左侧生成文章列表、当前文章目录，并提供独立的上一篇/下一篇卡片；不再按长度切分文章。
 - **软导航**：`src/spa.js` 拦截站内链接，拉取目标页后只替换 `main` 与侧栏卡片，播放器的 `<audio>` 节点始终保留；搜索浮层、抽屉、日历等公共组件不重建。
 - **全局音乐**：播放器在每页都存在；软导航时不会中断，整页刷新时用 `sessionStorage` 恢复曲目、进度和播放状态。
+- **在线写笔记**：`src/note-editor.js` 管理本地草稿和 GitHub 发布，`src/note.css` 提供编辑器样式；页面由 `build_note_page()` 生成。
 - **目录简介/创立时间**：简介取子目录名或前几篇文章标题；创立时间取目录下最早文件修改时间。
 - **Hugo 集成**：`hugo.toml` 把 `site/` 设为 `staticDir`，`contentDir` 指向空目录避免二次渲染，`layouts/index.html` 用 `readFile` 输出生成好的首页。
 
@@ -126,6 +129,15 @@ d:\My Personal Blogs\
 - 这是**界面保护**，不是数据加密：能打开浏览器开发者工具的人仍可读取 localStorage。请把它当作“防误看/防误改”，不要把高度敏感信息放进去。
 - 主人模式提供“导出备份 / 导入备份”，建议定期导出 JSON；忘记密码只能清站点数据或导入备份。
 - 需要跨设备同步时，才需要服务器、数据库或云同步服务。
+
+## 在线写笔记
+
+- 入口：左侧导航「在线写笔记」，或直接访问 `/写笔记/`。
+- 草稿默认自动保存在当前浏览器的 `localStorage`，支持多份草稿、标题/板块/分类、Markdown 实时预览、导出 `.md` 和复制。
+- 发布到博客需要填入 GitHub **fine-grained token**（仅授权本仓库 `Contents: Read and write`），通过 GitHub Contents API 写入 `content/post/<板块>/<分类>/<标题>.md`。
+- Token 默认只放在当前标签页的 `sessionStorage`；勾选“记住本次会话”才会保留到该标签页关闭。页面源码不包含 token。
+- 发布后 GitHub Actions 会重新构建；构建完成后文章才会出现在站点上。
+- 没有服务器就无法做到真正的账号登录/权限校验；不要把高权限 token 交给不可信设备。
 
 ## 名言警句
 
@@ -159,6 +171,8 @@ d:\My Personal Blogs\
 ![首页板块与名言警句](docs/previews/home.png)
 
 ![板块页与层级导航](docs/previews/section.png)
+
+![在线写笔记](docs/previews/note.png)
 
 ![阅读页目录与上下篇](docs/previews/reading-mode.png)
 
