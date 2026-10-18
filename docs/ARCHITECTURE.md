@@ -75,6 +75,13 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
 - Token 只放 `sessionStorage`，可选“记住本次会话”，不写入 `localStorage` 或仓库；提交后由 GitHub Actions 重建。
 - 这是纯前端功能，没有服务端鉴权；token 权限应限制到单一仓库的 Contents。
 
+## 亮度与笔记助手
+
+- `src/brightness.js` 用固定黑色遮罩层调暗页面，滑杆值保存在 localStorage；遮罩 `pointer-events:none`，亮度控件 z-index 高于遮罩。
+- `src/agent.js` 是纯前端检索助手：拉取 `assets/search-index.json`，按标题/分类/正文打分，返回摘要和原文链接。
+- `src/agent.css` 提供 2D SVG 形象、悬浮动画、聊天面板和亮度控件样式；所有页面共用，软导航不重建。
+- 没有外部 LLM 调用；如需生成式回答，应在服务器新增带密钥的服务端接口。
+
 ## 版权与防爬
 
 - 每篇文章由 `doc_copyright()` 生成底部版权块，包含作者、CC BY-NC-SA 4.0 许可、原文 URL 和更新时间。

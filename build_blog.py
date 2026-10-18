@@ -1308,6 +1308,45 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
 <body{body_class}>
 {drawer_html}
 {search_overlay_html()}
+<div class="page-dim" id="pageDim" aria-hidden="true"></div>
+<div class="brightness-control" data-brightness>
+  <span class="brightness-icon" aria-hidden="true">☀</span>
+  <input class="brightness-range" id="brightnessRange" type="range" min="60" max="100" step="1" value="90" aria-label="页面亮度">
+  <span class="brightness-value" id="brightnessValue">90%</span>
+</div>
+<div class="note-agent" id="noteAgent">
+  <button type="button" class="agent-toggle" id="agentToggle" aria-label="打开笔记助手" aria-expanded="false">
+    <svg class="agent-avatar-svg" viewBox="0 0 120 140" role="img" aria-label="小双">
+      <ellipse class="agent-shadow" cx="60" cy="127" rx="27" ry="5"/>
+      <path class="agent-body" d="M30 101 Q60 82 90 101 L96 124 Q60 136 24 124 Z"/>
+      <circle class="agent-head" cx="60" cy="58" r="30"/>
+      <path class="agent-hair" d="M30 57 Q30 21 60 21 Q90 21 90 57 Q82 44 72 40 Q60 50 48 40 Q38 44 30 57"/>
+      <path class="agent-ahoge" d="M62 23 Q68 10 78 14 Q70 18 67 27"/>
+      <g class="agent-eyes">
+        <ellipse cx="49" cy="61" rx="3.2" ry="4.2"/>
+        <ellipse cx="71" cy="61" rx="3.2" ry="4.2"/>
+      </g>
+      <path class="agent-smile" d="M53 70 Q60 76 67 70"/>
+      <circle class="agent-blush" cx="41" cy="69" r="4"/>
+      <circle class="agent-blush" cx="79" cy="69" r="4"/>
+      <path class="agent-collar" d="M50 105 L60 113 L70 105"/>
+    </svg>
+    <span class="agent-label">笔记助手</span>
+  </button>
+  <section class="agent-panel" id="agentPanel" hidden aria-label="笔记助手">
+    <header class="agent-panel-head">
+      <span class="agent-mini-avatar" data-agent-avatar aria-hidden="true"></span>
+      <span class="agent-panel-title"><strong>小双</strong><small>站内笔记助手</small></span>
+      <button type="button" class="agent-close" id="agentClose" aria-label="关闭笔记助手">&times;</button>
+    </header>
+    <div class="agent-messages" id="agentMessages" aria-live="polite"></div>
+    <form class="agent-form" id="agentForm">
+      <input class="agent-input" id="agentInput" type="text" placeholder="问：数学建模 / ADC / 最近更新…" autocomplete="off" maxlength="120">
+      <button class="agent-send" type="submit" aria-label="发送">↑</button>
+    </form>
+    <div class="agent-hint">基于站内笔记检索，不调用外部模型；答案会带原文链接。</div>
+  </section>
+</div>
 <header class="topbar">
   <button class="icon-btn" id="menuBtn" aria-label="打开个人主页">&#9776;</button>
   <a class="home-btn" href="{home_href}" title="返回首页" aria-label="返回首页" data-i18n-title="home" data-i18n-aria-label="home">{HOME_SVG}</a>
@@ -1813,11 +1852,14 @@ def main():
     music_js = read_text(os.path.join(SRC_DIR, "music.js"))
     note_css = read_text(os.path.join(SRC_DIR, "note.css"))
     note_js = read_text(os.path.join(SRC_DIR, "note-editor.js"))
+    agent_css = read_text(os.path.join(SRC_DIR, "agent.css"))
+    brightness_js = read_text(os.path.join(SRC_DIR, "brightness.js"))
+    agent_js = read_text(os.path.join(SRC_DIR, "agent.js"))
     quotes_js = read_text(os.path.join(SRC_DIR, "quotes.js"))
     anti_crawler_js = read_text(os.path.join(SRC_DIR, "anti-crawler.js"))
     spa_js = read_text(os.path.join(SRC_DIR, "spa.js"))
-    style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css + "\n" + note_css
-    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + note_js + "\n" + anti_crawler_js + "\n" + spa_js
+    style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css + "\n" + note_css + "\n" + agent_css
+    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + note_js + "\n" + brightness_js + "\n" + agent_js + "\n" + anti_crawler_js + "\n" + spa_js
     write_text(os.path.join(ASSET_DIR, "style.css"), style_text)
     write_text(os.path.join(ASSET_DIR, "app.js"), app_text)
     ASSET_VERSION = hashlib.md5((style_text + app_text).encode("utf-8")).hexdigest()[:8]
