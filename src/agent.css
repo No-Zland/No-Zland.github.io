@@ -7,32 +7,37 @@
 .brightness-control {
   position: fixed; left: 50%; bottom: 18px; z-index: 2300;
   transform: translateX(-50%);
-  display: flex; align-items: center; gap: 7px;
-  padding: 6px 10px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 13px;
   border: 1px solid var(--border); border-radius: 999px;
-  background: color-mix(in srgb, var(--card) 92%, transparent);
+  background: color-mix(in srgb, var(--card) 94%, transparent);
   box-shadow: 0 8px 28px rgba(0, 0, 0, .16);
   backdrop-filter: blur(12px);
   color: var(--text-soft); font-size: 10px;
+  pointer-events: auto;
 }
-.brightness-icon { color: #d97706; font-size: 13px; line-height: 1; }
+.brightness-icon { color: #d97706; font-size: 14px; line-height: 1; cursor: pointer; }
+.brightness-label { color: var(--text-soft); font-size: 9px; letter-spacing: .04em; }
 .brightness-range {
-  width: 96px; height: 14px; appearance: none; -webkit-appearance: none;
-  background: transparent; cursor: pointer;
-  --brightness: 90%;
+  width: 150px; height: 22px; margin: 0; padding: 0;
+  appearance: none; -webkit-appearance: none;
+  background: transparent; cursor: grab; touch-action: none;
+  --brightness: 85%;
 }
+.brightness-range:active { cursor: grabbing; }
 .brightness-range::-webkit-slider-runnable-track {
-  height: 3px; border-radius: 99px;
+  height: 5px; border-radius: 99px;
   background: linear-gradient(90deg, #d97706 0 var(--brightness), color-mix(in srgb, var(--text-soft) 22%, transparent) var(--brightness) 100%);
 }
-.brightness-range::-moz-range-track { height: 3px; border-radius: 99px; background: color-mix(in srgb, var(--text-soft) 22%, transparent); }
-.brightness-range::-moz-range-progress { height: 3px; border-radius: 99px; background: #d97706; }
+.brightness-range::-moz-range-track { height: 5px; border-radius: 99px; background: color-mix(in srgb, var(--text-soft) 22%, transparent); }
+.brightness-range::-moz-range-progress { height: 5px; border-radius: 99px; background: #d97706; }
 .brightness-range::-webkit-slider-thumb {
-  appearance: none; -webkit-appearance: none; width: 11px; height: 11px; margin-top: -4px;
-  border: 2px solid var(--card); border-radius: 50%; background: #d97706;
+  appearance: none; -webkit-appearance: none; width: 16px; height: 16px; margin-top: -5.5px;
+  border: 3px solid var(--card); border-radius: 50%; background: #d97706;
+  box-shadow: 0 0 0 1px #d97706;
 }
-.brightness-range::-moz-range-thumb { width: 8px; height: 8px; border: 2px solid var(--card); border-radius: 50%; background: #d97706; }
-.brightness-value { min-width: 28px; text-align: right; font-variant-numeric: tabular-nums; }
+.brightness-range::-moz-range-thumb { width: 12px; height: 12px; border: 3px solid var(--card); border-radius: 50%; background: #d97706; }
+.brightness-value { min-width: 30px; text-align: right; font-variant-numeric: tabular-nums; font-size: 10px; }
 
 .note-agent { position: fixed; right: 20px; bottom: 20px; z-index: 2200; }
 .agent-toggle {
@@ -106,8 +111,9 @@
 @keyframes agent-blink { 0%, 45%, 49%, 100% { transform: scaleY(1); } 47% { transform: scaleY(.1); } }
 
 @media (max-width: 700px) {
-  .brightness-control { bottom: 12px; padding: 5px 8px; }
-  .brightness-range { width: 78px; }
+  .brightness-control { bottom: 12px; padding: 6px 10px; gap: 6px; }
+  .brightness-label { display: none; }
+  .brightness-range { width: 110px; }
   .note-agent { right: 12px; bottom: 12px; }
   .agent-toggle { width: 56px; height: 64px; }
   .agent-avatar-svg { width: 50px; height: 58px; }

@@ -142,8 +142,9 @@ d:\My Personal Blogs\
 
 - 入口：左侧导航「在线写笔记」，或直接访问 `/写笔记/`。
 - 草稿默认自动保存在当前浏览器的 `localStorage`，支持多份草稿、标题/板块/分类、Markdown 实时预览、导出 `.md` 和复制。
-- **服务器发布（推荐）**：登录博客后台后，直接调用 `/api/notes` 写入容器内 `content/post`，并自动重新构建站点。
-- **GitHub 备用发布**：填入 GitHub fine-grained token（仅授权本仓库 `Contents: Read and write`），通过 Contents API 写入。
+- **服务器发布（推荐）**：`/写笔记/` 默认显示「主人专用」登录门；登录后才显示编辑器，直接调用 `/api/notes` 写入容器内 `content/post`，并自动重新构建站点。
+- **访客只读**：未登录时编辑器、草稿、发布按钮都不显示；GitHub Pages 上只显示“请到阿里云服务器登录”的提示。
+- **GitHub 备用发布**：登录服务器后仍可用 GitHub fine-grained token（仅授权本仓库 `Contents: Read and write`）作为备用。
 - GitHub Token 默认只放在当前标签页的 `sessionStorage`；勾选“记住本次会话”才会保留到该标签页关闭。
 - 发布后 GitHub Actions 或服务器构建完成后，文章才会出现在站点上。
 - 没有 HTTPS 时不要在公共网络输入后台密码或高权限 token。
@@ -205,6 +206,8 @@ d:\My Personal Blogs\
 ![在线写笔记](docs/previews/note.png)
 
 ![服务器发布模式](docs/previews/note-server.png)
+
+![主人专用登录门](docs/previews/note-gate.png)
 
 ![2D 笔记助手](docs/previews/agent.png)
 

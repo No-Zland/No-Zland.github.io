@@ -136,11 +136,13 @@
     var rememberEl = root.querySelector('[data-note-remember]');
     var statusEl = root.querySelector('[data-note-status]');
     var serverState = root.querySelector('[data-note-server-state]');
-    var serverLogin = root.querySelector('[data-note-server-login]');
-    var serverPassword = root.querySelector('[data-note-server-password]');
-    var serverLoginBtn = root.querySelector('[data-note-server-login-btn]');
     var serverPublishBtn = root.querySelector('[data-note-server-publish]');
     var serverStatus = root.querySelector('[data-note-server-status]');
+    var gate = document.querySelector('[data-note-gate]');
+    var gateLogin = document.querySelector('[data-note-gate-login]');
+    var gatePassword = document.querySelector('[data-note-gate-password]');
+    var gateBtn = document.querySelector('[data-note-gate-btn]');
+    var gateStatus = document.querySelector('[data-note-gate-status]');
     var publishBtn = root.querySelector('[data-note-publish]');
     var drafts = loadDrafts();
     var currentId = null;
@@ -178,18 +180,30 @@
     }
 
     function showServer(auth) {
-      if (!serverState) return;
       if (auth) {
-        serverState.textContent = '已登录服务器，可直接发布。';
-        serverState.className = 'note-server-state is-ok';
-        if (serverLogin) serverLogin.hidden = true;
+        if (gate) gate.hidden = true;
+        root.hidden = false;
+        if (serverState) {
+          serverState.textContent = '已登录服务器，可直接发布。';
+          serverState.className = 'note-server-state is-ok';
+        }
         if (serverPublishBtn) serverPublishBtn.hidden = false;
       } else {
-        serverState.textContent = '登录后可直接写入服务器，不需要 GitHub Token。';
-        serverState.className = 'note-server-state';
-        if (serverLogin) serverLogin.hidden = false;
+        if (gate) gate.hidden = false;
+        root.hidden = true;
+        if (gateLogin) gateLogin.hidden = false;
         if (serverPublishBtn) serverPublishBtn.hidden = true;
+        if (serverState) {
+          serverState.textContent = '登录后可直接写入服务器。';
+          serverState.className = 'note-server-state';
+        }
       }
+    }
+
+    function gateMessage(message, kind) {
+      if (!gateStatus) return;
+      gateStatus.textContent = message;
+      gateStatus.className = 'note-gate-status' + (kind ? ' is-' + kind : '');
     }
 
     function checkServer() {
@@ -200,21 +214,31 @@
           return response.json();
         })
         .then(function (data) {
-          showServer(!!(data && data.authenticated));
+          if (data && data.authenticated) {
+            showServer(true);
+          } else {
+            showServer(false);
+            gateMessage('请输入博客后台密码。', '');
+          }
         })
         .catch(function () {
-          serverState.textContent = '当前未连接服务器 API（GitHub Pages 模式可继续用下方 Token 发布）。';
-          serverState.className = 'note-server-state is-error';
-          if (serverLogin) serverLogin.hidden = true;
+          if (gate) gate.hidden = false;
+          root.hidden = true;
+          if (gateLogin) gateLogin.hidden = true;
+          gateMessage('当前页面没有连接服务器 API。写笔记仅在个人服务器开放。', 'error');
+          if (serverState) {
+            serverState.textContent = '服务器未连接。';
+            serverState.className = 'note-server-state is-error';
+          }
           if (serverPublishBtn) serverPublishBtn.hidden = true;
         });
     }
 
     function loginServer() {
-      var password = (serverPassword && serverPassword.value || '').trim();
-      if (!password) { setServerStatus('请输入博客后台密码。', 'error'); return; }
-      if (serverLoginBtn) serverLoginBtn.disabled = true;
-      setServerStatus('正在登录…');
+      var password = (gatePassword && gatePassword.value || '').trim();
+      if (!password) { gateMessage('请输入博客后台密码。', 'error'); return; }
+      if (gateBtn) gateBtn.disabled = true;
+      gateMessage('正在登录…', '');
       fetch('/api/login', {
         method: 'POST',
         credentials: 'same-origin',
@@ -228,15 +252,15 @@
           });
         })
         .then(function () {
-          if (serverPassword) serverPassword.value = '';
-          setServerStatus('登录成功。', 'ok');
+          if (gatePassword) gatePassword.value = '';
+          gateMessage('登录成功。', 'ok');
           showServer(true);
         })
         .catch(function (error) {
-          setServerStatus(error.message || '登录失败。', 'error');
+          gateMessage(error.message || '登录失败。', 'error');
         })
         .finally(function () {
-          if (serverLoginBtn) serverLoginBtn.disabled = false;
+          if (gateBtn) gateBtn.disabled = false;
         });
     }
 
@@ -512,7 +536,10 @@
     root.querySelector('[data-note-export]').addEventListener('click', download);
     root.querySelector('[data-note-copy]').addEventListener('click', copyBody);
     publishBtn.addEventListener('click', publish);
-    if (serverLoginBtn) serverLoginBtn.addEventListener('click', loginServer);
+    if (gateBtn) gateBtn.addEventListener('click', loginServer);
+    if (gatePassword) gatePassword.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') { event.preventDefault(); loginServer(); }
+    });
     if (serverPublishBtn) serverPublishBtn.addEventListener('click', publishServer);
     checkServer();
   }

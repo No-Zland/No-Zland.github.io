@@ -1311,8 +1311,9 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
 <div class="page-dim" id="pageDim" aria-hidden="true"></div>
 <div class="brightness-control" data-brightness>
   <span class="brightness-icon" aria-hidden="true">☀</span>
-  <input class="brightness-range" id="brightnessRange" type="range" min="60" max="100" step="1" value="90" aria-label="页面亮度">
-  <span class="brightness-value" id="brightnessValue">90%</span>
+  <span class="brightness-label">亮度</span>
+  <input class="brightness-range" id="brightnessRange" type="range" min="60" max="100" step="1" value="85" aria-label="页面亮度">
+  <span class="brightness-value" id="brightnessValue">85%</span>
 </div>
 <div class="note-agent" id="noteAgent">
   <button type="button" class="agent-toggle" id="agentToggle" aria-label="打开笔记助手" aria-expanded="false">
@@ -1621,9 +1622,20 @@ def build_note_page(out_dir):
 <div class="crumb"><a href="{home_href}">首页</a> / 在线写笔记</div>
 <div class="note-page-head">
   <h1>在线写笔记</h1>
-  <div class="count">本地自动保存 · 可导出 Markdown · 发布到服务器或 GitHub</div>
+  <div class="count">主人专用 · 登录后才能写作与发布</div>
 </div>
-<div class="note-grid" data-note-editor>
+<section class="note-gate" data-note-gate>
+  <div class="note-gate-lock" aria-hidden="true">🔒</div>
+  <h2>主人专用</h2>
+  <p>访客只能阅读博客。写笔记、删除草稿和任务同步都需要先登录服务器。</p>
+  <div class="note-gate-login" data-note-gate-login>
+    <input class="note-input" type="password" data-note-gate-password placeholder="博客后台密码" autocomplete="off">
+    <button type="button" class="note-publish" data-note-gate-btn>登录服务器</button>
+  </div>
+  <div class="note-gate-status" data-note-gate-status></div>
+  <p class="note-gate-hint">如果在 GitHub Pages 看到此页，请改到 <a href="http://47.93.173.214/%E5%86%99%E7%AC%94%E8%AE%B0/">阿里云服务器版本</a> 登录。</p>
+</section>
+<div class="note-grid" data-note-editor hidden>
   <section class="note-card note-main">
     <div class="note-toolbar">
       <button type="button" data-note-new>新建</button>
@@ -1656,10 +1668,6 @@ def build_note_page(out_dir):
     <div class="note-token-box">
       <div class="note-side-kicker">服务器发布</div>
       <div class="note-server-state" data-note-server-state>正在检测服务器…</div>
-      <div class="note-server-login" data-note-server-login hidden>
-        <input class="note-input" type="password" data-note-server-password placeholder="博客后台密码" autocomplete="off">
-        <button type="button" class="note-publish" data-note-server-login-btn>登录服务器</button>
-      </div>
       <button type="button" class="note-publish" data-note-server-publish hidden>发布到服务器</button>
       <div class="note-status" data-note-server-status></div>
     </div>
