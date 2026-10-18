@@ -173,6 +173,7 @@ d:\My Personal Blogs\
 
 ## 阿里云后端
 
+- 在线访问：<http://47.93.173.214/>
 - 服务器：`root@47.93.173.214`（Ubuntu 22.04，Nginx 80）
 - 静态站点：`/opt/blog/src/site`
 - API：FastAPI + SQLite，`127.0.0.1:8001`，由 Nginx `/api/` 反向代理
@@ -206,6 +207,8 @@ d:\My Personal Blogs\
 ![服务器发布模式](docs/previews/note-server.png)
 
 ![2D 笔记助手](docs/previews/agent.png)
+
+![阿里云服务器首页](docs/previews/server-home.png)
 
 ![阅读页目录与上下篇](docs/previews/reading-mode.png)
 
