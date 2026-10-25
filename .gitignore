@@ -19,6 +19,8 @@ resources/
 _*.txt
 _*.py
 *.log
+*.tmp
+**/~$*
 
 # 编辑器 / 系统
 .DS_Store
@@ -36,3 +38,6 @@ content/post/**/pic/*.pptx
 content/post/**/code/models/*.pkl
 content/post/**/code/output/*.zip
 content/post/**/code/*.zip
+
+# 竞赛参考资料（安装包 / 视频 / 压缩包，合计约 1.1 GB，仅本地保留，不上传）
+content/post/竞赛经历/（无）中国机器人及人工智能大赛/
