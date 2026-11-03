@@ -1,0 +1,7 @@
+{
+  "createdProperty": "created",
+  "updatedProperty": "updated",
+  "dateFormat": "datetime",
+  "customDateFormat": "YYYY-MM-DD HH:mm",
+  "excludedFolders": []
+}

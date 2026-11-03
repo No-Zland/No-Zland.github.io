@@ -45,46 +45,16 @@ MAX_PDF_BYTES = 10 * 1024 * 1024  # GitHub Pages 只上传 10MB 以内的 PDF
 
 SECTION_SPECS = [
     {
-        "slug": "竞赛经历",
-        "title": "竞赛经历",
-        "desc": "数学建模、程序设计、嵌入式与算法竞赛的参赛记录、复盘和资料。",
-        "color": "#7c3aed",
-    },
-    {
-        "slug": "项目经历",
-        "title": "项目经历",
-        "desc": "从需求、设计到实现的项目记录。",
-        "color": "#0ea5b7",
-    },
-    {
-        "slug": "科研经历",
-        "title": "科研经历",
-        "desc": "参考文献、研究调研与科研训练记录。",
-        "color": "#db2777",
-    },
-    {
-        "slug": "技能学习",
-        "title": "技能学习",
-        "desc": "编程语言、Linux、AI、IT 素养与算法刷题的持续积累。",
+        "slug": "01-知识库",
+        "title": "知识库",
+        "desc": "算法、课程、语言与工具、科研与阅读的长期积累。",
         "color": "#2563eb",
     },
     {
-        "slug": "课程学习",
-        "title": "课程学习",
-        "desc": "计算机专业课程笔记、实验与知识整理。",
-        "color": "#16a34a",
-    },
-    {
-        "slug": "阅读经历",
-        "title": "阅读经历",
-        "desc": "书目、阅读计划，以及读书过程中的零散感悟。",
-        "color": "#c2410c",
-    },
-    {
-        "slug": "个人与总结",
-        "title": "个人与总结",
-        "desc": "个人档案、阶段总结和实验报告合集。",
-        "color": "#d4af37",
+        "slug": "02-实战库",
+        "title": "实战库",
+        "desc": "刷题复盘、竞赛与项目的一次性实战记录。",
+        "color": "#7c3aed",
     },
 ]
 
@@ -146,7 +116,7 @@ def build_sections(l1):
     return sections
 
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".ico"}
-SKIP_DIRS = {"bin", "node_modules", "__pycache__"}
+SKIP_DIRS = {"bin", "node_modules", "__pycache__", "00-导航"}  # 00-导航 只放 MOC/模板，不发布到博客
 
 MATHJAX_HEAD = '<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>'
 

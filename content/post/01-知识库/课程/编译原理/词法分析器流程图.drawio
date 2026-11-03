@@ -1,0 +1,253 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="词法分析器分层流程图" id="tlm1txVQHXnAFZFekL3G">
+    <mxGraphModel dx="2983" dy="2048" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontFamily=Times New Roman;" value="初始化词法分析环境&#xa;（缓冲区、读写指针、符号表）" vertex="1">
+          <mxGeometry height="50" width="220" x="480" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-3" edge="1" parent="1" style="endArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-2" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="590" y="80" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-4" parent="1" style="group;whiteSpace=wrap;html=1;container=1;collapsible=1;fontStyle=1;fontSize=14;align=left;spacingLeft=10;dashed=1;strokeWidth=4;strokeColor=light-dark(#fb1404, #ededed);fontFamily=Times New Roman;" value="输入预处理模块" vertex="1">
+          <mxGeometry height="170" width="430" x="370" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-5" parent="XVs3Roigk3iIBHtWfuXk-4" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontFamily=Times New Roman;" value="读取源文件至输入缓冲区" vertex="1">
+          <mxGeometry height="40" width="180" x="130" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-6" parent="XVs3Roigk3iIBHtWfuXk-4" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontFamily=Times New Roman;" value="过滤空白字符&#xa;（空格、制表符、换行符）" vertex="1">
+          <mxGeometry height="40" width="180" x="130" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-7" edge="1" parent="XVs3Roigk3iIBHtWfuXk-4" source="XVs3Roigk3iIBHtWfuXk-5" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-6" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-8" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-2" style="endArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-5" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-9" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontFamily=Times New Roman;" value="读取当前字符 ch" vertex="1">
+          <mxGeometry height="40" width="180" x="500" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-10" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-6" style="endArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-9" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-11" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontFamily=Times New Roman;" value="ch == EOF ?" vertex="1">
+          <mxGeometry height="60" width="160" x="510" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-12" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-9" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-11" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-47" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-11" style="endArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-14" value="NO">
+          <mxGeometry relative="1" x="-0.3333" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-50" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-15" style="endArrow=classic;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-49" value="">
+          <mxGeometry relative="1" x="-0.1613" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="560" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-51" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-18" style="endArrow=classic;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-49" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="650" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-52" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-22" style="endArrow=classic;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-49" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="740" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-53" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-26" style="endArrow=classic;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-49" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="830" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-54" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-34" style="endArrow=classic;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-49" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="1010" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-55" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-38" style="endArrow=classic;html=1;exitX=1;exitY=0.5;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-49" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="1100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-56" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-42" style="endArrow=classic;html=1;exitX=1;exitY=0.5;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-49" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="1190" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-57" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-30" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fontStyle=1;fontFamily=Times New Roman;" value="">
+          <mxGeometry relative="1" x="-0.2565" as="geometry">
+            <Array as="points">
+              <mxPoint x="920" y="920" />
+              <mxPoint x="920" y="250" />
+            </Array>
+            <mxPoint x="590" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-58" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-64" style="endArrow=classic;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;fontStyle=1;fontFamily=Times New Roman;" value="指针前移，识别下一个Token">
+          <mxGeometry relative="1" x="-0.1192" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1020" y="230" />
+            </Array>
+            <mxPoint x="590" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-59" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;fontFamily=Times New Roman;" value="释放资源、销毁缓冲区" vertex="1">
+          <mxGeometry height="40" width="220" x="480" y="1310" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-61" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-59" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="590" y="1370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-62" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-11" style="endArrow=classic;html=1;align=center;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-59" value="YES">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="420" y="440" />
+              <mxPoint x="420" y="1330" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-63" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-45" style="endArrow=classic;html=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-59" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-64" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontFamily=Times New Roman;" value="输出Token序列" vertex="1">
+          <mxGeometry height="40" width="180" x="930" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-65" edge="1" parent="1" source="XVs3Roigk3iIBHtWfuXk-49" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-64" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-49" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontFamily=Times New Roman;" value="生成Token内部码&#xa;（种别码 + 属性值）" vertex="1">
+          <mxGeometry height="40" width="180" x="930" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-13" parent="1" style="group;whiteSpace=wrap;html=1;container=1;collapsible=1;fontStyle=1;fontSize=14;align=left;spacingLeft=10;strokeColor=light-dark(#fb1404, #ededed);dashed=1;strokeWidth=4;fontFamily=Times New Roman;" value="Token 分级识别核心模块（优先级从高到低）" vertex="1">
+          <mxGeometry height="780" width="460" x="360" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-14" parent="XVs3Roigk3iIBHtWfuXk-13" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontFamily=Times New Roman;" value="ch == &#39;#&#39; ?" vertex="1">
+          <mxGeometry height="60" width="160" x="150" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-15" parent="XVs3Roigk3iIBHtWfuXk-13" style="shape=process;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;boundedLbl=1;fontStyle=1;fontFamily=Times New Roman;" value="提取预处理指令&#xa;读至行尾→解析指令→生成Token" vertex="1">
+          <mxGeometry height="50" width="190" x="350" y="45" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-16" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-14" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-15" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-17" parent="XVs3Roigk3iIBHtWfuXk-13" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontFamily=Times New Roman;" value="ch == &#39;&#39;&#39; ?" vertex="1">
+          <mxGeometry height="60" width="160" x="150" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-18" parent="XVs3Roigk3iIBHtWfuXk-13" style="shape=process;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;boundedLbl=1;fontStyle=1;fontFamily=Times New Roman;" value="提取字符常量&#xa;匹配闭合单引号→校验转义→生成Token" vertex="1">
+          <mxGeometry height="50" width="190" x="350" y="135" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-19" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-17" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-18" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-20" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-14" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-17" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-21" parent="XVs3Roigk3iIBHtWfuXk-13" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontFamily=Times New Roman;" value="ch == &quot; ?" vertex="1">
+          <mxGeometry height="60" width="160" x="150" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-22" parent="XVs3Roigk3iIBHtWfuXk-13" style="shape=process;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;boundedLbl=1;fontStyle=1;fontFamily=Times New Roman;" value="提取字符串常量&#xa;匹配闭合双引号→处理转义→生成Token" vertex="1">
+          <mxGeometry height="50" width="190" x="350" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-23" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-21" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-22" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-24" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-17" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-21" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-25" parent="XVs3Roigk3iIBHtWfuXk-13" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontFamily=Times New Roman;" value="ch 为数字 ?" vertex="1">
+          <mxGeometry height="60" width="160" x="150" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-26" parent="XVs3Roigk3iIBHtWfuXk-13" style="shape=process;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;boundedLbl=1;fontStyle=1;fontFamily=Times New Roman;" value="提取数值常量&#xa;拼接整数/小数/指数→合法性校验→生成Token" vertex="1">
+          <mxGeometry height="50" width="190" x="350" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-27" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-25" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-26" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-28" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-21" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-25" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-29" parent="XVs3Roigk3iIBHtWfuXk-13" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontFamily=Times New Roman;" value="ch 为注释起始符 ?" vertex="1">
+          <mxGeometry height="60" width="160" x="150" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-30" parent="XVs3Roigk3iIBHtWfuXk-13" style="shape=process;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;boundedLbl=1;fontStyle=1;fontFamily=Times New Roman;" value="删除注释&#xa;区分单行/多行→读至注释结束→丢弃内容" vertex="1">
+          <mxGeometry height="50" width="190" x="350" y="405" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-31" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-29" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-30" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-32" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-25" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-29" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-33" parent="XVs3Roigk3iIBHtWfuXk-13" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontFamily=Times New Roman;" value="ch 为字母/下划线 ?" vertex="1">
+          <mxGeometry height="60" width="160" x="150" y="490" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-34" parent="XVs3Roigk3iIBHtWfuXk-13" style="shape=process;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;boundedLbl=1;fontStyle=1;fontFamily=Times New Roman;" value="提取标识符/关键字&#xa;拼接字符串→查关键字表→分类生成Token" vertex="1">
+          <mxGeometry height="50" width="190" x="350" y="495" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-35" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-33" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-34" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-36" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-29" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-33" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-37" parent="XVs3Roigk3iIBHtWfuXk-13" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontFamily=Times New Roman;" value="ch 为运算符起始 ?" vertex="1">
+          <mxGeometry height="60" width="160" x="150" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-38" parent="XVs3Roigk3iIBHtWfuXk-13" style="shape=process;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;boundedLbl=1;fontStyle=1;fontFamily=Times New Roman;" value="提取运算符&#xa;最长匹配原则→区分单/多字符运算符→生成Token" vertex="1">
+          <mxGeometry height="50" width="190" x="350" y="585" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-39" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-37" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-38" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-40" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-33" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-37" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-41" parent="XVs3Roigk3iIBHtWfuXk-13" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontFamily=Times New Roman;" value="ch 为分界符 ?" vertex="1">
+          <mxGeometry height="60" width="160" x="150" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-42" parent="XVs3Roigk3iIBHtWfuXk-13" style="shape=process;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;boundedLbl=1;fontStyle=1;fontFamily=Times New Roman;" value="提取分界符&#xa;匹配符号表→生成对应Token" vertex="1">
+          <mxGeometry height="50" width="190" x="350" y="675" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-43" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-41" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-42" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-44" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-37" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-41" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-45" parent="XVs3Roigk3iIBHtWfuXk-13" style="shape=process;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;boundedLbl=1;fontStyle=1;fontFamily=Times New Roman;" value="输出错误字符&#xa;记录行列号、错误字符信息" vertex="1">
+          <mxGeometry height="50" width="180" x="140" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-46" edge="1" parent="XVs3Roigk3iIBHtWfuXk-13" source="XVs3Roigk3iIBHtWfuXk-41" style="endArrow=classic;html=1;fontStyle=1;fontFamily=Times New Roman;" target="XVs3Roigk3iIBHtWfuXk-45" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-70" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=light-dark(#dae8fc, #103c3f);strokeColor=#0e8088;fontStyle=1;fontFamily=Times New Roman;" value="开始" vertex="1">
+          <mxGeometry height="40" width="120" x="530" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="XVs3Roigk3iIBHtWfuXk-71" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=light-dark(#dae8fc, #103c3f);strokeColor=#0e8088;fontStyle=1;fontFamily=Times New Roman;" value="程序结束" vertex="1">
+          <mxGeometry height="40" width="120" x="530" y="1370" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

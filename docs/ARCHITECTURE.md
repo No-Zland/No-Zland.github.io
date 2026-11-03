@@ -35,14 +35,14 @@ build_blog.py  ──读取 src/*.css / src/*.js──▶  site/
             └─ 阅读页（一篇文章一页；左侧目录 + 上一篇/下一篇）
 ```
 
-板块是 **`content/post` 的顶层物理目录**，板块下的子目录就是分类；例如 `content/post/竞赛经历/202609...`、`content/post/技能学习/C++/`。这样不再有“虚拟板块 + 同名分类”的重复层级。`build_blog.py` 的 `SECTION_SPECS` 只负责板块顺序、标题、描述和颜色：
+板块是 **`content/post` 的顶层物理目录**，板块下的子目录就是分类；例如 `content/post/02-实战库/竞赛/202609...`、`content/post/01-知识库/课程/C++/`。顶层只有 `00-导航`（MOC/模板，进 `SKIP_DIRS` 不发布）、`01-知识库`、`02-实战库` 三个目录——按“笔记形态”分，学科维度交给标签。`build_blog.py` 的 `SECTION_SPECS` 只负责板块标题、描述和颜色：
 
 ```python
 {
-    "slug": "科研经历",
-    "title": "科研经历",
+    "slug": "01-知识库",
+    "title": "知识库",
     "desc": "...",
-    "color": "#db2777",
+    "color": "#2563eb",
 }
 ```
 

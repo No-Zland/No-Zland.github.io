@@ -1,0 +1,24 @@
+Blockly.Blocks['1711427133530'] = {
+  init: function() {
+    this.jsonInit({
+      "type": "1711427133530",
+      "message0": "上台阶侧边3",
+      "previousStatement": null,
+      "nextStatement": null,
+      "colour": '#C643F1',
+      "toolip": "",
+      "helpUrl": ""
+    });
+  }
+};
+
+Blockly.Lua['1711427133530'] = function(block) {
+  let code = "MOTOsetspeed(30)\nMOTOrigid16(40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,40,0,0,0)\nMOTOsetspeed(30)\nMOTOmove19(80, 30, 100, 100, 93, 55, 124, 100, 120, 170, 100, 100, 107, 145, 76, 100, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(5)\nMOTOmove19(80, 30, 100, 100, 93, 55, 124, 100, 120, 170, 100, 99, 106, 143, 75, 89, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(93, 151, 102, 98, 160, 108, 138, 113, 109, 109, 88, 94, 88, 159, 59, 88, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(20)\nMOTOmove19(101, 83, 98, 20, 137, 150, 62, 95, 119, 96, 100, 88, 105, 142, 76, 81, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(101, 83, 98, 31, 104, 81, 117, 60, 119, 96, 100, 88, 104, 141, 77, 97, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(101, 83, 98, 61, 115, 90, 111, 60, 119, 96, 100, 98, 106, 143, 76, 92, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(101, 83, 98, 61, 115, 90, 111, 60, 119, 96, 100, 123, 114, 186, 41, 120, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(101, 83, 98, 61, 115, 90, 111, 60, 119, 96, 100, 148, 108, 186, 42, 139, 128, 71, 100)\nMOTOwait()\n\n\n-- 右脚幅度\nMOTOsetspeed(30)\nMOTOmove19(101, 83, 98, 61, 115, 90, 111, 60, 119, 96, 100, 98, 106, 143, 76, 92, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(101, 83, 98, 61, 115, 90, 111, 60, 119, 96, 100, 123, 114, 186, 41, 120, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(101, 83, 98, 61, 115, 90, 111, 60, 119, 96, 100, 98, 106, 143, 76, 92, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(101, 83, 98, 61, 115, 90, 111, 60, 119, 96, 100, 123, 114, 186, 41, 120, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(20)\nMOTOmove19(101, 83, 98, 61, 115, 90, 111, 60, 119, 96, 100, 98, 106, 143, 76, 92, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(101, 83, 98, 61, 115, 90, 111, 60, 119, 96, 100, 123, 114, 186, 41, 120, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(81, 60, 98, 51, 114, 94, 111, 60, 148, 190, 10, 88, 112, 186, 39, 95, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(81, 60, 98, 90, 114, 150, 48, 92, 148, 190, 10, 107, 115, 186, 42, 105, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(81, 60, 98, 90, 114, 150, 48, 92, 148, 190, 10, 107, 114, 187, 41, 89, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(81, 60, 98, 92, 111, 150, 37, 105, 148, 190, 10, 107, 115, 186, 42, 105, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(81, 60, 98, 111, 116, 150, 48, 121, 148, 190, 10, 135, 115, 186, 41, 105, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(81, 60, 98, 111, 120, 150, 48, 121, 148, 190, 10, 135, 54, 185, 40, 105, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(81, 60, 98, 111, 120, 150, 48, 121, 148, 190, 10, 136, 41, 184, 10, 105, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(81, 60, 98, 110, 120, 150, 50, 123, 148, 190, 10, 135, 42, 183, 10, 136, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(20)\nMOTOmove19(81, 60, 98, 110, 120, 150, 50, 123, 148, 190, 10, 110, 42, 183, 10, 127, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(10)\nMOTOmove19(81, 60, 98, 110, 131, 150, 56, 104, 148, 190, 10, 112, 40, 167, 10, 103, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(5)\nMOTOmove19(81, 60, 98, 110, 110, 106, 65, 103, 148, 190, 10, 112, 40, 167, 10, 103, 128, 71, 100)\nMOTOwait()\nMOTOsetspeed(30)\nMOTOmove19(80, 30, 100, 100, 93, 55, 124, 100, 120, 170, 100, 100, 107, 145, 76, 100, 128, 71, 100)\nMOTOwait()\nDelayMs(50)\n";
+  return code;
+}
+
+Blockly.Python['1711427133530'] = function(block) {
+  let code = "robot.leju_action('上台阶侧边3')\n";
+  return code;
+}
+

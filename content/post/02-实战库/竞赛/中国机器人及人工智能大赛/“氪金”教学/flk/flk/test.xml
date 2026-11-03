@@ -1,0 +1,1354 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <variables>
+    <variable type="" id="inlWyR.D=TgsVT]t~lJ:">2</variable>
+    <variable type="" id="~Fx=Q$}p/ws:TM@8$Ayx">1</variable>
+  </variables>
+  <block type="1711180098530" id="uUwYHGhO{(USi_C,%5v3" x="608" y="-255">
+    <next>
+      <block type="1711430995697" id="g*nRl}~4bttnAVPeg6ll"></block>
+    </next>
+  </block>
+  <block type="1711269981392" id="jS-sR$I]qjG{T3{XZ=@T" x="-332" y="-203">
+    <next>
+      <block type="1711270347847" id="WV%_xt;M{3WS)Y]pfP;1">
+        <next>
+          <block type="1711270593856" id="}cX4A|#T?;zv(o8$TeWt">
+            <next>
+              <block type="1711271012909" id="fiI)y65LUqi3_gVA2MqO">
+                <next>
+                  <block type="1711271948373" id="xYgwZ@go:/cB3_3mu^Yv"></block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1710239845993" id="^x_)!_,|]Bf}%@^ep6;*" x="-148" y="-210"></block>
+  <block type="aelos_if" id="]b^U;;`/+YfPcg!1f1}m" x="1046" y="-258">
+    <value name="condition">
+      <block type="aelos_compare" id="*uH.%[~rsrI)?I$+$o?E">
+        <field name="OP">JNE</field>
+        <value name="input_1">
+          <block type="variables_get" id="xAf{H~fz3SATFR/zs)m1">
+            <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+          </block>
+        </value>
+        <value name="input_2">
+          <block type="remote_control_button" id=",3t%rO|SUw0311p6Yi0{">
+            <field name="mode">Boxing</field>
+            <field name="key">1</field>
+          </block>
+        </value>
+      </block>
+    </value>
+    <statement name="do">
+      <block type="1711430372158" id="l~.T?Q6.!9xR!zyC=f?~">
+        <next>
+          <block type="1711517769264" id="nnK},E|0PaSyu(iX3rsC">
+            <next>
+              <block type="1713948533029" id="|KqWnViUTUDH[*h9fyMd"></block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="1711348020369" id="Is($ul#eFKy~kF%/n8ub" x="808" y="-243"></block>
+  <block type="1710681902719" id="V16lF$-/O@-`AoF9{o%X" x="-141" y="-102"></block>
+  <block type="1719127599469" id="H|co2.u/wl$bkfNpS+*9" x="663" y="-138"></block>
+  <block type="1711505930918" id="P|*pI_%-|y$1oKh~sF19" x="805" y="-130">
+    <next>
+      <block type="1711427133530" id="AANjKA%Ndo8s#;wexysh"></block>
+    </next>
+  </block>
+  <block type="1711344079271" id="WTWa%fUh~FWKM;vf/V~]" x="-37" y="-75">
+    <next>
+      <block type="1711175294884" id="R1ixys9~@nW:osY5ILGW">
+        <next>
+          <block type="1711275052594" id="Q/55;B3:v~6xC.AI4,EN"></block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="start" id="!JODDDpDPuBO86x3{r0}" deletable="false" x="398" y="-88">
+    <statement name="do">
+      <block type="remote_control" id="^4qIFDyuimEZ+=Q[3YvP">
+        <value name="variable">
+          <block type="variables_get" id="FspGDRK^G4ORMpwz[G=4">
+            <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+          </block>
+        </value>
+        <next>
+          <block type="aelos_if" id="q*2a:=%LCG}eJ;~?t%70">
+            <value name="condition">
+              <block type="aelos_compare" id="]58_f%8/^po:PomAUX%9">
+                <field name="OP">JNE</field>
+                <value name="input_1">
+                  <block type="variables_get" id="R{f+c.uQxTy6[hbH/sM3">
+                    <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+                  </block>
+                </value>
+                <value name="input_2">
+                  <block type="remote_control_button" id="-oaaDI+/k]5$(2)blU`b">
+                    <field name="mode">Perform</field>
+                    <field name="key">LT</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <statement name="do">
+              <block type="1712715135917" id="dkbHO~^.8Ye[Z:SaoNz,"></block>
+            </statement>
+            <next>
+              <block type="aelos_if" id="u@imz%jo]-Mm+%06X~Dx">
+                <value name="condition">
+                  <block type="aelos_compare" id="MgDUz))h1w:V9$}#P0Qy">
+                    <field name="OP">JNE</field>
+                    <value name="input_1">
+                      <block type="variables_get" id="0u`r)tthjej#uibg68Vk">
+                        <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+                      </block>
+                    </value>
+                    <value name="input_2">
+                      <block type="remote_control_button" id="bxHvwnmKrR@mu`XTJtKY">
+                        <field name="mode">Perform</field>
+                        <field name="key">LB</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <statement name="do">
+                  <block type="1748151315592" id="eyqC]]gc7x?i5vn6xX=V"></block>
+                </statement>
+                <next>
+                  <block type="aelos_if" id="+Utk5Ojm9v?0ms5_[Y7s">
+                    <value name="condition">
+                      <block type="aelos_compare" id=",JS,c6S?%=fu4ok$)?;n">
+                        <field name="OP">JNE</field>
+                        <value name="input_1">
+                          <block type="variables_get" id="auT7U5U_ZUFAxbLIED|3">
+                            <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+                          </block>
+                        </value>
+                        <value name="input_2">
+                          <block type="remote_control_button" id="!$+uLG*:W1=0Dg+82[Hm">
+                            <field name="mode">Perform</field>
+                            <field name="key">2</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <statement name="do">
+                      <block type="1749030779536" id="0M^MBs)p(`vxv/!.a.`F"></block>
+                    </statement>
+                    <next>
+                      <block type="aelos_if" id="]:o`SWjAvJzkKYJ6Y$5j">
+                        <value name="condition">
+                          <block type="aelos_compare" id="SzsPz1zhi+ZA*[~W-6.1">
+                            <field name="OP">JNE</field>
+                            <value name="input_1">
+                              <block type="variables_get" id="A[=w8D/xqB]WtpX*hko;">
+                                <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+                              </block>
+                            </value>
+                            <value name="input_2">
+                              <block type="remote_control_button" id="{XOUWwmI0.,GiPhT[gox">
+                                <field name="mode">Perform</field>
+                                <field name="key">4</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <statement name="do">
+                          <block type="1711442483222" id="Pq+#u!DxPrSr_-^[4$`g"></block>
+                        </statement>
+                        <next>
+                          <block type="aelos_if" id="3d=@%0SM6Ed(aB$OUN%v">
+                            <value name="condition">
+                              <block type="aelos_compare" id="o3tV{`D|}jwj3N[J`]*h">
+                                <field name="OP">JNE</field>
+                                <value name="input_1">
+                                  <block type="variables_get" id="lv)}dWI2i(8%xN(~^1Pv">
+                                    <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+                                  </block>
+                                </value>
+                                <value name="input_2">
+                                  <block type="remote_control_button" id="ZiN*VED8M~btbubsn3]X">
+                                    <field name="mode">Perform</field>
+                                    <field name="key">1</field>
+                                  </block>
+                                </value>
+                              </block>
+                            </value>
+                            <statement name="do">
+                              <block type="1752839487126" id="jK*ju.`m6-8p+o-^nF.."></block>
+                            </statement>
+                            <next>
+                              <block type="aelos_if" id="4G.u_aA?B|O3@FlXMW2-">
+                                <value name="condition">
+                                  <block type="aelos_compare" id="z3oSNyHzUN=8.E6BWj[q">
+                                    <field name="OP">JNE</field>
+                                    <value name="input_1">
+                                      <block type="variables_get" id=",SyFc%vAP*#F!D`h?+_O">
+                                        <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+                                      </block>
+                                    </value>
+                                    <value name="input_2">
+                                      <block type="remote_control_button" id="XjX6JfjcI.d4iOpmQDBX">
+                                        <field name="mode">Perform</field>
+                                        <field name="key">B</field>
+                                      </block>
+                                    </value>
+                                  </block>
+                                </value>
+                                <statement name="do">
+                                  <block type="1752839225001" id=",obBKDDin:h%shC$ZmN:"></block>
+                                </statement>
+                                <next>
+                                  <block type="aelos_if" id="qYNB3RT^Ee=H6xJ-r[VM">
+                                    <value name="condition">
+                                      <block type="aelos_compare" id="Ed3]$Bi`WwsvD.?c^4S/">
+                                        <field name="OP">JNE</field>
+                                        <value name="input_1">
+                                          <block type="variables_get" id="q4htR{ifVjb1rr{W-q{B">
+                                            <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+                                          </block>
+                                        </value>
+                                        <value name="input_2">
+                                          <block type="remote_control_button" id="qsnhT(GggXX@qpe+1O.W">
+                                            <field name="mode">Perform</field>
+                                            <field name="key">X</field>
+                                          </block>
+                                        </value>
+                                      </block>
+                                    </value>
+                                    <statement name="do">
+                                      <block type="1752839291360" id="HQj9:[ak9-1*iBL_c)r^"></block>
+                                    </statement>
+                                    <next>
+                                      <block type="aelos_if" id="Jq/nxNOPU#(nz}3@kPjQ">
+                                        <value name="condition">
+                                          <block type="aelos_compare" id="`MTPJvJ`OJM[*L}A(ruP">
+                                            <field name="OP">JNE</field>
+                                            <value name="input_1">
+                                              <block type="variables_get" id="qId,7,Id1iS^2^-N|eSO">
+                                                <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+                                              </block>
+                                            </value>
+                                            <value name="input_2">
+                                              <block type="remote_control_button" id="jJ:zKY9LeKHRR)hj3t2J">
+                                                <field name="mode">Perform</field>
+                                                <field name="key">3</field>
+                                              </block>
+                                            </value>
+                                          </block>
+                                        </value>
+                                        <statement name="do">
+                                          <block type="1752839389966" id=".6R@dgv^LGxs?z1t^jyN"></block>
+                                        </statement>
+                                        <next>
+                                          <block type="aelos_if" id="UM`aj,/JLGU,w!eI/_AZ">
+                                            <value name="condition">
+                                              <block type="aelos_compare" id="^RE-q`7(uy;5IXwI5+yG">
+                                                <field name="OP">JNE</field>
+                                                <value name="input_1">
+                                                  <block type="variables_get" id="7]9Btr0HE`bF52+7tugn">
+                                                    <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+                                                  </block>
+                                                </value>
+                                                <value name="input_2">
+                                                  <block type="remote_control_button" id="r!,ZAobfMxf%YN_qboFv">
+                                                    <field name="mode">Perform</field>
+                                                    <field name="key">Y</field>
+                                                  </block>
+                                                </value>
+                                              </block>
+                                            </value>
+                                            <statement name="do">
+                                              <block type="1711442077594" id="6FN3f{PcB`#I*!7!t0;J"></block>
+                                            </statement>
+                                            <next>
+                                              <block type="aelos_if" id="F%mxctKpY.:p}{}XGJDY">
+                                                <value name="condition">
+                                                  <block type="aelos_compare" id="|uPvUZf^UzCMuq?n-F9g">
+                                                    <field name="OP">JNE</field>
+                                                    <value name="input_1">
+                                                      <block type="variables_get" id="-kMMzf?MZ^KW/{!B{=dF">
+                                                        <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+                                                      </block>
+                                                    </value>
+                                                    <value name="input_2">
+                                                      <block type="remote_control_button" id="[//wL$xlL3f+13vv4T@A">
+                                                        <field name="mode">Perform</field>
+                                                        <field name="key">A</field>
+                                                      </block>
+                                                    </value>
+                                                  </block>
+                                                </value>
+                                                <statement name="do">
+                                                  <block type="1752905316692" id="#kz%Gl||GOiZ:JhNjx8o"></block>
+                                                </statement>
+                                                <next>
+                                                  <block type="aelos_if" id="F~N{v|a_@RjPLz[2VR%e">
+                                                    <value name="condition">
+                                                      <block type="aelos_compare" id="^8oe6G}(aGVH|YA%(F/M">
+                                                        <field name="OP">JNE</field>
+                                                        <value name="input_1">
+                                                          <block type="variables_get" id="KzUXi^:]3]w4vH;wns[X">
+                                                            <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                          </block>
+                                                        </value>
+                                                        <value name="input_2">
+                                                          <block type="remote_control_button" id=";=cLXjQ3bTm!+2`WIqXs">
+                                                            <field name="mode">Perform</field>
+                                                            <field name="key">RB</field>
+                                                          </block>
+                                                        </value>
+                                                      </block>
+                                                    </value>
+                                                    <statement name="do">
+                                                      <block type="1749030041381" id="oy2^SaVOj:5LBWn=r.8u"></block>
+                                                    </statement>
+                                                    <next>
+                                                      <block type="aelos_if" id="MwSRV|W{nNulTMvNgW%s">
+                                                        <value name="condition">
+                                                          <block type="aelos_compare" id="m,/HQfRVN+@:lv8EMKOb">
+                                                            <field name="OP">JNE</field>
+                                                            <value name="input_1">
+                                                              <block type="variables_get" id=".Ay#[Ez^$~`#MAdplQR^">
+                                                                <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                              </block>
+                                                            </value>
+                                                            <value name="input_2">
+                                                              <block type="remote_control_button" id="xWTRGoft}owmM[5j~!Y~">
+                                                                <field name="mode">Perform</field>
+                                                                <field name="key">RT</field>
+                                                              </block>
+                                                            </value>
+                                                          </block>
+                                                        </value>
+                                                        <statement name="do">
+                                                          <block type="1719124134805" id="iLZH3*dqZ#9ig-;o3H*w"></block>
+                                                        </statement>
+                                                        <next>
+                                                          <block type="remote_control" id="_~g-/5n]n^e!/13Oo3KX">
+                                                            <value name="variable">
+                                                              <block type="variables_get" id="yxZrRTYd3maI2.VUEy9]">
+                                                                <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                              </block>
+                                                            </value>
+                                                            <next>
+                                                              <block type="aelos_if" id="L@GW[]Jg0~+,CG$Sc{ie">
+                                                                <value name="condition">
+                                                                  <block type="aelos_compare" id="dg0/Ip}$W,h1-T)hY97P">
+                                                                    <field name="OP">JNE</field>
+                                                                    <value name="input_1">
+                                                                      <block type="variables_get" id="1(zR=DT5q-8dLYe.D;$`">
+                                                                        <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                      </block>
+                                                                    </value>
+                                                                    <value name="input_2">
+                                                                      <block type="remote_control_button" id="@mY:9Z=?,]uak3i|t64+">
+                                                                        <field name="mode">Football</field>
+                                                                        <field name="key">Y</field>
+                                                                      </block>
+                                                                    </value>
+                                                                  </block>
+                                                                </value>
+                                                                <statement name="do">
+                                                                  <block type="1752838858582" id="YT])baQE?00b}4KCcGA9"></block>
+                                                                </statement>
+                                                                <next>
+                                                                  <block type="aelos_if" id="`0G|-L*JTaEu:u*]z7|l">
+                                                                    <value name="condition">
+                                                                      <block type="aelos_compare" id="2Jn3KQ:iD;Fwtl3eV/0U">
+                                                                        <field name="OP">JNE</field>
+                                                                        <value name="input_1">
+                                                                          <block type="variables_get" id="bP%Dj-b!7.!T1M2PGwt[">
+                                                                            <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                          </block>
+                                                                        </value>
+                                                                        <value name="input_2">
+                                                                          <block type="remote_control_button" id="=JKTg1J4HKW/r.!6-;7A">
+                                                                            <field name="mode">Football</field>
+                                                                            <field name="key">A</field>
+                                                                          </block>
+                                                                        </value>
+                                                                      </block>
+                                                                    </value>
+                                                                    <statement name="do">
+                                                                      <block type="1752902611161" id="QmFfIXNZpR4%71UQVe-^"></block>
+                                                                    </statement>
+                                                                    <next>
+                                                                      <block type="aelos_if" id="ZB},kss7^^_qxlY6rws2">
+                                                                        <value name="condition">
+                                                                          <block type="aelos_compare" id="b{``w#$x4H$4R?i:e]f$">
+                                                                            <field name="OP">JNE</field>
+                                                                            <value name="input_1">
+                                                                              <block type="variables_get" id="Y$+N_Lh)?8|e2wDbC@M3">
+                                                                                <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                              </block>
+                                                                            </value>
+                                                                            <value name="input_2">
+                                                                              <block type="remote_control_button" id="{]F4+Y^}}a4a;X,?e2`m">
+                                                                                <field name="mode">Football</field>
+                                                                                <field name="key">4</field>
+                                                                              </block>
+                                                                            </value>
+                                                                          </block>
+                                                                        </value>
+                                                                        <statement name="do">
+                                                                          <block type="1752581102357" id="7uANa]EsCtqvIiV]$p[}"></block>
+                                                                        </statement>
+                                                                        <next>
+                                                                          <block type="aelos_if" id="Pe2NtDiLkHq]Qe$R?O]B">
+                                                                            <value name="condition">
+                                                                              <block type="aelos_compare" id="W$$Q!H8bl^[horXN/HMb">
+                                                                                <field name="OP">JNE</field>
+                                                                                <value name="input_1">
+                                                                                  <block type="variables_get" id="HI$70?tpL^]NDelmJGu~">
+                                                                                    <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                  </block>
+                                                                                </value>
+                                                                                <value name="input_2">
+                                                                                  <block type="remote_control_button" id="e4SuNYbk_moDiK(^^e,H">
+                                                                                    <field name="mode">Football</field>
+                                                                                    <field name="key">2</field>
+                                                                                  </block>
+                                                                                </value>
+                                                                              </block>
+                                                                            </value>
+                                                                            <statement name="do">
+                                                                              <block type="1752581168812" id="4d]G:1$vTC;[p7ZUcy2p"></block>
+                                                                            </statement>
+                                                                            <next>
+                                                                              <block type="aelos_if" id="W54Wj?*lNHX@W3EJO%5|">
+                                                                                <value name="condition">
+                                                                                  <block type="aelos_compare" id="C!CL4Dq{o4T?_BO;+kgy">
+                                                                                    <field name="OP">JNE</field>
+                                                                                    <value name="input_1">
+                                                                                      <block type="variables_get" id="!gTVa%%eVn6p){UTRo;b">
+                                                                                        <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                      </block>
+                                                                                    </value>
+                                                                                    <value name="input_2">
+                                                                                      <block type="remote_control_button" id="6pN9-1Pfu@QIln@b.`b}">
+                                                                                        <field name="mode">Football</field>
+                                                                                        <field name="key">1</field>
+                                                                                      </block>
+                                                                                    </value>
+                                                                                  </block>
+                                                                                </value>
+                                                                                <statement name="do">
+                                                                                  <block type="1752581427936" id="ry.7(JtQwq^Q-e`#/!fo"></block>
+                                                                                </statement>
+                                                                                <next>
+                                                                                  <block type="aelos_if" id="O:MaA}4~uU4Bm)+4H,DQ">
+                                                                                    <value name="condition">
+                                                                                      <block type="aelos_compare" id="P,fQjv96nDm?s6VNq[@,">
+                                                                                        <field name="OP">JNE</field>
+                                                                                        <value name="input_1">
+                                                                                          <block type="variables_get" id=".]4WDdt7Y$j}z[polLSD">
+                                                                                            <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                          </block>
+                                                                                        </value>
+                                                                                        <value name="input_2">
+                                                                                          <block type="remote_control_button" id="Z$(c[?f~+L.U!fU0rmk0">
+                                                                                            <field name="mode">Football</field>
+                                                                                            <field name="key">3</field>
+                                                                                          </block>
+                                                                                        </value>
+                                                                                      </block>
+                                                                                    </value>
+                                                                                    <statement name="do">
+                                                                                      <block type="1752581303345" id="M;0Og)$shGPk~9w?/zJ*"></block>
+                                                                                    </statement>
+                                                                                    <next>
+                                                                                      <block type="aelos_if" id="-@}X~{SN6k;A/]g?9}3T">
+                                                                                        <value name="condition">
+                                                                                          <block type="aelos_compare" id="dVPD3w$YdzpJ-Gt^bOaD">
+                                                                                            <field name="OP">JNE</field>
+                                                                                            <value name="input_1">
+                                                                                              <block type="variables_get" id="|ZYUcoc)5h.]]n|s1x.Y">
+                                                                                                <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                              </block>
+                                                                                            </value>
+                                                                                            <value name="input_2">
+                                                                                              <block type="remote_control_button" id="SK9ZU?b5i817g[3/0K;s">
+                                                                                                <field name="mode">Football</field>
+                                                                                                <field name="key">B</field>
+                                                                                              </block>
+                                                                                            </value>
+                                                                                          </block>
+                                                                                        </value>
+                                                                                        <statement name="do">
+                                                                                          <block type="1752581345831" id="~7~vPY#l]Q#gX6~[mh@*"></block>
+                                                                                        </statement>
+                                                                                        <next>
+                                                                                          <block type="aelos_if" id="$8.|4~V;$2L?AX[.e588">
+                                                                                            <value name="condition">
+                                                                                              <block type="aelos_compare" id="|_b7QqU=c`B:F=C_O4l~">
+                                                                                                <field name="OP">JNE</field>
+                                                                                                <value name="input_1">
+                                                                                                  <block type="variables_get" id="YgQwao_]qH+7W#5![z?|">
+                                                                                                    <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                                  </block>
+                                                                                                </value>
+                                                                                                <value name="input_2">
+                                                                                                  <block type="remote_control_button" id="p%6#p(onfDyPHgU,cL@9">
+                                                                                                    <field name="mode">Football</field>
+                                                                                                    <field name="key">X</field>
+                                                                                                  </block>
+                                                                                                </value>
+                                                                                              </block>
+                                                                                            </value>
+                                                                                            <statement name="do">
+                                                                                              <block type="1752581376733" id="fyu[$:W3FxaU0EUm(B(D"></block>
+                                                                                            </statement>
+                                                                                            <next>
+                                                                                              <block type="aelos_if" id="9bvmU:Uu#)29T48U4`h*">
+                                                                                                <value name="condition">
+                                                                                                  <block type="aelos_compare" id="Mg/yp%=,UW$Ts6Z7uaDB">
+                                                                                                    <field name="OP">JNE</field>
+                                                                                                    <value name="input_1">
+                                                                                                      <block type="variables_get" id="9LPYq/Jx6i`d81Me$JK}">
+                                                                                                        <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                                      </block>
+                                                                                                    </value>
+                                                                                                    <value name="input_2">
+                                                                                                      <block type="remote_control_button" id="cBsD+qh2rQ|Q+][N[Li{">
+                                                                                                        <field name="mode">Boxing</field>
+                                                                                                        <field name="key">1</field>
+                                                                                                      </block>
+                                                                                                    </value>
+                                                                                                  </block>
+                                                                                                </value>
+                                                                                                <statement name="do">
+                                                                                                  <block type="1752581427936" id="%5vS{vd-=sYk?g*X_u5w"></block>
+                                                                                                </statement>
+                                                                                                <next>
+                                                                                                  <block type="aelos_if" id="Ilbhp1~cYv6P4,23aJU(">
+                                                                                                    <value name="condition">
+                                                                                                      <block type="aelos_compare" id="Ww}~rZ}^QU)+fg]ekIYa">
+                                                                                                        <field name="OP">JNE</field>
+                                                                                                        <value name="input_1">
+                                                                                                          <block type="variables_get" id="W#OHd8R0r0{buHwDq+ax">
+                                                                                                            <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                                          </block>
+                                                                                                        </value>
+                                                                                                        <value name="input_2">
+                                                                                                          <block type="remote_control_button" id="^9)[9f3NzJTXL/4eYMAr">
+                                                                                                            <field name="mode">Boxing</field>
+                                                                                                            <field name="key">3</field>
+                                                                                                          </block>
+                                                                                                        </value>
+                                                                                                      </block>
+                                                                                                    </value>
+                                                                                                    <statement name="do">
+                                                                                                      <block type="1752581477738" id="J%MFaF@+7avy=27ZcKcm"></block>
+                                                                                                    </statement>
+                                                                                                    <next>
+                                                                                                      <block type="aelos_if" id="$r,:;QvCIR:g~chX{`HL">
+                                                                                                        <value name="condition">
+                                                                                                          <block type="aelos_compare" id="^,+`Ga^Mp(G6qyKR*F09">
+                                                                                                            <field name="OP">JNE</field>
+                                                                                                            <value name="input_1">
+                                                                                                              <block type="variables_get" id="TWjn7sqd=`+pZ~*~9XRm">
+                                                                                                                <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                                              </block>
+                                                                                                            </value>
+                                                                                                            <value name="input_2">
+                                                                                                              <block type="remote_control_button" id="P[KbY/%imXPPjm(9NW=*">
+                                                                                                                <field name="mode">Boxing</field>
+                                                                                                                <field name="key">Y</field>
+                                                                                                              </block>
+                                                                                                            </value>
+                                                                                                          </block>
+                                                                                                        </value>
+                                                                                                        <statement name="do">
+                                                                                                          <block type="1752580840732" id="s%6C@3cHCY:(3:[KHK8f"></block>
+                                                                                                        </statement>
+                                                                                                        <next>
+                                                                                                          <block type="aelos_if" id="l;-DrMX!%ocl_9zcWF9V">
+                                                                                                            <value name="condition">
+                                                                                                              <block type="aelos_compare" id="WjFv$W`526b~0N}RatD7">
+                                                                                                                <field name="OP">JNE</field>
+                                                                                                                <value name="input_1">
+                                                                                                                  <block type="variables_get" id=")cD_[:,WD]y]u}KCLy_9">
+                                                                                                                    <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                                                  </block>
+                                                                                                                </value>
+                                                                                                                <value name="input_2">
+                                                                                                                  <block type="remote_control_button" id="qPtA5yh7/$~$]`)]gwUK">
+                                                                                                                    <field name="mode">Boxing</field>
+                                                                                                                    <field name="key">A</field>
+                                                                                                                  </block>
+                                                                                                                </value>
+                                                                                                              </block>
+                                                                                                            </value>
+                                                                                                            <statement name="do">
+                                                                                                              <block type="1752732230864" id="KGlv;I:6/Zje$_{$(,hU"></block>
+                                                                                                            </statement>
+                                                                                                            <next>
+                                                                                                              <block type="aelos_if" id="#cv@~b1ml2vIljhW:eHt">
+                                                                                                                <value name="condition">
+                                                                                                                  <block type="aelos_compare" id="jP1KmLo%7*L:1cFCq.l(">
+                                                                                                                    <field name="OP">JNE</field>
+                                                                                                                    <value name="input_1">
+                                                                                                                      <block type="variables_get" id="mUkpJ-.TV}#BvWeC`HwP">
+                                                                                                                        <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                                                      </block>
+                                                                                                                    </value>
+                                                                                                                    <value name="input_2">
+                                                                                                                      <block type="remote_control_button" id="!gf/_6wO:T7(SC0Tx3#I">
+                                                                                                                        <field name="mode">Boxing</field>
+                                                                                                                        <field name="key">4</field>
+                                                                                                                      </block>
+                                                                                                                    </value>
+                                                                                                                  </block>
+                                                                                                                </value>
+                                                                                                                <statement name="do">
+                                                                                                                  <block type="1752910417505" id="Q7L*+OP/QcBy81c!1s@q"></block>
+                                                                                                                </statement>
+                                                                                                                <next>
+                                                                                                                  <block type="aelos_if" id="Eg|Kr,:@)GQ2B+GC)R:,">
+                                                                                                                    <value name="condition">
+                                                                                                                      <block type="aelos_compare" id="~IFcGv-dELDV$~wXx6e`">
+                                                                                                                        <field name="OP">JNE</field>
+                                                                                                                        <value name="input_1">
+                                                                                                                          <block type="variables_get" id="R3SA:7ae`/EKm6:1svFC">
+                                                                                                                            <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                                                          </block>
+                                                                                                                        </value>
+                                                                                                                        <value name="input_2">
+                                                                                                                          <block type="remote_control_button" id="tvm{B_aQ)4Mo-d`-,7Mg">
+                                                                                                                            <field name="mode">Boxing</field>
+                                                                                                                            <field name="key">2</field>
+                                                                                                                          </block>
+                                                                                                                        </value>
+                                                                                                                      </block>
+                                                                                                                    </value>
+                                                                                                                    <statement name="do">
+                                                                                                                      <block type="1752896471973" id="P/2rzLxn+OdpbP7=7#k9"></block>
+                                                                                                                    </statement>
+                                                                                                                    <next>
+                                                                                                                      <block type="aelos_if" id="kH-e,9R3CX9]Jv/!UIUd">
+                                                                                                                        <value name="condition">
+                                                                                                                          <block type="aelos_compare" id="3-qrR2wA1^|]Buxye{`x">
+                                                                                                                            <field name="OP">JNE</field>
+                                                                                                                            <value name="input_1">
+                                                                                                                              <block type="variables_get" id="qm:Je:xz4l*JR%QXwMns">
+                                                                                                                                <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                                                              </block>
+                                                                                                                            </value>
+                                                                                                                            <value name="input_2">
+                                                                                                                              <block type="remote_control_button" id="41:}OI!M=@7lDu;[}z$-">
+                                                                                                                                <field name="mode">Boxing</field>
+                                                                                                                                <field name="key">X</field>
+                                                                                                                              </block>
+                                                                                                                            </value>
+                                                                                                                          </block>
+                                                                                                                        </value>
+                                                                                                                        <statement name="do">
+                                                                                                                          <block type="1752842629148" id="P?9)r3Rnz*hRBA@%{wBD"></block>
+                                                                                                                        </statement>
+                                                                                                                        <next>
+                                                                                                                          <block type="aelos_if" id="ctz3Pp!vmT_r8U0;l5IK">
+                                                                                                                            <value name="condition">
+                                                                                                                              <block type="aelos_compare" id="YNqnAtht6ivPOb(3Re6M">
+                                                                                                                                <field name="OP">JNE</field>
+                                                                                                                                <value name="input_1">
+                                                                                                                                  <block type="variables_get" id="3:A/9QkaYxZpwl%X*FLK">
+                                                                                                                                    <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                                                                                                                                  </block>
+                                                                                                                                </value>
+                                                                                                                                <value name="input_2">
+                                                                                                                                  <block type="remote_control_button" id="svl7e)Rg0Jb#W|?Wc`7E">
+                                                                                                                                    <field name="mode">Boxing</field>
+                                                                                                                                    <field name="key">B</field>
+                                                                                                                                  </block>
+                                                                                                                                </value>
+                                                                                                                              </block>
+                                                                                                                            </value>
+                                                                                                                            <statement name="do">
+                                                                                                                              <block type="1752582050070" id="Xy;}nVXBN~VWQEM#~KAg"></block>
+                                                                                                                            </statement>
+                                                                                                                          </block>
+                                                                                                                        </next>
+                                                                                                                      </block>
+                                                                                                                    </next>
+                                                                                                                  </block>
+                                                                                                                </next>
+                                                                                                              </block>
+                                                                                                            </next>
+                                                                                                          </block>
+                                                                                                        </next>
+                                                                                                      </block>
+                                                                                                    </next>
+                                                                                                  </block>
+                                                                                                </next>
+                                                                                              </block>
+                                                                                            </next>
+                                                                                          </block>
+                                                                                        </next>
+                                                                                      </block>
+                                                                                    </next>
+                                                                                  </block>
+                                                                                </next>
+                                                                              </block>
+                                                                            </next>
+                                                                          </block>
+                                                                        </next>
+                                                                      </block>
+                                                                    </next>
+                                                                  </block>
+                                                                </next>
+                                                              </block>
+                                                            </next>
+                                                          </block>
+                                                        </next>
+                                                      </block>
+                                                    </next>
+                                                  </block>
+                                                </next>
+                                              </block>
+                                            </next>
+                                          </block>
+                                        </next>
+                                      </block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+  <block type="1710304909799" id="%h-0?8JuGC2aXEY)-R?m" x="-183" y="-55">
+    <next>
+      <block type="1710303897093" id="%j|c0OiCA;49X8g}o1n["></block>
+    </next>
+  </block>
+  <block type="1719127019459" id="0xx9S-}U)RhHbY;D76Cr" x="546" y="-78"></block>
+  <block type="aelos_if" id="B$#Qg*d+o!OjUMP,nhh+" x="1085" y="-92">
+    <value name="condition">
+      <block type="aelos_compare" id="bD4m%*?c+`~xwiur4z|]">
+        <field name="OP">JNE</field>
+        <value name="input_1">
+          <block type="variables_get" id="=o-MFVti{?GBo(97j;Z6">
+            <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+          </block>
+        </value>
+        <value name="input_2">
+          <block type="remote_control_button" id="}$tpr~qe0^FZ.X87xADj">
+            <field name="mode">Boxing</field>
+            <field name="key">3</field>
+          </block>
+        </value>
+      </block>
+    </value>
+    <next>
+      <block type="aelos_if" id="g41A[.5R/xD`+BXl6F[F">
+        <value name="condition">
+          <block type="aelos_compare" id="Q=s/ue0dXEnC)06)k[/X">
+            <field name="OP">JNE</field>
+            <value name="input_1">
+              <block type="variables_get" id="jS0nfTcbGsMAvt`@U)#*">
+                <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+              </block>
+            </value>
+            <value name="input_2">
+              <block type="remote_control_button" id="#cPK#I?vib-:U;fJ_2UR">
+                <field name="mode">Boxing</field>
+                <field name="key">3</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <next>
+          <block type="aelos_if" id="JQkB.?Tk/g2?+]-[f|t-">
+            <value name="condition">
+              <block type="aelos_compare" id="/+776MuZKy3Z!03t=wSf">
+                <field name="OP">JNE</field>
+                <value name="input_1">
+                  <block type="variables_get" id="j?b)r@cII4WW-_10?0N^">
+                    <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                  </block>
+                </value>
+                <value name="input_2">
+                  <block type="remote_control_button" id=";gD3EHs1388WHOu+R@+=">
+                    <field name="mode">Boxing</field>
+                    <field name="key">3</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <next>
+              <block type="aelos_if" id="pqWVK71(dWo6M_tt!]F_">
+                <value name="condition">
+                  <block type="aelos_compare" id="4p]hi^}gIKSpkP4%z#vV">
+                    <field name="OP">JNE</field>
+                    <value name="input_1">
+                      <block type="variables_get" id="*%AWhjSgvkS^:gok2kP+">
+                        <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+                      </block>
+                    </value>
+                    <value name="input_2">
+                      <block type="remote_control_button" id="a3lGY,9CQwuAVG|hN2Cc">
+                        <field name="mode">Boxing</field>
+                        <field name="key">Y</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <statement name="do">
+                  <block type="1711518852988" id="|#$3w}uJ;#G!h:pHJ?|k"></block>
+                </statement>
+                <next>
+                  <block type="aelos_if" id="g+FhCO9PB~n{]7Yu87rS">
+                    <value name="condition">
+                      <block type="aelos_compare" id="HX?(uX*=?3-NqDc[EuBS">
+                        <field name="OP">JNE</field>
+                        <value name="input_1">
+                          <block type="variables_get" id="=|.ABSxR#oyNL}M|EL}3">
+                            <field name="VAR" id="~Fx=Q$}p/ws:TM@8$Ayx" variabletype="">1</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <statement name="do">
+                      <block type="1711518668051" id="~w?rP%c;P++{!(_#z?v}"></block>
+                    </statement>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1712632891400" id=")VL#0.a~5}?lb|3ej?X@" x="748" y="-52"></block>
+  <block type="1712551720231" id="9p,gO79)HKI+=}hcETj`" x="919" y="-52"></block>
+  <block type="1712714813486" id="h.QAPcQ1=Kj.Hx1BNweg" x="158" y="7"></block>
+  <block type="1711342375267" id="Nh6;rlysCdz:zrb!3,Xr" x="939" y="-32">
+    <next>
+      <block type="1711177930910" id="_FxZd,9^n289^9sse!CD">
+        <next>
+          <block type="1711347813870" id="1@LqI1C}PYds_S%w29vP">
+            <next>
+              <block type="1711429255044" id="(P@~qM*fpxpRYICLy`%b"></block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1748151100831" id="[UDl!TAB@lv/C@xZDN$x" x="306" y="14">
+    <next>
+      <block type="1748263550719" id="yf6hcvn8$E~}N%yW6RX0"></block>
+    </next>
+  </block>
+  <block type="1711512085927" id="b$gt*3+)lT(V8oh7$LGA" x="1003" y="6">
+    <next>
+      <block type="1711512085927" id="+t1(aQ:{6%l!4!x=R,G0">
+        <next>
+          <block type="1711512320700" id="pVSgag(qR[w~0[g$I]K1">
+            <next>
+              <block type="1711512510674" id="^~#yX$O=y3F@st(czgE-">
+                <next>
+                  <block type="1712633654109" id="9_2.,l^38yd7[50]phyg">
+                    <next>
+                      <block type="1712633401840" id="_vm{/OX4[e,=}~8`Kj9m">
+                        <next>
+                          <block type="1712633808778" id="TZEFs^Rwi|6i,Xge[2D)">
+                            <next>
+                              <block type="1712635960901" id="JMTByto:H^X5GC)eLu@`">
+                                <next>
+                                  <block type="1712658491916" id="I2c)hi/oSAiV1W5iW)i+">
+                                    <next>
+                                      <block type="1712658852120" id=",uX+b9TmQ^F{1=Z*8KMg"></block>
+                                    </next>
+                                  </block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1711344124295" id="`dgQm;BXLOp#JUEhc6=b" x="-33" y="63"></block>
+  <block type="1710339085391" id="fSZMclO/LZA!OPC%;1~-" x="-357" y="103">
+    <next>
+      <block type="1710421367219" id="l/d+=kU?^=!DJnRNTe51"></block>
+    </next>
+  </block>
+  <block type="1711430372158" id="9?O/,=;5FvRE)%f(c0tk" x="890" y="44">
+    <next>
+      <block type="1711430372158" id="{g!t3fnkw^e_Uj#BbmDh"></block>
+    </next>
+  </block>
+  <block type="1711342832136" id="l6e5US9;R)L:%oM5BefE" x="-9" y="112">
+    <next>
+      <block type="1711346702211" id="hHWH@@@tFVGQs`%|kE}|">
+        <next>
+          <block type="1711345707087" id=";x-JZ4jo31s9VLe+OJpF">
+            <next>
+              <block type="1711347010817" id="K-):XRO!0u_Xv(?4|Wdm">
+                <next>
+                  <block type="1711347244495" id="ibR_Bv`o,|mt@$#fU2~i">
+                    <next>
+                      <block type="1711347667600" id="zxg4S`K5_wVnM(_7^r`_">
+                        <next>
+                          <block type="1711347244495" id="Q`+W2%4#Y@WGi8[;@`{-">
+                            <next>
+                              <block type="1711347244495" id="{F:]N-vNPMmz2B$DRP~G">
+                                <next>
+                                  <block type="1711347244495" id="=zu,9:Wr!-YqFvlH-|M4"></block>
+                                </next>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1710334976603" id="9uoyOugdRU0!gxsgHqH3" x="-189" y="127">
+    <next>
+      <block type="1710336543191" id="FaTU718s3[1F%uoSqfd~">
+        <next>
+          <block type="1710684023060" id="mu{w1X4CDxHids~-B]he">
+            <next>
+              <block type="1710424692297" id="f-w!(:gFfd1WA1B|(m?|"></block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1712715460511" id="hZmuwOY!Cnzz$AD1;@Ou" x="111" y="145">
+    <next>
+      <block type="1711512789933" id="k,q+T:+@+yUeuQ(lXoPK">
+        <next>
+          <block type="1711518547621" id="F`=LrYtgHL|g080;+;~|">
+            <next>
+              <block type="1711517769264" id="(jmAR!hInNj$i}3R59j-">
+                <next>
+                  <block type="1711518547621" id="Jt6n|a?858$_aw)zkQVW"></block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1710339461304" id="H.}s|@$o.1^$2V_t{KeC" x="-360" y="204">
+    <next>
+      <block type="1710684196438" id="{lF%!M0EHDNsZ(M`.fzb">
+        <next>
+          <block type="1710764659862" id="`#FM,U^.*}$+7vwTIv#/">
+            <next>
+              <block type="1710681689696" id="y^wuM93deNAj(AdE(9QR">
+                <next>
+                  <block type="1710338269163" id="FT3n9]*Fdt0q-O5/=]hi">
+                    <next>
+                      <block type="1710681399069" id="uzfeg(D];b~pB$zi!U%@"></block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1713952302267" id="*J0G?[e{rGcimE4n:Lx`" x="240" y="189"></block>
+  <block type="1711442869682" id="Q}xnhb0$v6,L*MrzW,17" x="245" y="272"></block>
+  <block type="1711431218828" id="}p^o1Tam;yzX!vLEzo#l" x="973" y="253">
+    <next>
+      <block type="1747818499673" id="d!Y0oqFku^%yN#L}~%*="></block>
+    </next>
+  </block>
+  <block type="1747993876281" id="9uj0~MlP~QW+jRB$Ci6." x="156" y="339">
+    <next>
+      <block type="1719143377638" id="6;I_-,y2R|7u$R;[3sB9"></block>
+    </next>
+  </block>
+  <block type="1711261838846" id="kt2Nr41rhcr9C=L!8}s." x="1175" y="316">
+    <next>
+      <block type="1711440016863" id="Yk#g^yk~;[E^5zQ-FuZf">
+        <next>
+          <block type="1711440056030" id="smUSE(ES,e3_@Ae)PUIr">
+            <next>
+              <block type="1711443533159" id="rh/a]yjOKMPXMKIPDv39">
+                <next>
+                  <block type="1711440985897" id="Nj+ANs,wjB@IU7%uPUdU">
+                    <next>
+                      <block type="1711259057734" id="L}lrDF6$P.kCh4m@I7f7"></block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1711096067753" id="(B`WpQLOz,TkQR!DtOf4" x="8" y="386">
+    <next>
+      <block type="1710305722100" id="na*Ihpk[x);!^(2~A^Ac"></block>
+    </next>
+  </block>
+  <block type="1711169628738" id="HVy@.)3I:STkTsRzMfNi" x="-213" y="406">
+    <next>
+      <block type="1711177004625" id="h`IsIrvq;ae!}H51ntW3">
+        <next>
+          <block type="1711174241267" id="C,$UMezHO_,bGEc$aOQp"></block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1748149541387" id="Lef@]Yre[D]QHIr:Ww.Y" x="945" y="378"></block>
+  <block type="1711443479313" id="+n5h^k`Xyr@;aDoXHH3r" x="151" y="426">
+    <next>
+      <block type="1719143182488" id="TghA}N2N/+?ZfR9om$6Z"></block>
+    </next>
+  </block>
+  <block type="1713945245146" id="7t]rY)wAm(JO=yy99=j8" x="269" y="428"></block>
+  <block type="1711274388227" id="}ciT[?1B{.iD0X7g+#ea" x="1104" y="410"></block>
+  <block type="1749217432407" id="s~At0lk^}XR|#9`[ovDn" x="1348" y="400">
+    <next>
+      <block type="1749217450613" id="tjHS=P+GHSj_Mm`7,}Q;"></block>
+    </next>
+  </block>
+  <block type="1710684923140" id="c(M|+TJtu.w2l|7rtz+k" x="928" y="427"></block>
+  <block type="1748150158421" id="~QA#,,mH5p]Nv;~n%?/p" x="1040" y="425"></block>
+  <block type="1711442652325" id="C^~(^ZcuUDH0p-64LiOi" x="6" y="485"></block>
+  <block type="1711443390496" id="dlnnzm%G+vz[!?Z[X;oL" x="174" y="518">
+    <next>
+      <block type="1719142066908" id="rVC$t#bg[*mdi-5@C_d`"></block>
+    </next>
+  </block>
+  <block type="1711441077666" id="F:SZRYX`i$1w6EP9-x.]" x="300" y="516"></block>
+  <block type="1711096138807" id="HQGl/FSwAT6Vk@dsvR=i" x="42" y="535"></block>
+  <block type="1719142277430" id="q|h/nA^(w+CPM!Ic$+RV" x="1102" y="506"></block>
+  <block type="1711337930138" id="w^c_X-]YZp~-%PJx`!(~" x="1021" y="519"></block>
+  <block type="1719126545343" id="+z~|4m{y[df*@~p3#`2I" x="226" y="581"></block>
+  <block type="1711338295385" id="U:?6xHR4+L[3T.H|T!nk" x="1007" y="576"></block>
+  <block type="1711443287147" id="s^VJWo5=FgP]b+v2~!/C" x="-152" y="648"></block>
+  <block type="1711443390496" id="|LWtu~m^35V|cCzj/lmX" x="175" y="637"></block>
+  <block type="remote_control_button" id="9KCF)]t*7E_cVEq~U]1j" x="1427" y="578">
+    <field name="mode">Boxing</field>
+    <field name="key">A</field>
+  </block>
+  <block type="1711262252624" id="W4phpaps#TbyPE}wKoHL" x="47" y="680">
+    <next>
+      <block type="1711262399061" id="d!d|F]kHz8X{AWI$?Lc["></block>
+    </next>
+  </block>
+  <block type="1749029864726" id="6@N2t$($Dc92jL!pAj4m" x="1198" y="631"></block>
+  <block type="1752902435690" id="p8:6qsS77SSNXN6)%L3o" x="989" y="645"></block>
+  <block type="1749030573667" id="i:;)QsDnQ(W!k$*oR9zD" x="933" y="671"></block>
+  <block type="1710307416719" id="c^{S(5q24jl`@mIJkK_8" x="286" y="719"></block>
+  <block type="1752839925576" id="t+SEzaAJ1#;x0xlcw^_^" x="857" y="705"></block>
+  <block type="1711444167087" id="HI*|!8#G{`::#4a~N;c%" x="250" y="754">
+    <next>
+      <block type="1711259381891" id="3%km%sQ{S7Et;fiVN/#X"></block>
+    </next>
+  </block>
+  <block type="1719124122690" id="+p6$iIrjyFUr/T4k.Q%w" x="288" y="836"></block>
+  <block type="1749030527097" id="l,kH#wZ+j-Sis{{wFYai" x="932" y="816"></block>
+  <block type="1711262925857" id="]y[%c}ALqRGM`CE=_s_;" x="1046" y="847"></block>
+  <block type="1719138675327" id="qP2BXM6W/thC;hI;zUv|" x="204" y="918"></block>
+  <block type="1711339011042" id="7+kd3v-RZr9jX?tt0hNc" x="644" y="896"></block>
+  <block type="1752580840732" id=";c;Z8zI2E%C-(z-pdNOC" x="996" y="924"></block>
+  <block type="1711351616249" id="X4Z^IVG2czt4PbwdUz?[" x="189" y="1012"></block>
+  <block type="1752670882309" id="#Wi$)y}pebI%4YY#qpHG" x="976" y="979"></block>
+  <block type="1752581019756" id="44!oV^W=s{+;ScQ/pc%L" x="565" y="1054"></block>
+  <block type="1751892059410" id="hP.Me*mkaXG}Uf6eSmdi" x="236" y="1077"></block>
+  <block type="1751892590667" id="QyGYiYCwP@/vhdKsX+yk" x="195" y="1103"></block>
+  <block type="1711173425441" id="KPn0VlsZdJ|X9RWato1U" x="1022" y="1091">
+    <next>
+      <block type="1711351523340" id="Kz{oqAMtIm`0Ot0XBFrk"></block>
+    </next>
+  </block>
+  <block type="1713948389814" id="K}AgF7!2Y3+SX92HyNWI" x="-154" y="1169"></block>
+  <block type="1751893509496" id="IGm6N9P4o-4Njf+P_4BF" x="195" y="1170"></block>
+  <block type="1713945458983" id="(#Q/-?WJn8GiVRIldH8u" x="-49" y="1239"></block>
+  <block type="1711427323129" id="MH#L*@Y7hn$a0FXUb]B2" x="277" y="1238"></block>
+  <block type="1711173589106" id="m=*pFdh`l8rEya7S;;7y" x="885" y="1207"></block>
+  <block type="1752581252779" id="b(%UDic@Y`r2MSk@?B:@" x="1327" y="1192"></block>
+  <block type="1719134350466" id="C@NiHz^6J6k^`Ju*G%OJ" x="-24" y="1281"></block>
+  <block type="1751972714933" id=";f)tZh#Qz2eCU1D?t3|K" x="192" y="1284"></block>
+  <block type="1711173908226" id="-3fi:MSdO{Voi*%b2wJn" x="892" y="1256"></block>
+  <block type="1747910119127" id="g){{aFU].;j31o;$E25P" x="294" y="1342"></block>
+  <block type="1711174769260" id="%IuQ^2PS/Tn`p8j@;S7H" x="121" y="1359"></block>
+  <block type="1711174892098" id="5^*v%34fKhtyA6JM7`G~" x="860" y="1324">
+    <next>
+      <block type="1711445671813" id="2@N[Ih?C16t06XXjsC+r">
+        <next>
+          <block type="1711509761359" id="YTJPU{}7X?f@K=+4)`ix"></block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="aelos_if" id="iq15g}c7=m#xpoQ*Mz%f" x="1046" y="1330">
+    <value name="condition">
+      <block type="aelos_compare" id="i5?xCzJm5:6M:4]ZxT01">
+        <field name="OP">JNE</field>
+        <value name="input_1">
+          <block type="variables_get" id="ik)niZVPi~%=(N9vl85b">
+            <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+          </block>
+        </value>
+        <value name="input_2">
+          <block type="remote_control_button" id="_s%Qju6-f{3eD#s0CCGX">
+            <field name="mode">Boxing</field>
+            <field name="key">1</field>
+          </block>
+        </value>
+      </block>
+    </value>
+    <statement name="do">
+      <block type="1711510211879" id="Zp_*),9n3h)nO7nKA4fj"></block>
+    </statement>
+    <next>
+      <block type="aelos_if" id="M_)j[=tQl!U2J*-]y{w7">
+        <value name="condition">
+          <block type="aelos_compare" id="q:(s-oWH+?}JHJE~3IG_">
+            <field name="OP">JNE</field>
+            <value name="input_1">
+              <block type="variables_get" id="j($`tM3P7zC}9+A{(m51">
+                <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+              </block>
+            </value>
+            <value name="input_2">
+              <block type="remote_control_button" id="fG{922C6Z+#q0*}L}7R0">
+                <field name="mode">Boxing</field>
+                <field name="key">2</field>
+              </block>
+            </value>
+          </block>
+        </value>
+        <statement name="do">
+          <block type="1711517169420" id="r#^+(MC2*bLgAIDfupVC"></block>
+        </statement>
+        <next>
+          <block type="aelos_if" id="L$A]%I*rKO`0e@B[ZrJ3">
+            <value name="condition">
+              <block type="aelos_compare" id="BWfD{/ozOl?@Kp?73kl[">
+                <field name="OP">JNE</field>
+                <value name="input_1">
+                  <block type="variables_get" id="q9?Y`Ne7x!4se/OWU#Uk">
+                    <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                  </block>
+                </value>
+                <value name="input_2">
+                  <block type="remote_control_button" id="?8-Gh0nAq7):)8cPo*c6">
+                    <field name="mode">Boxing</field>
+                    <field name="key">4</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <statement name="do">
+              <block type="1711517453106" id="Bu$t$p3xBneAoBQE2~(S"></block>
+            </statement>
+            <next>
+              <block type="aelos_if" id="Qdt;kZvDqAfcJ9SfY~~J">
+                <value name="condition">
+                  <block type="aelos_compare" id="A4d9d`(Fx#h^P^d_)|v=">
+                    <field name="OP">JNE</field>
+                    <value name="input_1">
+                      <block type="variables_get" id="h%x9P@g[(g]/#}RC2hQF">
+                        <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                      </block>
+                    </value>
+                    <value name="input_2">
+                      <block type="remote_control_button" id="qx2]r4j*(5r*ow!wPIDK">
+                        <field name="mode">Boxing</field>
+                        <field name="key">3</field>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <statement name="do">
+                  <block type="1711510310755" id="IMv^Zqkd~h|7eJ|]mNh4"></block>
+                </statement>
+                <next>
+                  <block type="aelos_if" id="}qucvi_9:i]|0LzK]S**">
+                    <value name="condition">
+                      <block type="aelos_compare" id="42jv|q2XnP3s61,7?25G">
+                        <field name="OP">JNE</field>
+                        <value name="input_1">
+                          <block type="variables_get" id="Y{DV7(}m!uSkh75@))d#">
+                            <field name="VAR" id="inlWyR.D=TgsVT]t~lJ:" variabletype="">2</field>
+                          </block>
+                        </value>
+                        <value name="input_2">
+                          <block type="remote_control_button" id="*aOp.{2j)w*ccM2w/RBw">
+                            <field name="mode">Boxing</field>
+                            <field name="key">A</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <statement name="do">
+                      <block type="1711277329696" id=".9b+1gJ%T;ce{3=T9-5e"></block>
+                    </statement>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1711173992980" id="}g^_;`9*gT?#;{1BM-%O" x="489" y="1392"></block>
+  <block type="1711174892098" id="!c$~ia|q^2$U2(iy8tR_" x="132" y="1425"></block>
+  <block type="1711173992980" id="L7VE/9,azviHhEdfr]a1" x="201" y="1427"></block>
+  <block type="1748149671675" id="Hw}Xl?^|Yg8,%FxTy!w^" x="905" y="1406"></block>
+  <block type="1748150610648" id="$}0^_xR9ep:VGR}xbsc7" x="886" y="1444"></block>
+  <block type="1711446132948" id="70D]Mk(~1oY:S_L8Gd~5" x="98" y="1488"></block>
+  <block type="1713945558676" id="ITxyteip?XZXY5to)6]d" x="227" y="1482"></block>
+  <block type="1752578780707" id="68137B*!-S3+WMMP9bm[" x="314" y="1487"></block>
+  <block type="1713945528542" id="3)tiM5:Fu0aS+z*,U:#V" x="316" y="1547"></block>
+  <block type="1711509106619" id="u{9}.BuqZ!y`HDbDH)m)" x="889" y="1524">
+    <next>
+      <block type="1711510931058" id="DQL:.P)q6203SJ+W:g2o">
+        <next>
+          <block type="1711509517230" id="R$QvXsyN#[s2F9w~PwtX">
+            <next>
+              <block type="1711509734132" id="Va$}17*ewN*D8FUDUa8Z">
+                <next>
+                  <block type="1711515541618" id="ziB[2J4rbN1NO1@Nf8Rk">
+                    <next>
+                      <block type="1711511765981" id="X-%W2m3QgC@(#6](Py(W">
+                        <next>
+                          <block type="1711509761359" id="7ZrM/B6!{kt@t%aGv$_f"></block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1712716972867" id="F`DVi]*Lc4v=.n{=zvRO" x="256" y="1643"></block>
+  <block type="1711516937493" id="M8i#4o@0==Z`t#=zkls^" x="86" y="1661"></block>
+  <block type="1752579279670" id="*KDwY(sC.8ZjuoUdP|3U" x="325" y="1668">
+    <next>
+      <block type="1749022501634" id="9}V|Jm2270o-HP*5S%*Q">
+        <next>
+          <block type="1748947530144" id="L04`#+cO7AosA,a2No`$"></block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1711509734132" id=")]{%%#7~?W0x%=Rzpt%:" x="140" y="1748"></block>
+  <block type="1712716435426" id="htTUz{9GTQU,%wk/A(K5" x="228" y="1754"></block>
+  <block type="1751892926890" id="2n^0U~aJv4=AurAr()xw" x="948" y="1725"></block>
+  <block type="1748265743313" id="Hdzh/5a^o/zMNLQ3](p5" x="1094" y="1773"></block>
+  <block type="1748948721050" id="RvjVML~Rzpeg(nios:AQ" x="302" y="1820"></block>
+  <block type="1747910119127" id="#k6aip/kO*N$(n?o[4k)" x="936" y="1792"></block>
+  <block type="1748150610648" id="dcBlI834v@I(~8$^TK7#" x="311" y="1825"></block>
+  <block type="1752731424437" id="@UOKaUiv^kAmOB.ndMtL" x="888" y="1801"></block>
+  <block type="1752670882309" id=":v.5k,!aCc[.Z/n__td]" x="695" y="1814"></block>
+  <block type="1752731961206" id="nIn),4LB-kpIQ(6JtR7^" x="995" y="1807"></block>
+  <block type="1711515428378" id="qjA!v{ilVE7?pgkY0N4J" x="169" y="1868">
+    <next>
+      <block type="1711509734132" id="%6PG9/uJ~v%ufF52!P-B"></block>
+    </next>
+  </block>
+  <block type="1748950358974" id="atO,P_g9-mXOOqs0}}s!" x="1076" y="1822"></block>
+  <block type="1752580122938" id="2U_W@fVZ*wd`:Ni#?=[+" x="274" y="1866"></block>
+  <block type="1752581878222" id="`r-PVtvI;z7M%3?oR5Oa" x="581" y="1879"></block>
+  <block type="1748149671675" id="r-lU=qD`g}e$M%_)J$W3" x="237" y="1921"></block>
+  <block type="1712717105666" id=",O;/}IlX4/VF8?)JC/7-" x="1089" y="1884"></block>
+  <block type="1752577768533" id="bFk1#2?8i[!)dWOoGe$/" x="314" y="1927"></block>
+  <block type="1752581828828" id="6lBGf=ognoNbPJFOeYx." x="924" y="1903"></block>
+  <block type="1713949183398" id="IPlK~Jnt-nv-qb(6JZJ7" x="42" y="1955"></block>
+  <block type="1752841270174" id="*dcY[rRw1w{.`*-}5W6?" x="958" y="1936"></block>
+  <block type="1752578207104" id="i$^99-nv$:onxd_C6=cN" x="326" y="1974"></block>
+  <block type="1711173992980" id="kwWSS%QnYhbYQE%4CR0`" x="1021" y="1940"></block>
+  <block type="1752842235145" id="?WezY%p1vr4R-IsnK.H/" x="885" y="1948"></block>
+  <block type="1749023023214" id=")qx/|j~mD00tYRXUn{ul" x="1119" y="1938"></block>
+  <block type="1752896312188" id="b3zw|3)%P|G4{:%5_^-Y" x="943" y="1975"></block>
+  <block type="1713951141893" id="`S:mB])jJ)jK3JpPx4.D" x="260" y="2015"></block>
+  <block type="1752842417226" id="4)b#,(SO*tBgw|kwnO@@" x="989" y="1991"></block>
+  <block type="1752581926018" id="qg8HZ|N,s1sg@/.puwj." x="1036" y="1990"></block>
+  <block type="1749023137448" id="a|8~JZ91.s)J+4p_`kOI" x="1106" y="1993"></block>
+  <block type="1752581967811" id="3vi!CKcOk!Ip*inie+95" x="915" y="2007"></block>
+  <block type="1752841526102" id="B%Wdg$$Y!/ZQ0V%=El2}" x="758" y="2025"></block>
+  <block type="1713954352090" id="K|ntzJZBBEJR)HfL=x1#" x="1110" y="2071"></block>
+  <block type="1748151820371" id="p-J*OuEQEQ`d)2.JYFR+" x="206" y="2165"></block>
+  <block type="1711427323129" id="d2}1/CTAE?EhwyQ_v_g." x="676" y="2156">
+    <next>
+      <block type="1711427323129" id="tN^5@@S9iuDJ=`WFv|DQ">
+        <next>
+          <block type="1711173589106" id="lh)NAj[16SK|Zx]#VWIl">
+            <next>
+              <block type="1710684923140" id="y}[u0AI21DlPHL+4[d-=">
+                <next>
+                  <block type="1748150610648" id="2z:vM*?*C|3oOPg1ioCk">
+                    <next>
+                      <block type="1748149671675" id="4#];Luz(y7j]S9dgo4dD"></block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <block type="1713953564788" id="pyJqI193!$v-nltOw]ip" x="935" y="2148">
+    <next>
+      <block type="1713954149854" id="wdN,!uCr4yV=rZqQ6uN]"></block>
+    </next>
+  </block>
+  <block type="1752577245690" id="80c#SgbC_ERAwvbO!A%h" x="489" y="2193">
+    <next>
+      <block type="1752580328300" id="h2z11RYNGF78Mv+J^L`6"></block>
+    </next>
+  </block>
+  <block type="1752577406060" id="URo;|zWb[X`dq2p.6BqE" x="395" y="2202"></block>
+</xml>
