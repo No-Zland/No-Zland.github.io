@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 板块式个人博客静态生成器
-- 首页: 名言警句 + 大板块卡片（竞赛 / 项目 / 科研 / 技能 / 课程 / 阅读 / 个人）
+- 首页: 名言警句 + 知识卫星图（分类内环 + 文章外环，点一下直接进文章）
 - 板块页: 该板块下的分类列表
 - 分类页: 子分类列表，或文章阅读页
 - 阅读页: 一篇文章一页，左侧目录与上一篇/下一篇组件，不再截断文章
@@ -10,6 +10,7 @@
 """
 import os
 import re
+import math
 import hashlib
 import sys
 import json
@@ -1440,31 +1441,137 @@ def side_nav_for(out_dir):
 """
 
 
+def doc_page_target(rel, child_dirs):
+    """文档最终落在哪个页面（与 main() 里 doc_page_urls 的规则保持一致）。"""
+    parts = [x for x in os.path.dirname(rel).split(os.sep) if x]
+    if not parts:
+        page = "index.html"
+    elif len(parts) == 1:
+        page = os.path.join(parts[0], "direct.html") if child_dirs.get(parts[0]) else os.path.join(parts[0], "index.html")
+    elif len(parts) == 2:
+        cat = os.path.join(parts[0], parts[1])
+        page = os.path.join(cat, "direct.html") if child_dirs.get(cat) else os.path.join(cat, "index.html")
+    else:
+        page = os.path.join(*parts[:3], "index.html")
+    return page.replace(os.sep, "/")
+
+
+def _polar(cx, cy, r, a):
+    return cx + r * math.cos(a), cy + r * math.sin(a)
+
+
+def build_satellite(sections, docs, dir_docs, child_dirs, size=1000):
+    """首页知识卫星图：中心是库，内环是分类，外环是每一篇文章（点了就跳）。"""
+    cx = cy = size / 2.0
+    cats = []
+    for section in sections:
+        for cat_rel in section["cats"]:
+            ds = docs_under(docs, cat_rel)
+            if ds:
+                cats.append({
+                    "rel": cat_rel,
+                    "name": os.path.basename(cat_rel),
+                    "color": section["color"],
+                    "docs": ds,
+                })
+    total = sum(len(c["docs"]) for c in cats) or 1
+
+    gap = 0.26
+    weights = [max(len(c["docs"]), 8) for c in cats]
+    free = 2 * math.pi - gap * len(cats)
+    wsum = sum(weights) or 1
+    ang = -math.pi / 2 + gap / 2
+    for c, w in zip(cats, weights):
+        share = free * w / wsum
+        c["a0"], c["a1"] = ang, ang + share
+        c["am"] = ang + share / 2
+        ang += share + gap
+
+    out = [f'<circle class="sat-halo" cx="{cx}" cy="{cy}" r="118"/>']
+    for r in (246, 316, 386, 456):
+        out.append(f'<circle class="sat-orbit" cx="{cx}" cy="{cy}" r="{r}"/>')
+    for c in cats:
+        x1, y1 = _polar(cx, cy, 232, c["a0"])
+        x2, y2 = _polar(cx, cy, 474, c["a0"])
+        out.append(f'<line class="sat-spoke" x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}"/>')
+
+    # 分类节点（可点，进入分类页；文字也在链接里，点字也算）
+    for c in cats:
+        x, y = _polar(cx, cy, 196, c["am"])
+        lx, ly = _polar(cx, cy, 220, c["am"])
+        href = quote_url(os.path.join(c["rel"], "index.html"))
+        out.append(
+            f'<a class="sat-cat" href="{href}" aria-label="{esc(c["name"])}">'
+            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="9" fill="{c["color"]}"/>'
+            f'<circle class="sat-cat-halo" cx="{x:.1f}" cy="{y:.1f}" r="17"/>'
+            f'<text class="sat-cat-label" x="{lx:.1f}" y="{ly + 4:.1f}" text-anchor="middle">'
+            f'{esc(c["name"])} <tspan>{len(c["docs"])}</tspan></text></a>'
+        )
+
+    # 文章节点
+    for c in cats:
+        span = c["a1"] - c["a0"]
+        r = 280.0
+        idx, n = 0, len(c["docs"])
+        while idx < n:
+            cap = max(1, int(span * r / 30))
+            take = min(cap, n - idx)
+            chunk = c["docs"][idx:idx + take]
+            if take == 1:
+                angles = [c["am"]]
+            else:
+                pad = min(0.05, span * 0.10)
+                a0, a1 = c["a0"] + pad, c["a1"] - pad
+                step = (a1 - a0) / (take - 1)
+                angles = [a0 + step * k for k in range(take)]
+            for rel, a in zip(chunk, angles):
+                x, y = _polar(cx, cy, r, a)
+                title = DOC_TITLE.get(rel) or os.path.splitext(os.path.basename(rel))[0]
+                href = quote_url(doc_page_target(rel, child_dirs)) + "#" + doc_anchor(rel)
+                short = title if len(title) <= 22 else title[:21] + "…"
+                if x < cx:
+                    lx, ly, anc = x + 8, y - 8, "start"
+                else:
+                    lx, ly, anc = x - 8, y - 8, "end"
+                out.append(
+                    f'<a class="sat-doc" href="{href}" aria-label="{esc(title)}">'
+                    f'<circle class="sat-dot" cx="{x:.1f}" cy="{y:.1f}" r="4" fill="{c["color"]}"/>'
+                    f'<circle class="sat-hit" cx="{x:.1f}" cy="{y:.1f}" r="11"/>'
+                    f'<text class="sat-label" x="{lx:.1f}" y="{ly:.1f}" text-anchor="{anc}">{esc(short)}</text>'
+                    f'</a>'
+                )
+            idx += take
+            r += 30
+
+    out.append(
+        f'<g class="sat-hub"><circle cx="{cx}" cy="{cy}" r="54"/>'
+        f'<text class="sat-hub-title" x="{cx}" y="{cy - 2}" text-anchor="middle">知识库</text>'
+        f'<text class="sat-hub-count" x="{cx}" y="{cy + 20}" text-anchor="middle">{total} 篇</text></g>'
+    )
+
+    legend = []
+    for section in sections:
+        if section["cats"] and any(c["rel"].startswith(section["slug"]) for c in cats):
+            legend.append(
+                f'<span class="sat-legend-item"><i style="background:{section["color"]}"></i>{esc(section["title"])}</span>'
+            )
+    return f"""<div class="satellite" id="sections">
+<svg class="sat-svg" viewBox="0 0 {size} {size}" role="img" aria-label="知识卫星图">{''.join(out)}</svg>
+<div class="sat-legend">{''.join(legend)}<span class="sat-hint">悬停看标题，点击直接进入文章</span></div>
+</div>"""
+
+
 def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
     l1 = child_dirs.get("", [])
     sections = build_sections(l1)
     for section in sections:
         section["cats"] = child_dirs.get(section["slug"], [])
-    section_items = []
     quick_items = []
     article_total = 0
     for i, section in enumerate(sections):
         total = len(docs_under(docs, section["slug"]))
         article_total += total
         href = os.path.join(section["slug"], "index.html")
-        tags = ''.join(f'<span>{esc(os.path.basename(cat))}</span>' for cat in section["cats"])
-        meta = f"{len(section['cats'])} 个分类 · {total} 篇文章" if section["cats"] else f"{total} 篇文章"
-        section_items.append(f"""
-<a class="section-card" href="{quote_url(href)}" style="--i:{min(i, 8)};--section-color:{section['color']}">
-  <div class="section-card-top">
-    <span class="section-num">{i + 1:02d}</span>
-    <span class="section-card-meta">{meta}</span>
-  </div>
-  <div class="section-card-title">{esc(section['title'])}</div>
-  <div class="section-card-desc">{esc(section['desc'])}</div>
-  <div class="section-tags">{tags}</div>
-  <div class="section-card-enter">进入板块 <span>→</span></div>
-</a>""")
         quick_items.append(
             f'<a class="quick-cat" href="{quote_url(href)}" title="{esc(section["title"])}">'
             f'<span class="quick-dot" style="background:{section["color"]}"></span>'
@@ -1508,7 +1615,7 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
       <h2 class="home-motto-text" id="homeQuote">{esc(QUOTES[0]["text"])}</h2>
       <div class="quote-author" id="homeQuoteAuthor">—— {esc(QUOTES[0]["author"])}</div>
     </div>
-    <div class="section-grid">{''.join(section_items)}</div>
+    <div class="section-grid">{build_satellite(sections, docs, dir_docs, child_dirs)}</div>
     <div class="home-stats">{len(sections)} 个板块 · {article_total} 篇文章</div>
   </div>
 </div>
@@ -1867,9 +1974,6 @@ def main():
     NOTE_SECTIONS_JSON = json.dumps(note_sections_data, ensure_ascii=False, separators=(",", ":"))
     NAV_SECTIONS = build_nav_sections(sections, docs, child_dirs)
 
-    home_html = build_home(docs, dir_docs, child_dirs, dir_earliest, SITE_DIR)
-    write_text(os.path.join(SITE_DIR, "index.html"), home_html)
-
     page_count = 1
     doc_page_urls = {}
     home_index = os.path.join(SITE_DIR, "index.html")
@@ -1929,6 +2033,10 @@ def main():
             html = build_reading_page(slug, docs, dir_docs, child_dirs, images, section_out, parent_href=parent)
             write_text(os.path.join(section_out, "index.html"), html)
             page_count += 1
+
+    # 文章标题在渲染阶段才收集，首页卫星图要用到，所以首页最后生成
+    home_html = build_home(docs, dir_docs, child_dirs, dir_earliest, SITE_DIR)
+    write_text(os.path.join(SITE_DIR, "index.html"), home_html)
 
     pdfs = collect_pdfs()
     if os.path.isdir(PDF_DIR):
