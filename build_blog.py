@@ -1500,17 +1500,16 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
   </aside>
   {music_player_html()}
   </div>
-  <div class="home-content">
+    <div class="home-content">
     <div class="home-motto-block" id="sections">
       <div class="home-motto-head">
-        <div class="home-motto-kicker" data-i18n="quotes-label">名言警句</div>
         <button type="button" class="quote-refresh" id="quoteRefresh" aria-label="换一句" data-i18n-aria-label="quote-refresh">↻ <span data-i18n="quote-refresh">换一句</span></button>
       </div>
       <h2 class="home-motto-text" id="homeQuote">{esc(QUOTES[0]["text"])}</h2>
       <div class="quote-author" id="homeQuoteAuthor">—— {esc(QUOTES[0]["author"])}</div>
-      <div class="count">{len(sections)} 个板块 · {article_total} 篇文章</div>
     </div>
     <div class="section-grid">{''.join(section_items)}</div>
+    <div class="home-stats">{len(sections)} 个板块 · {article_total} 篇文章</div>
   </div>
 </div>
 """
