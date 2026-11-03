@@ -12,7 +12,7 @@ tags: [MOC, 算法/动态规划]
 
 ```dataview
 TABLE WITHOUT ID topic AS "考点", length(rows) AS "题数", rows.file.link AS "题目"
-FROM "02-实战库/刷题复盘"
+FROM "02-实战库/刷题"
 FLATTEN filter(file.tags, (t) => startswith(t, "#算法/动态规划/") AND length(split(t, "/")) = 3) AS tag
 FLATTEN split(tag, "/")[2] AS topic
 GROUP BY topic
@@ -27,7 +27,7 @@ TABLE WITHOUT ID
   map(filter(file.tags, (t) => startswith(t, "#算法/动态规划/")), (t) => replace(t, "#算法/动态规划/", "")) AS "DP 考点",
   difficulty AS "难度",
   reviewed AS "上次复盘"
-FROM "02-实战库/刷题复盘"
+FROM "02-实战库/刷题"
 WHERE any(map(file.tags, (t) => startswith(t, "#算法/动态规划")))
 SORT reviewed DESC
 ```
@@ -36,7 +36,7 @@ SORT reviewed DESC
 
 ```dataview
 TABLE WITHOUT ID file.link AS "题目", reviewed AS "上次复盘", (date(today) - reviewed).days AS "搁置(天)"
-FROM "02-实战库/刷题复盘"
+FROM "02-实战库/刷题"
 WHERE any(map(file.tags, (t) => startswith(t, "#算法/动态规划")))
   AND (contains(file.tags, "#状态/待复盘") OR contains(file.tags, "#状态/需重做"))
   AND reviewed

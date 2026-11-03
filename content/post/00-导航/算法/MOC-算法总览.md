@@ -12,7 +12,7 @@ tags: [MOC, 算法/总览]
 
 ```dataview
 TABLE WITHOUT ID domain AS "领域", length(rows) AS "题数"
-FROM "02-实战库/刷题复盘"
+FROM "02-实战库/刷题"
 FLATTEN file.tags AS tag
 FLATTEN split(tag, "/")[1] AS domain
 WHERE startswith(tag, "#算法/")
@@ -24,7 +24,7 @@ SORT length(rows) DESC
 
 ```dataview
 TABLE WITHOUT ID topic AS "考点", length(rows) AS "题数", rows.file.link AS "题目"
-FROM "02-实战库/刷题复盘"
+FROM "02-实战库/刷题"
 FLATTEN filter(file.tags, (t) => startswith(t, "#算法/") AND length(split(t, "/")) = 3) AS tag
 FLATTEN split(tag, "/")[2] AS topic
 GROUP BY topic
@@ -37,7 +37,7 @@ SORT length(rows) DESC
 
 ```dataview
 TABLE WITHOUT ID plat AS "平台", length(rows) AS "题数", rows.file.link AS "题目"
-FROM "02-实战库/刷题复盘"
+FROM "02-实战库/刷题"
 FLATTEN filter(file.tags, (t) => startswith(t, "#平台/")) AS tag
 FLATTEN split(tag, "/")[1] AS plat
 GROUP BY plat
@@ -51,7 +51,7 @@ TABLE WITHOUT ID
   difficulty AS "难度",
   map(filter(file.tags, (t) => startswith(t, "#算法/")), (t) => replace(t, "#算法/", "")) AS "考点",
   reviewed AS "上次复盘"
-FROM "02-实战库/刷题复盘"
+FROM "02-实战库/刷题"
 SORT choice(difficulty = "入门", 1, choice(difficulty = "普及", 2, choice(difficulty = "提高", 3, choice(difficulty = "省选", 4, 5)))) ASC, pid ASC
 ```
 
@@ -62,7 +62,7 @@ TABLE WITHOUT ID
   file.link AS "题目",
   length(filter(file.tags, (t) => startswith(t, "#算法/"))) AS "考点数",
   map(filter(file.tags, (t) => startswith(t, "#算法/")), (t) => replace(t, "#算法/", "")) AS "考点"
-FROM "02-实战库/刷题复盘"
+FROM "02-实战库/刷题"
 WHERE length(filter(file.tags, (t) => startswith(t, "#算法/"))) > 1
 SORT length(filter(file.tags, (t) => startswith(t, "#算法/"))) DESC
 ```
