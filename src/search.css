@@ -66,39 +66,27 @@
   text-align: right;
 }
 
-/* 首页知识卫星图 */
-.satellite { margin: 2px 0 10px; }
-.sat-svg { display: block; width: 100%; max-width: 860px; margin: 0 auto; height: auto; overflow: visible; }
-.sat-orbit {
-  fill: none; stroke: var(--border); stroke-width: 1;
-  stroke-dasharray: 2 7; opacity: .75;
+/* 首页知识卫星图（canvas 3D：拖动旋转、滚轮缩放） */
+.satellite { margin: 2px 0 10px; position: relative; }
+.satellite {
+  background: radial-gradient(circle at 50% 46%, rgba(37, 99, 235, .07), rgba(124, 58, 237, .03) 42%, transparent 68%);
 }
-.sat-halo { fill: var(--brand); opacity: .05; }
-.sat-spoke { stroke: var(--border); stroke-width: 1; opacity: .55; }
-.sat-cat-label {
-  font-size: 15px; font-weight: 600; fill: var(--text);
-  paint-order: stroke; stroke: var(--bg); stroke-width: 4px; stroke-linejoin: round;
+.sat-canvas {
+  display: block; width: 100%;
+  height: clamp(420px, 58vh, 620px);
+  cursor: grab; touch-action: none;
+  -webkit-user-select: none; user-select: none;
 }
-.sat-cat-label tspan { font-size: 12px; font-weight: 500; fill: var(--text-soft); }
-.sat-cat-halo { fill: transparent; }
-.sat-cat { cursor: pointer; }
-.sat-cat:hover > circle:first-of-type { stroke: var(--bg); stroke-width: 3; }
-.sat-hub circle { fill: var(--card); stroke: var(--brand); stroke-width: 2; }
-.sat-hub-title { font-size: 18px; font-weight: 700; fill: var(--text); }
-.sat-hub-count { font-size: 12px; fill: var(--text-soft); }
-.sat-doc .sat-hit { fill: transparent; }
-.sat-doc .sat-dot {
-  transform-box: fill-box; transform-origin: center;
-  transition: transform .12s ease, opacity .12s ease;
+.sat-canvas:active { cursor: grabbing; }
+.sat-core {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  pointer-events: none; text-align: center;
+  color: var(--text); text-shadow: 0 0 8px var(--bg), 0 0 16px var(--bg);
 }
-.sat-doc:hover .sat-dot { transform: scale(1.75); }
-.sat-doc .sat-label {
-  font-size: 12px; fill: var(--text); opacity: 0;
-  paint-order: stroke; stroke: var(--bg); stroke-width: 4px; stroke-linejoin: round;
-  pointer-events: none; transition: opacity .12s ease;
-}
-.sat-doc:hover .sat-label { opacity: 1; }
-.sat-doc:focus-visible .sat-label { opacity: 1; }
+.sat-core strong { font-size: 15px; font-weight: 700; letter-spacing: .06em; }
+.sat-core span { font-size: 11px; color: var(--text-soft); }
 .sat-legend {
   display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
   margin-top: 6px; color: var(--text-soft); font-size: 12px;
@@ -106,6 +94,11 @@
 .sat-legend-item { display: inline-flex; align-items: center; gap: 6px; }
 .sat-legend-item i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
 .sat-hint { margin-left: auto; opacity: .8; }
+/* 给爬虫和读屏留的降级链接列表 */
+.sat-sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
 
 @media (max-width: 760px) {
   .home-motto-text { font-size: 18px; line-height: 1.9; }

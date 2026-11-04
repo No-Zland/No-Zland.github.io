@@ -1456,111 +1456,49 @@ def doc_page_target(rel, child_dirs):
     return page.replace(os.sep, "/")
 
 
-def _polar(cx, cy, r, a):
-    return cx + r * math.cos(a), cy + r * math.sin(a)
-
-
-def build_satellite(sections, docs, dir_docs, child_dirs, size=1000):
-    """首页知识卫星图：中心是库，内环是分类，外环是每一篇文章（点了就跳）。"""
-    cx = cy = size / 2.0
-    cats = []
+def build_satellite(sections, docs, dir_docs, child_dirs):
+    """首页知识卫星图：Python 只打包数据，3D 旋转/缩放交给前端 canvas。"""
+    cats, items, legend = [], [], []
     for section in sections:
+        if not section["cats"]:
+            continue
+        added = False
         for cat_rel in section["cats"]:
             ds = docs_under(docs, cat_rel)
-            if ds:
-                cats.append({
-                    "rel": cat_rel,
-                    "name": os.path.basename(cat_rel),
-                    "color": section["color"],
-                    "docs": ds,
-                })
-    total = sum(len(c["docs"]) for c in cats) or 1
-
-    gap = 0.26
-    weights = [max(len(c["docs"]), 8) for c in cats]
-    free = 2 * math.pi - gap * len(cats)
-    wsum = sum(weights) or 1
-    ang = -math.pi / 2 + gap / 2
-    for c, w in zip(cats, weights):
-        share = free * w / wsum
-        c["a0"], c["a1"] = ang, ang + share
-        c["am"] = ang + share / 2
-        ang += share + gap
-
-    out = [f'<circle class="sat-halo" cx="{cx}" cy="{cy}" r="118"/>']
-    for r in (246, 316, 386, 456):
-        out.append(f'<circle class="sat-orbit" cx="{cx}" cy="{cy}" r="{r}"/>')
-    for c in cats:
-        x1, y1 = _polar(cx, cy, 232, c["a0"])
-        x2, y2 = _polar(cx, cy, 474, c["a0"])
-        out.append(f'<line class="sat-spoke" x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}"/>')
-
-    # 分类节点（可点，进入分类页；文字也在链接里，点字也算）
-    for c in cats:
-        x, y = _polar(cx, cy, 196, c["am"])
-        lx, ly = _polar(cx, cy, 220, c["am"])
-        href = quote_url(os.path.join(c["rel"], "index.html"))
-        out.append(
-            f'<a class="sat-cat" href="{href}" aria-label="{esc(c["name"])}">'
-            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="9" fill="{c["color"]}"/>'
-            f'<circle class="sat-cat-halo" cx="{x:.1f}" cy="{y:.1f}" r="17"/>'
-            f'<text class="sat-cat-label" x="{lx:.1f}" y="{ly + 4:.1f}" text-anchor="middle">'
-            f'{esc(c["name"])} <tspan>{len(c["docs"])}</tspan></text></a>'
-        )
-
-    # 文章节点
-    for c in cats:
-        span = c["a1"] - c["a0"]
-        r = 280.0
-        idx, n = 0, len(c["docs"])
-        while idx < n:
-            cap = max(1, int(span * r / 30))
-            take = min(cap, n - idx)
-            chunk = c["docs"][idx:idx + take]
-            if take == 1:
-                angles = [c["am"]]
-            else:
-                pad = min(0.05, span * 0.10)
-                a0, a1 = c["a0"] + pad, c["a1"] - pad
-                step = (a1 - a0) / (take - 1)
-                angles = [a0 + step * k for k in range(take)]
-            for rel, a in zip(chunk, angles):
-                x, y = _polar(cx, cy, r, a)
+            if not ds:
+                continue
+            ci = len(cats)
+            cats.append({
+                "name": os.path.basename(cat_rel),
+                "color": section["color"],
+                "count": len(ds),
+                "rel": quote_url(os.path.join(cat_rel, "index.html")),
+            })
+            added = True
+            for rel in ds:
                 title = DOC_TITLE.get(rel) or os.path.splitext(os.path.basename(rel))[0]
                 href = quote_url(doc_page_target(rel, child_dirs)) + "#" + doc_anchor(rel)
-                short = title if len(title) <= 22 else title[:21] + "…"
-                if x < cx:
-                    lx, ly, anc = x + 8, y - 8, "start"
-                else:
-                    lx, ly, anc = x - 8, y - 8, "end"
-                out.append(
-                    f'<a class="sat-doc" href="{href}" aria-label="{esc(title)}">'
-                    f'<circle class="sat-dot" cx="{x:.1f}" cy="{y:.1f}" r="4" fill="{c["color"]}"/>'
-                    f'<circle class="sat-hit" cx="{x:.1f}" cy="{y:.1f}" r="11"/>'
-                    f'<text class="sat-label" x="{lx:.1f}" y="{ly:.1f}" text-anchor="{anc}">{esc(short)}</text>'
-                    f'</a>'
-                )
-            idx += take
-            r += 30
-
-    out.append(
-        f'<g class="sat-hub"><circle cx="{cx}" cy="{cy}" r="54"/>'
-        f'<text class="sat-hub-title" x="{cx}" y="{cy - 2}" text-anchor="middle">知识库</text>'
-        f'<text class="sat-hub-count" x="{cx}" y="{cy + 20}" text-anchor="middle">{total} 篇</text></g>'
-    )
-
-    legend = []
-    for section in sections:
-        if section["cats"] and any(c["rel"].startswith(section["slug"]) for c in cats):
+                items.append([title, href, ci])
+        if added:
             legend.append(
-                f'<span class="sat-legend-item"><i style="background:{section["color"]}"></i>{esc(section["title"])}</span>'
+                '<span class="sat-legend-item"><i style="background:%s"></i>%s</span>'
+                % (section["color"], esc(section["title"]))
             )
-    return f"""<div class="satellite" id="sections">
-<svg class="sat-svg" viewBox="0 0 {size} {size}" role="img" aria-label="知识卫星图">{''.join(out)}</svg>
-<div class="sat-legend">{''.join(legend)}<span class="sat-hint">悬停看标题，点击直接进入文章</span></div>
-</div>"""
 
+    payload = json.dumps({"cats": cats, "docs": items}, ensure_ascii=False, separators=(",", ":"))
+    payload = payload.replace("</", "<\\/")
+    fallback = "".join('<li><a href="%s">%s</a></li>' % (href, esc(title)) for title, href, _ in items)
 
+    return (
+        '<div class="satellite" id="sections">\n'
+        '<canvas class="sat-canvas" role="img" aria-label="知识卫星图：拖动旋转、滚轮缩放，点击节点进入文章"></canvas>\n'
+        '<div class="sat-core" aria-hidden="true"><strong>知识库</strong><span>' + str(len(items)) + ' 篇</span></div>\n'
+        '<div class="sat-legend">' + "".join(legend) +
+        '<span class="sat-hint">拖动旋转 · 滚轮缩放 · 点击进入文章</span></div>\n'
+        '<ul class="sat-sr">' + fallback + '</ul>\n'
+        '<script type="application/json" class="sat-data">' + payload + '</script>\n'
+        '</div>'
+    )
 def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
     l1 = child_dirs.get("", [])
     sections = build_sections(l1)
@@ -1940,10 +1878,11 @@ def main():
     brightness_js = read_text(os.path.join(SRC_DIR, "brightness.js"))
     agent_js = read_text(os.path.join(SRC_DIR, "agent.js"))
     quotes_js = read_text(os.path.join(SRC_DIR, "quotes.js"))
+    satellite_js = read_text(os.path.join(SRC_DIR, "satellite.js"))
     anti_crawler_js = read_text(os.path.join(SRC_DIR, "anti-crawler.js"))
     spa_js = read_text(os.path.join(SRC_DIR, "spa.js"))
     style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css + "\n" + note_css + "\n" + agent_css
-    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + note_js + "\n" + brightness_js + "\n" + agent_js + "\n" + anti_crawler_js + "\n" + spa_js
+    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + satellite_js + "\n" + note_js + "\n" + brightness_js + "\n" + agent_js + "\n" + anti_crawler_js + "\n" + spa_js
     write_text(os.path.join(ASSET_DIR, "style.css"), style_text)
     write_text(os.path.join(ASSET_DIR, "app.js"), app_text)
     ASSET_VERSION = hashlib.md5((style_text + app_text).encode("utf-8")).hexdigest()[:8]

@@ -1,0 +1,443 @@
+/* 首页知识卫星图：canvas 3D，可拖动旋转、滚轮缩放、点击进入文章 */
+(function () {
+  'use strict';
+
+  var current = null;
+
+  function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+
+  function fibDir(i, n) {
+    var y = 1 - (i + 0.5) * 2 / n;
+    var r = Math.sqrt(Math.max(0, 1 - y * y));
+    var phi = i * Math.PI * (3 - Math.sqrt(5));
+    return [Math.cos(phi) * r, y, Math.sin(phi) * r];
+  }
+
+  function cross(a, b) {
+    return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+  }
+
+  function norm(v) {
+    var l = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]) || 1;
+    return [v[0] / l, v[1] / l, v[2] / l];
+  }
+
+  function basis(d) {
+    var axis = Math.abs(d[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0];
+    var e1 = norm(cross(axis, d));
+    var e2 = cross(d, e1);
+    return [e1, e2];
+  }
+
+  function readColors(canvas) {
+    var css = window.getComputedStyle(canvas);
+    return {
+      bg: (css.getPropertyValue('--bg') || '#ffffff').trim(),
+      text: (css.getPropertyValue('--text') || '#1f2430').trim(),
+      soft: (css.getPropertyValue('--text-soft') || '#6b7280').trim(),
+      border: (css.getPropertyValue('--border') || '#e8e9f0').trim()
+    };
+  }
+
+  function start(root, canvas) {
+    var dataEl = root.querySelector('.sat-data');
+    if (!dataEl) return null;
+    var data;
+    try { data = JSON.parse(dataEl.textContent || dataEl.innerText || ''); } catch (e) { return null; }
+    if (!data || !data.cats || !data.docs) return null;
+
+    var ctx = canvas.getContext('2d');
+    var cats = data.cats;
+    var nodes = [];
+    var w = 0, h = 0, dpr = 1;
+
+    // ---- 布局：分类在球面，文章沿分类方向向外散成锥形星云 ----
+    var maxCount = 1;
+    for (i = 0; i < cats.length; i++) maxCount = Math.max(maxCount, cats[i].count || 1);
+    for (var i = 0; i < cats.length; i++) {
+      var d = fibDir(i, cats.length);
+      nodes.push({
+        kind: 'cat', x: d[0] * 200, y: d[1] * 200, z: d[2] * 200,
+        r: 7, color: cats[i].color,
+        label: cats[i].name + ' ' + cats[i].count,
+        name: cats[i].name, ci: i
+      });
+    }
+    var dirs = [], bases = [];
+    for (i = 0; i < cats.length; i++) { dirs.push(fibDir(i, cats.length)); bases.push(basis(dirs[i])); }
+    var seen = {};
+    for (i = 0; i < data.docs.length; i++) {
+      var rec = data.docs[i];
+      var ci = rec[2] || 0;
+      var total = cats[ci] ? cats[ci].count : 1;
+      var k = seen[ci] || 0;
+      seen[ci] = k + 1;
+      var t = (k + 0.5) / Math.max(1, total);
+      var ang = k * 2.399963 + ci * 0.7;
+      var capA = 0.4 + 0.36 * Math.sqrt(total / maxCount);
+      var cosT = 1 - t * (1 - Math.cos(capA));
+      var sinT = Math.sqrt(Math.max(0, 1 - cosT * cosT));
+      var b = bases[ci % bases.length] || [[1, 0, 0], [0, 0, 1]];
+      var dd = dirs[ci % dirs.length] || [0, 0, 1];
+      var rad = 250 + 210 * t;
+      var nx = cosT * dd[0] + sinT * (Math.cos(ang) * b[0][0] + Math.sin(ang) * b[1][0]);
+      var ny = cosT * dd[1] + sinT * (Math.cos(ang) * b[0][1] + Math.sin(ang) * b[1][1]);
+      var nz = cosT * dd[2] + sinT * (Math.cos(ang) * b[0][2] + Math.sin(ang) * b[1][2]);
+      nodes.push({
+        kind: 'doc', x: nx * rad, y: ny * rad, z: nz * rad,
+        r: 2.2, color: cats[ci] ? cats[ci].color : '#2563eb',
+        label: rec[0], url: rec[1], ci: ci
+      });
+    }
+    nodes.push({ kind: 'hub', x: 0, y: 0, z: 0, r: 9, color: '#2563eb', label: '知识库', name: '知识库' });
+
+    var yaw = -0.5, pitch = 0.3, dist = 1050, vYaw = 0, vPitch = 0;
+    var focal = 640, hover = null, dragging = false;
+    var lastX = 0, lastY = 0, moved = 0, downAt = 0, idleAt = 0;
+    var raf = 0, lastT = 0, slow = false;
+    var pointers = {}, pinch = 0;
+    var screen = [];
+
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var colorCache = null, colorAt = 0, fontFamily = 'sans-serif';
+
+    function colors() {
+      var now = Date.now();
+      if (!colorCache || now - colorAt > 600) {
+        colorCache = readColors(canvas);
+        colorAt = now;
+        fontFamily = window.getComputedStyle(document.body).fontFamily || 'sans-serif';
+      }
+      return colorCache;
+    }
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = canvas.clientWidth || 600;
+      h = canvas.clientHeight || 520;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      focal = Math.min(w, h) * 0.95;
+    }
+
+    function project() {
+      var cy = Math.cos(yaw), sy = Math.sin(yaw);
+      var cp = Math.cos(pitch), sp = Math.sin(pitch);
+      var cx = w / 2, cyy = h / 2;
+      var out = [];
+      for (var i = 0; i < nodes.length; i++) {
+        var n = nodes[i];
+        var x1 = n.x * cy - n.z * sy;
+        var z1 = n.x * sy + n.z * cy;
+        var y1 = n.y * cp - z1 * sp;
+        var z2 = n.y * sp + z1 * cp;
+        var depth = dist - z2;
+        if (depth < 80) continue;
+        var s = focal / depth;
+        out.push({
+          node: n, x: cx + x1 * s, y: cyy + y1 * s, s: s, depth: depth,
+          r: clamp(n.r * s * 2.8, 1.4, 17)
+        });
+      }
+      out.sort(function (a, b) { return b.depth - a.depth; });
+      return out;
+    }
+
+    function roundRect(x, y, rw, rh, rad) {
+      ctx.beginPath();
+      ctx.moveTo(x + rad, y);
+      ctx.arcTo(x + rw, y, x + rw, y + rh, rad);
+      ctx.arcTo(x + rw, y + rh, x, y + rh, rad);
+      ctx.arcTo(x, y + rh, x, y, rad);
+      ctx.arcTo(x, y, x + rw, y, rad);
+      ctx.closePath();
+    }
+
+    function drawTooltip(item, colors) {
+      var text = item.node.label;
+      ctx.font = '500 13px ' + fontFamily;
+      var tw = ctx.measureText(text).width;
+      var pad = 7;
+      var bx = clamp(item.x + 12, 6, w - tw - pad * 2 - 6);
+      var by = clamp(item.y - 12, 6, h - 30);
+      ctx.globalAlpha = 1;
+      roundRect(bx, by - 20, tw + pad * 2, 26, 8);
+      ctx.fillStyle = colors.bg;
+      ctx.fill();
+      ctx.strokeStyle = colors.border;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.fillStyle = colors.text;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(text, bx + pad, by - 7);
+    }
+
+    function draw() {
+      var colors = colorCache || readColors(canvas);
+      ctx.clearRect(0, 0, w, h);
+      screen = project();
+
+      var hub = null;
+      for (var i = 0; i < screen.length; i++) if (screen[i].node.kind === 'hub') hub = screen[i];
+
+      ctx.lineWidth = 1;
+      for (i = 0; i < screen.length; i++) {
+        var it = screen[i];
+        if (it.node.kind !== 'cat' || !hub) continue;
+        ctx.globalAlpha = 0.16;
+        ctx.strokeStyle = it.node.color;
+        ctx.beginPath();
+        ctx.moveTo(hub.x, hub.y);
+        ctx.lineTo(it.x, it.y);
+        ctx.stroke();
+      }
+
+      for (i = 0; i < screen.length; i++) {
+        var s0 = screen[i];
+        var n = s0.node;
+        var fade = clamp(s0.s * 2.2, 0.22, 1);
+        var isHover = hover && hover.node === n;
+        ctx.globalAlpha = n.kind === 'doc' ? fade * 0.85 : fade;
+
+        ctx.beginPath();
+        ctx.arc(s0.x, s0.y, isHover ? s0.r * 1.8 : s0.r, 0, Math.PI * 2);
+        ctx.fillStyle = n.color;
+        ctx.fill();
+
+        if (n.kind === 'hub') {
+          ctx.globalAlpha = 1;
+          ctx.strokeStyle = n.color;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(s0.x, s0.y, s0.r + 4, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
+
+      // 分类标签最后画，并做一次简单的避让（重叠就往下错位）
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '600 11.5px ' + fontFamily;
+      var labels = [];
+      for (i = 0; i < screen.length; i++) {
+        var c = screen[i];
+        if (c.node.kind !== 'cat' || c.s < 0.12) continue;
+        var dx = c.x - w / 2, dy = c.y - h / 2;
+        var dl = Math.sqrt(dx * dx + dy * dy) || 1;
+        labels.push({
+          node: c.node,
+          alpha: clamp(c.s * 2.4, 0.35, 1),
+          lx: c.x + dx / dl * (c.r + 9),
+          ly: c.y + dy / dl * (c.r + 9),
+          w: ctx.measureText(c.node.label).width,
+          h: 15
+        });
+      }
+      labels.sort(function (a, b) { return a.ly - b.ly || a.lx - b.lx; });
+      var boxes = [];
+      for (i = 0; i < labels.length; i++) {
+        var L = labels[i];
+        var guard = 0;
+        var overlaps = true;
+        while (overlaps && guard++ < 6) {
+          overlaps = false;
+          for (var j = 0; j < boxes.length; j++) {
+            var B = boxes[j];
+            if (Math.abs(L.lx - B.x) < (L.w + B.w) / 2 + 4 &&
+                Math.abs(L.ly - B.y) < (L.h + B.h) / 2 + 2) {
+              L.ly += L.h + 3;
+              overlaps = true;
+            }
+          }
+        }
+        boxes.push({ x: L.lx, y: L.ly, w: L.w, h: L.h });
+        ctx.globalAlpha = L.alpha;
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = colors.bg;
+        ctx.strokeText(L.node.label, L.lx, L.ly);
+        ctx.fillStyle = L.node.color;
+        ctx.fillText(L.node.label, L.lx, L.ly);
+      }
+
+      if (hover) drawTooltip(hover, colors);
+      ctx.globalAlpha = 1;
+    }
+
+    function frame(t) {
+      raf = window.requestAnimationFrame(frame);
+      if (!canvas.isConnected) { stop(); return; }
+      var dt = Math.min(48, t - (lastT || t));
+      lastT = t;
+
+      if (!dragging) {
+        yaw += vYaw;
+        pitch = clamp(pitch + vPitch, -1.2, 1.2);
+        vYaw *= 0.93;
+        vPitch *= 0.93;
+        if (!reduced && !slow && t - idleAt > 2200) yaw += 0.00002 * dt;
+      }
+      draw();
+    }
+
+    function stop() {
+      if (raf) window.cancelAnimationFrame(raf);
+      raf = 0;
+    }
+
+    function destroy() {
+      stop();
+      canvas.removeEventListener('pointerdown', onDown);
+      canvas.removeEventListener('pointermove', onMove);
+      canvas.removeEventListener('pointerup', onUp);
+      canvas.removeEventListener('pointercancel', onUp);
+      canvas.removeEventListener('pointerleave', onLeave);
+      canvas.removeEventListener('wheel', onWheel);
+      canvas.removeEventListener('dblclick', onReset);
+      window.removeEventListener('resize', resize);
+    }
+
+    function pick(x, y) {
+      var best = null, bestD = 1e9;
+      for (var i = 0; i < screen.length; i++) {
+        var it = screen[i];
+        var dx = it.x - x, dy = it.y - y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        var lim = Math.max(9, it.r + 7);
+        if (d < lim && d < bestD) { bestD = d; best = it; }
+      }
+      return best;
+    }
+
+    function localXY(e) {
+      var rect = canvas.getBoundingClientRect();
+      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+    }
+
+    function onDown(e) {
+      var p = localXY(e);
+      pointers[e.pointerId] = p;
+      dragging = true;
+      slow = true;
+      moved = 0;
+      downAt = Date.now();
+      lastX = p.x; lastY = p.y;
+      vYaw = vPitch = 0;
+      canvas.setPointerCapture && canvas.setPointerCapture(e.pointerId);
+      canvas.style.cursor = 'grabbing';
+    }
+
+    function onMove(e) {
+      var p = localXY(e);
+      if (pointers[e.pointerId]) pointers[e.pointerId] = p;
+
+      var ids = Object.keys(pointers);
+      if (ids.length === 2) {
+        var a = pointers[ids[0]], b = pointers[ids[1]];
+        var d = Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+        if (pinch) dist = clamp(dist * (pinch / Math.max(d, 1)), 430, 2400);
+        pinch = d;
+        return;
+      }
+
+      if (dragging) {
+        var dx = p.x - lastX, dy = p.y - lastY;
+        moved += Math.abs(dx) + Math.abs(dy);
+        yaw += dx * 0.007;
+        pitch = clamp(pitch + dy * 0.007, -1.2, 1.2);
+        vYaw = dx * 0.0016;
+        vPitch = dy * 0.0016;
+        lastX = p.x; lastY = p.y;
+        idleAt = Date.now();
+        return;
+      }
+
+      var hit = pick(p.x, p.y);
+      hover = hit;
+      canvas.style.cursor = hit && hit.node.kind === 'doc' ? 'pointer' : 'grab';
+    }
+
+    function onUp(e) {
+      delete pointers[e.pointerId];
+      if (Object.keys(pointers).length < 2) pinch = 0;
+      dragging = false;
+      canvas.style.cursor = 'grab';
+      idleAt = Date.now();
+
+      var p;
+      try { p = localXY(e); } catch (err) { return; }
+      if (moved < 9 && Date.now() - downAt < 600) {
+        var hit = pick(p.x, p.y);
+        if (hit && hit.node.kind === 'doc' && hit.node.url) open(hit.node.url);
+        else if (hit && hit.node.kind === 'cat') open(catUrl(hit.node.ci));
+      }
+    }
+
+    function onLeave() {
+      hover = null;
+      dragging = false;
+      pointers = {};
+    }
+
+    function onWheel(e) {
+      e.preventDefault();
+      dist = clamp(dist * Math.pow(1.0018, e.deltaY), 430, 2400);
+      idleAt = Date.now();
+      slow = true;
+    }
+
+    function onReset() {
+      yaw = -0.5; pitch = 0.3; dist = 1000;
+      vYaw = vPitch = 0;
+    }
+
+    function catUrl(ci) {
+      var cat = cats[ci];
+      return cat && cat.rel ? cat.rel : null;
+    }
+
+    function open(url) {
+      if (!url) return;
+      var a = document.createElement('a');
+      a.href = url;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    canvas.addEventListener('pointerdown', onDown);
+    canvas.addEventListener('pointermove', onMove);
+    canvas.addEventListener('pointerup', onUp);
+    canvas.addEventListener('pointercancel', onUp);
+    canvas.addEventListener('pointerleave', onLeave);
+    canvas.addEventListener('wheel', onWheel, { passive: false });
+    canvas.addEventListener('dblclick', onReset);
+    window.addEventListener('resize', resize);
+
+    resize();
+    idleAt = Date.now();
+    raf = window.requestAnimationFrame(frame);
+
+    return { destroy: destroy, resize: resize };
+  }
+
+  function init() {
+    if (current && current.destroy) current.destroy();
+    current = null;
+    var root = document.querySelector('.satellite');
+    if (!root) return;
+    var canvas = root.querySelector('.sat-canvas');
+    if (!canvas || !canvas.getContext) return;
+    current = start(root, canvas);
+  }
+
+  window.BlogSatellite = { init: init };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
