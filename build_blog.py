@@ -549,11 +549,25 @@ def fix_tables(text):
 
 def normalize_math(text):
     r"""把 Obsidian 里常见的 \(..\) / \[..\] 统一成 $..$ / $$..$$，
-    并保证 $$ 行前后有空行，让 arithmatex 认出来（否则会被 Markdown 吃掉反斜杠）。"""
+    并保证 $$ 行前后有空行，让 arithmatex 认出来（否则会被 Markdown 吃掉反斜杠）。
+
+    另外：MathJax 3 在裸的 \[..\] 里不把 \\ 当换行（只有 cases/aligned 这类环境才行），
+    所以对「有 \\ 但没有 \begin{...}」的块自动套一层 gathered，换行才生效。"""
     lines = text.splitlines()
     out = []
     in_fence = False
-    in_display = False
+    buf = None  # None 表示不在块公式里；list 表示正在收集块内容
+
+    def flush():
+        body = "\n".join(buf)
+        if "\\\\" in body and "\\begin{" not in body:
+            out.append("\\begin{gathered}")
+            out.extend(buf)
+            out.append("\\end{gathered}")
+        else:
+            out.extend(buf)
+        out.append("$$")
+        out.append("")
 
     for line in lines:
         stripped = line.strip()
@@ -565,33 +579,40 @@ def normalize_math(text):
             out.append(line)
             continue
 
-        if not in_display:
-            # 行内代码先摘出来，避免动到 `\(x\)` 这类示例
-            chunks = re.split(r"(`[^`]*`)", line)
-            for k, ch in enumerate(chunks):
-                if ch.startswith("`") and ch.endswith("`") and len(ch) > 1:
-                    continue
-                ch = ch.replace("\\[", "$$").replace("\\]", "$$")
-                ch = ch.replace("\\(", "$").replace("\\)", "$")
-                chunks[k] = ch
-            line = "".join(chunks)
+        if buf is not None:
+            if stripped == "$$":
+                flush()
+                buf = None
+            else:
+                buf.append(line)
+            continue
+
+        # 行内代码先摘出来，避免动到 `\(x\)` 这类示例
+        chunks = re.split(r"(`[^`]*`)", line)
+        for k, ch in enumerate(chunks):
+            if ch.startswith("`") and ch.endswith("`") and len(ch) > 1:
+                continue
+            ch = ch.replace("\\[", "$$").replace("\\]", "$$")
+            ch = ch.replace("\\(", "$").replace("\\)", "$")
+            chunks[k] = ch
+        line = "".join(chunks)
+
+        # 同一行里的 $$..$$ 当行内公式：arithmatex 只认行首的 $$ 块，
+        # 否则会把 $$ 拆成两个 $ 只吃掉内层，留下裸的 $ 和转义符。
+        if line.count("$$") >= 2:
+            line = re.sub(r"\$\$(.+?)\$\$", lambda m: "$" + m.group(1).strip() + "$", line)
 
         if line.strip() == "$$":
-            if in_display:
-                out.append("$$")
+            if out and out[-1].strip():
                 out.append("")
-                in_display = False
-            else:
-                if out and out[-1].strip():
-                    out.append("")
-                out.append("$$")
-                in_display = True
+            out.append("$$")
+            buf = []
             continue
 
         out.append(line)
 
-    if in_display:
-        out.append("")
+    if buf is not None:
+        flush()
 
     return "\n".join(out)
 
