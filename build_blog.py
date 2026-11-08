@@ -119,7 +119,7 @@ def build_sections(l1):
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".ico"}
 SKIP_DIRS = {"bin", "node_modules", "__pycache__", "00-导航"}  # 00-导航 只放 MOC/模板，不发布到博客
 
-MATHJAX_HEAD = '<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>'
+MATHJAX_HEAD = '<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>'  # 旧版外链，已改为本地自托管
 
 ROBOTS_TXT = """# 允许正常搜索引擎索引，但拒绝 AI 训练/批量抓取，并保护原始资源与搜索索引。
 User-agent: *
@@ -547,12 +547,62 @@ def fix_tables(text):
     return "\n".join(out)
 
 
+def normalize_math(text):
+    r"""把 Obsidian 里常见的 \(..\) / \[..\] 统一成 $..$ / $$..$$，
+    并保证 $$ 行前后有空行，让 arithmatex 认出来（否则会被 Markdown 吃掉反斜杠）。"""
+    lines = text.splitlines()
+    out = []
+    in_fence = False
+    in_display = False
+
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            in_fence = not in_fence
+            out.append(line)
+            continue
+        if in_fence:
+            out.append(line)
+            continue
+
+        if not in_display:
+            # 行内代码先摘出来，避免动到 `\(x\)` 这类示例
+            chunks = re.split(r"(`[^`]*`)", line)
+            for k, ch in enumerate(chunks):
+                if ch.startswith("`") and ch.endswith("`") and len(ch) > 1:
+                    continue
+                ch = ch.replace("\\[", "$$").replace("\\]", "$$")
+                ch = ch.replace("\\(", "$").replace("\\)", "$")
+                chunks[k] = ch
+            line = "".join(chunks)
+
+        if line.strip() == "$$":
+            if in_display:
+                out.append("$$")
+                out.append("")
+                in_display = False
+            else:
+                if out and out[-1].strip():
+                    out.append("")
+                out.append("$$")
+                in_display = True
+            continue
+
+        out.append(line)
+
+    if in_display:
+        out.append("")
+
+    return "\n".join(out)
+
+
 def convert_md(text):
     md = markdown.Markdown(
         extensions=[
             "tables",
             "fenced_code",
             "sane_lists",
+            "nl2br",               # 与 Obsidian 一致：单个换行就是换行
             "pymdownx.mark",       # ==高亮==
             "pymdownx.tilde",      # ~~删除~~ 与 ~下标~
             "pymdownx.caret",      # ^上标^
@@ -562,7 +612,15 @@ def convert_md(text):
         extension_configs={"pymdownx.arithmatex": {"generic": True}},
         output_format="html5",
     )
-    return md.convert(text)
+    html_out = md.convert(text)
+    # 表格单元格里连着几个空行会变成一串 <br>，塌缩成一个，避免行高爆炸
+    html_out = re.sub(
+        r"<td([^>]*)>(.*?)</td>",
+        lambda m: "<td" + m.group(1) + ">" + re.sub(r"(?:<br\s*/?>\s*){2,}", "<br>", m.group(2)) + "</td>",
+        html_out,
+        flags=re.S,
+    )
+    return html_out
 
 
 def render_doc(rel, out_dir, images):
@@ -572,6 +630,7 @@ def render_doc(rel, out_dir, images):
     raw = strip_frontmatter(raw)
     title = extract_title(raw, os.path.splitext(os.path.basename(rel))[0])
     processed = preprocess(raw, md_dir, out_dir, images)
+    processed = normalize_math(processed)
     processed = fix_tables(processed)
     body = convert_md(processed)
     DOC_TITLE[rel] = title
@@ -1247,7 +1306,10 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
     music_base = "/assets/music"
     home_href = "/"
     drawer_html = build_drawer(out_dir)
-    math = MATHJAX_HEAD if with_math else ""
+    math = ""
+    if with_math:
+        mj = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "mathjax", "tex-svg.js")))
+        math = f'<script defer src="{mj}"></script>'
     back_href = parent_href or "/"
     back_hidden = "" if parent_href else " hidden"
     back_html = (
@@ -1885,6 +1947,12 @@ def main():
     app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + satellite_js + "\n" + note_js + "\n" + brightness_js + "\n" + agent_js + "\n" + anti_crawler_js + "\n" + spa_js
     write_text(os.path.join(ASSET_DIR, "style.css"), style_text)
     write_text(os.path.join(ASSET_DIR, "app.js"), app_text)
+
+    mj_src = os.path.join(SRC_DIR, "mathjax", "tex-svg.js")
+    if os.path.isfile(mj_src):
+        mj_dir = os.path.join(ASSET_DIR, "mathjax")
+        os.makedirs(mj_dir, exist_ok=True)
+        shutil.copyfile(mj_src, os.path.join(mj_dir, "tex-svg.js"))
     ASSET_VERSION = hashlib.md5((style_text + app_text).encode("utf-8")).hexdigest()[:8]
     UPDATES_JSON = json.dumps(collect_updates(docs), ensure_ascii=False, sort_keys=True)
     MUSIC_JSON = load_music_playlist()

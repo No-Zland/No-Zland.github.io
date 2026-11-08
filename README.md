@@ -142,7 +142,7 @@ d:\My Personal Blogs\
 
 ## 实现要点
 
-- **渲染**：`build_blog.py` 用 `python-markdown` + `pymdownx`（`mark`/`tilde`/`caret`/`tasklist`/`arithmatex`）复刻 Obsidian 语法；`fix_tables` 合并被空行打断的表格；MathJax 3 渲染公式。
+- **渲染**：`build_blog.py` 用 `python-markdown` + `pymdownx`（`mark`/`tilde`/`caret`/`tasklist`/`arithmatex`）复刻 Obsidian 语法；开启 `nl2br` 让单个换行等于换行（与 Obsidian 默认行为一致）；`normalize_math` 把 `\(..\)` / `\[..\]` 统一成 `$..$` / `$$..$$` 并给块公式补空行；`fix_tables` 合并被空行打断的表格。MathJax 3 已自托管在 `site/assets/mathjax/`（`src/mathjax/tex-svg.js` 构建时复制），不再依赖 CDN。
 - **板块导航**：`content/post` 的**顶层目录就是板块**（`01-知识库`、`02-实战库`；`00-导航` 只在本地用，进 `SKIP_DIRS`），板块下的子目录就是分类；首页把全部文章画成一张 3D 知识卫星图（canvas：拖动旋转、滚轮缩放、悬停显示标题、点击直达正文锚点，分类节点进分类页），数据由生成器以 JSON 写进页面，JS 里没有外部依赖。
 - **层级侧栏**：`src/search.css` 与生成器共同输出左侧导航；进入板块、分类、子分类时自动展开当前路径，并高亮当前节点。
 - **阅读页**：`src/reading-mode.js` 一次只显示一篇文章，左侧生成文章列表、当前文章目录，并提供独立的上一篇/下一篇卡片；不再按长度切分文章。

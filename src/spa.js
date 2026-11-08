@@ -34,15 +34,21 @@
     document.body.style.overflow = '';
   }
 
-  function typesetMath() {
+  function typesetMath(doc) {
     if (!document.querySelector('.doc-body')) return;
     if (window.MathJax && window.MathJax.typesetPromise) {
       window.MathJax.typesetPromise().catch(function () {});
       return;
     }
     if (document.querySelector('script[src*="mathjax"]')) return;
+    // 用目标页面自己声明的 MathJax 地址（本地自托管），没有才退回 CDN
+    var src = null;
+    var declared = doc && doc.querySelector('script[src*="tex-svg"]');
+    if (declared) {
+      try { src = new URL(declared.getAttribute('src'), document.baseURI).href; } catch (e) { src = null; }
+    }
     var script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js';
+    script.src = src || 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js';
     script.defer = true;
     script.onload = function () {
       if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise().catch(function () {});
@@ -121,7 +127,7 @@
     if (window.BlogQuotes) window.BlogQuotes.init();
     if (window.BlogNoteEditor) window.BlogNoteEditor.init();
     if (window.BlogSatellite) window.BlogSatellite.init();
-    typesetMath();
+    typesetMath(doc);
     scrollToHash(targetUrl.hash);
 
     currentMain.classList.remove('is-page-fading');
