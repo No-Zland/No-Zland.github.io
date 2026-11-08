@@ -57,7 +57,7 @@
     for (var i = 0; i < cats.length; i++) {
       var d = fibDir(i, cats.length);
       nodes.push({
-        kind: 'cat', x: d[0] * 200, y: d[1] * 200, z: d[2] * 200,
+        kind: 'cat', x: d[0] * 238, y: d[1] * 238, z: d[2] * 238,
         r: 7, color: cats[i].color,
         label: cats[i].name + ' ' + cats[i].count,
         name: cats[i].name, ci: i
@@ -79,7 +79,7 @@
       var sinT = Math.sqrt(Math.max(0, 1 - cosT * cosT));
       var b = bases[ci % bases.length] || [[1, 0, 0], [0, 0, 1]];
       var dd = dirs[ci % dirs.length] || [0, 0, 1];
-      var rad = 250 + 210 * t;
+      var rad = 292 + 196 * t;
       var nx = cosT * dd[0] + sinT * (Math.cos(ang) * b[0][0] + Math.sin(ang) * b[1][0]);
       var ny = cosT * dd[1] + sinT * (Math.cos(ang) * b[0][1] + Math.sin(ang) * b[1][1]);
       var nz = cosT * dd[2] + sinT * (Math.cos(ang) * b[0][2] + Math.sin(ang) * b[1][2]);
@@ -91,7 +91,7 @@
     }
     nodes.push({ kind: 'hub', x: 0, y: 0, z: 0, r: 9, color: '#2563eb', label: '知识库', name: '知识库' });
 
-    var yaw = -0.5, pitch = 0.3, dist = 1050, vYaw = 0, vPitch = 0;
+    var yaw = -0.5, pitch = 0.3, dist = 950, vYaw = 0, vPitch = 0;
     var focal = 640, hover = null, dragging = false;
     var lastX = 0, lastY = 0, moved = 0, downAt = 0, idleAt = 0;
     var raf = 0, lastT = 0, slow = false;
@@ -226,11 +226,21 @@
         if (c.node.kind !== 'cat' || c.s < 0.12) continue;
         var dx = c.x - w / 2, dy = c.y - h / 2;
         var dl = Math.sqrt(dx * dx + dy * dy) || 1;
+        var lx = c.x + dx / dl * (c.r + 9);
+        var ly = c.y + dy / dl * (c.r + 9);
+        // 别压在中心的“知识库”上：离中心太近就沿径向外推
+        var cx0 = lx - w / 2, cy0 = ly - h / 2;
+        var cd = Math.sqrt(cx0 * cx0 + cy0 * cy0);
+        if (cd < 118) {
+          var scale = 118 / (cd || 1);
+          lx = w / 2 + cx0 * scale;
+          ly = h / 2 + cy0 * scale;
+        }
         labels.push({
           node: c.node,
           alpha: clamp(c.s * 2.4, 0.35, 1),
-          lx: c.x + dx / dl * (c.r + 9),
-          ly: c.y + dy / dl * (c.r + 9),
+          lx: lx,
+          ly: ly,
           w: ctx.measureText(c.node.label).width,
           h: 15
         });
