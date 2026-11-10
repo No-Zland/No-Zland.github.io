@@ -547,25 +547,52 @@ def fix_tables(text):
     return "\n".join(out)
 
 
-def normalize_math(text):
-    r"""把 Obsidian 里常见的 \(..\) / \[..\] 统一成 $..$ / $$..$$，
-    并保证 $$ 行前后有空行，让 arithmatex 认出来（否则会被 Markdown 吃掉反斜杠）。
+def _math_body(lines):
+    """块公式内容：有 \\ 但没有 \begin{...} 时套一层 gathered，MathJax 才会换行。"""
+    body = "\n".join(lines)
+    if "\\\\" in body and "\\begin{" not in body:
+        return ["\\begin{gathered}"] + lines + ["\\end{gathered}"]
+    return lines
 
-    另外：MathJax 3 在裸的 \[..\] 里不把 \\ 当换行（只有 cases/aligned 这类环境才行），
-    所以对「有 \\ 但没有 \begin{...}」的块自动套一层 gathered，换行才生效。"""
+
+def _inline_math(text):
+    r"""把一行里的 \(..\) / \[..\] / $$..$$ 统一成 $..$（跳过行内代码）。"""
+    chunks = re.split(r"(`[^`]*`)", text)
+    for k, ch in enumerate(chunks):
+        if ch.startswith("`") and ch.endswith("`") and len(ch) > 1:
+            continue
+
+        def wrap(inner):
+            inner = inner.strip()
+            if "\\\\" in inner and "\\begin{" not in inner:
+                return "$\\begin{gathered}" + inner + "\\end{gathered}$"
+            return "$" + inner + "$"
+
+        ch = re.sub(r"\\\((.+?)\\\)", lambda m: wrap(m.group(1)), ch)
+        # 只有内部出现 LaTeX 命令时才当公式，避免把 d \['k'] 这种转义方括号吃掉
+        ch = re.sub(r"\\\[(.+?)\\\]",
+                    lambda m: wrap(m.group(1)) if re.search(r"\\[a-zA-Z]+", m.group(1)) else m.group(0),
+                    ch)
+        ch = re.sub(r"\$\$(.+?)\$\$", lambda m: wrap(m.group(1)), ch)
+        chunks[k] = ch
+    return "".join(chunks)
+
+
+def normalize_math(text):
+    r"""让站点按 Obsidian 的写法认公式：
+
+    - $$ / \[ 独占一行 = 块公式（前后补空行，交给 arithmatex）
+    - 行内 \(..\) / \[..\] / $$..$$ = 行内公式
+    - 块公式里裸的 \\ 自动包一层 gathered（MathJax 3 在裸 \[..\] 里不认 \\）
+    """
     lines = text.splitlines()
     out = []
     in_fence = False
-    buf = None  # None 表示不在块公式里；list 表示正在收集块内容
+    buf = None
 
     def flush():
-        body = "\n".join(buf)
-        if "\\\\" in body and "\\begin{" not in body:
-            out.append("\\begin{gathered}")
-            out.extend(buf)
-            out.append("\\end{gathered}")
-        else:
-            out.extend(buf)
+        out.append("$$")
+        out.extend(_math_body(buf))
         out.append("$$")
         out.append("")
 
@@ -580,36 +607,29 @@ def normalize_math(text):
             continue
 
         if buf is not None:
-            if stripped == "$$":
+            if stripped in ("$$", "\\]"):
                 flush()
                 buf = None
-            else:
-                buf.append(line)
+            elif stripped:
+                buf.append(stripped)
             continue
 
-        # 行内代码先摘出来，避免动到 `\(x\)` 这类示例
-        chunks = re.split(r"(`[^`]*`)", line)
-        for k, ch in enumerate(chunks):
-            if ch.startswith("`") and ch.endswith("`") and len(ch) > 1:
-                continue
-            ch = ch.replace("\\[", "$$").replace("\\]", "$$")
-            ch = ch.replace("\\(", "$").replace("\\)", "$")
-            chunks[k] = ch
-        line = "".join(chunks)
-
-        # 同一行里的 $$..$$ 当行内公式：arithmatex 只认行首的 $$ 块，
-        # 否则会把 $$ 拆成两个 $ 只吃掉内层，留下裸的 $ 和转义符。
-        if line.count("$$") >= 2:
-            line = re.sub(r"\$\$(.+?)\$\$", lambda m: "$" + m.group(1).strip() + "$", line)
-
-        if line.strip() == "$$":
+        if stripped in ("$$", "\\["):
             if out and out[-1].strip():
                 out.append("")
-            out.append("$$")
             buf = []
             continue
 
-        out.append(line)
+        single = re.fullmatch(r"\$\$(.+?)\$\$", stripped)
+        if single:
+            if out and out[-1].strip():
+                out.append("")
+            buf = [single.group(1).strip()]
+            flush()
+            buf = None
+            continue
+
+        out.append(_inline_math(line))
 
     if buf is not None:
         flush()
