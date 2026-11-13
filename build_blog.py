@@ -60,23 +60,43 @@ SECTION_SPECS = [
 ]
 
 
+def nav_doc_list(rels, child_dirs):
+    """把一批文档变成导航里的叶子条目（标题 + 锚点）。"""
+    items = []
+    for rel in rels:
+        path = os.path.join(POST_DIR, rel)
+        title = os.path.splitext(os.path.basename(rel))[0]
+        try:
+            title = extract_title(strip_frontmatter(read_text(path)), title)
+        except OSError:
+            pass
+        items.append({
+            "title": title,
+            "href": doc_page_target(rel, child_dirs) + "#" + doc_anchor(rel),
+        })
+    return items
+
+
 def build_nav_sections(sections, docs, child_dirs):
     nav = []
     for section in sections:
         cats = []
         total = len(docs_under(docs, section["slug"]))
         for cat_rel in child_dirs.get(section["slug"], []):
+            cat_docs = [r for r in docs if os.path.dirname(r) == cat_rel]
             subs = []
             for sub in child_dirs.get(cat_rel, []):
                 subs.append({
                     "rel": sub,
                     "name": os.path.basename(sub),
                     "count": len(docs_under(docs, sub)),
+                    "docs": nav_doc_list(docs_under(docs, sub), child_dirs),
                 })
             cats.append({
                 "rel": cat_rel,
                 "name": os.path.basename(cat_rel),
                 "count": len(docs_under(docs, cat_rel)),
+                "docs": nav_doc_list(cat_docs, child_dirs),
                 "subs": subs,
             })
         nav.append({
@@ -1518,7 +1538,19 @@ def side_nav_for(out_dir):
                     f'<span class="page-nav-name">{esc(cat["name"])}</span>'
                     f'<span class="page-nav-count">{cat["count"]}</span></a>'
                 )
-                if cat_active and cat["subs"]:
+                if cat_active:
+                    if cat.get("docs"):
+                        cat_rows.append(
+                            '<div class="page-nav-docs">'
+                            + "".join(
+                                f'<a class="page-nav-doc" href="{quote_url(rel_from(out_dir, os.path.join(SITE_DIR, d["href"].split("#")[0])))}'
+                                f'#{d["href"].split("#")[1]}" title="{esc(d["title"])}">'
+                                f'<span class="page-nav-dot"></span>'
+                                f'<span class="page-nav-name">{esc(d["title"])}</span></a>'
+                                for d in cat["docs"]
+                            )
+                            + "</div>"
+                        )
                     sub_rows = []
                     for sub in cat["subs"]:
                         sub_active = active_sub is not None and os.path.basename(sub["rel"]) == active_sub
@@ -1528,7 +1560,20 @@ def side_nav_for(out_dir):
                             f'<span class="page-nav-name">{esc(sub["name"])}</span>'
                             f'<span class="page-nav-count">{sub["count"]}</span></a>'
                         )
-                    cat_rows.append('<div class="page-nav-subcats">' + "".join(sub_rows) + "</div>")
+                        if sub_active and sub.get("docs"):
+                            sub_rows.append(
+                                '<div class="page-nav-docs">'
+                                + "".join(
+                                    f'<a class="page-nav-doc" href="{quote_url(rel_from(out_dir, os.path.join(SITE_DIR, d["href"].split("#")[0])))}'
+                                    f'#{d["href"].split("#")[1]}" title="{esc(d["title"])}">'
+                                    f'<span class="page-nav-dot"></span>'
+                                    f'<span class="page-nav-name">{esc(d["title"])}</span></a>'
+                                    for d in sub["docs"]
+                                )
+                                + "</div>"
+                            )
+                    if sub_rows:
+                        cat_rows.append('<div class="page-nav-subcats">' + "".join(sub_rows) + "</div>")
             rows.append('<div class="page-nav-sub">' + "".join(cat_rows) + "</div>")
 
     return f"""
@@ -1560,8 +1605,8 @@ def doc_page_target(rel, child_dirs):
 
 
 def build_satellite(sections, docs, dir_docs, child_dirs):
-    """首页知识卫星图：Python 只打包数据，3D 旋转/缩放交给前端 canvas。"""
-    cats, items, legend = [], [], []
+    """首页知识卫星图：中心是「我」，两个星系分别是知识库和实战库，Python 只打包数据。"""
+    cats, items, legend, meta = [], [], [], []
     for section in sections:
         if not section["cats"]:
             continue
@@ -1576,6 +1621,7 @@ def build_satellite(sections, docs, dir_docs, child_dirs):
                 "color": section["color"],
                 "count": len(ds),
                 "rel": quote_url(os.path.join(cat_rel, "index.html")),
+                "sec": len(meta),
             })
             added = True
             for rel in ds:
@@ -1583,25 +1629,35 @@ def build_satellite(sections, docs, dir_docs, child_dirs):
                 href = quote_url(doc_page_target(rel, child_dirs)) + "#" + doc_anchor(rel)
                 items.append([title, href, ci])
         if added:
+            meta.append({
+                "name": section["title"],
+                "color": section["color"],
+                "rel": quote_url(os.path.join(section["slug"], "index.html")),
+            })
             legend.append(
                 '<span class="sat-legend-item"><i style="background:%s"></i>%s</span>'
                 % (section["color"], esc(section["title"]))
             )
 
-    payload = json.dumps({"cats": cats, "docs": items}, ensure_ascii=False, separators=(",", ":"))
+    payload = json.dumps(
+        {"cats": cats, "docs": items, "sections": meta},
+        ensure_ascii=False, separators=(",", ":"),
+    )
     payload = payload.replace("</", "<\\/")
     fallback = "".join('<li><a href="%s">%s</a></li>' % (href, esc(title)) for title, href, _ in items)
 
     return (
         '<div class="satellite" id="sections">\n'
-        '<canvas class="sat-canvas" role="img" aria-label="知识卫星图：拖动旋转、滚轮缩放，点击节点进入文章"></canvas>\n'
-        '<div class="sat-core" aria-hidden="true"><strong>知识库</strong><span>' + str(len(items)) + ' 篇</span></div>\n'
+        '<canvas class="sat-canvas" role="img" aria-label="知识卫星图：中心是我，拖动旋转、滚轮缩放，点击节点进入文章"></canvas>\n'
+        '<div class="sat-core" aria-hidden="true"><strong>我</strong><span>梁双宇 · ' + str(len(items)) + ' 篇</span></div>\n'
         '<div class="sat-legend">' + "".join(legend) +
         '<span class="sat-hint">拖动旋转 · 滚轮缩放 · 点击进入文章</span></div>\n'
         '<ul class="sat-sr">' + fallback + '</ul>\n'
         '<script type="application/json" class="sat-data">' + payload + '</script>\n'
         '</div>'
     )
+
+
 def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
     l1 = child_dirs.get("", [])
     sections = build_sections(l1)

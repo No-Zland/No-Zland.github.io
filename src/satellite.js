@@ -51,18 +51,36 @@
     var nodes = [];
     var w = 0, h = 0, dpr = 1;
 
-    // ---- 布局：分类在球面，文章沿分类方向向外散成锥形星云 ----
+    // ---- 布局：中心是「我」，两侧各一个星系（知识库 / 实战库），分类绕星系，文章绕分类 ----
+    var secs = data.sections || [{ name: '知识库', color: '#2563eb' }];
+    var GALAXY_R = 272, CAT_R = 132, DOC_R0 = 74, DOC_R1 = 176;
+    var secPos = [];
+    for (var s = 0; s < secs.length; s++) {
+      var ga = Math.PI * s;                    // 两个星系分居左右
+      secPos.push([Math.cos(ga) * GALAXY_R, 0, Math.sin(ga) * GALAXY_R]);
+    }
+
     var maxCount = 1;
+    var i;
     for (i = 0; i < cats.length; i++) maxCount = Math.max(maxCount, cats[i].count || 1);
-    for (var i = 0; i < cats.length; i++) {
+
+    var catPos = [];
+    for (i = 0; i < cats.length; i++) {
       var d = fibDir(i, cats.length);
+      var base = secPos[cats[i].sec || 0] || [0, 0, 0];
+      catPos.push([
+        base[0] + d[0] * CAT_R,
+        base[1] + d[1] * CAT_R,
+        base[2] + d[2] * CAT_R
+      ]);
       nodes.push({
-        kind: 'cat', x: d[0] * 238, y: d[1] * 238, z: d[2] * 238,
-        r: 7, color: cats[i].color,
+        kind: 'cat', x: catPos[i][0], y: catPos[i][1], z: catPos[i][2],
+        r: 6, color: cats[i].color,
         label: cats[i].name + ' ' + cats[i].count,
         name: cats[i].name, ci: i
       });
     }
+
     var dirs = [], bases = [];
     for (i = 0; i < cats.length; i++) { dirs.push(fibDir(i, cats.length)); bases.push(basis(dirs[i])); }
     var seen = {};
@@ -74,24 +92,35 @@
       seen[ci] = k + 1;
       var t = (k + 0.5) / Math.max(1, total);
       var ang = k * 2.399963 + ci * 0.7;
-      var capA = 0.4 + 0.36 * Math.sqrt(total / maxCount);
+      var capA = 0.45 + 0.35 * Math.sqrt(total / maxCount);
       var cosT = 1 - t * (1 - Math.cos(capA));
       var sinT = Math.sqrt(Math.max(0, 1 - cosT * cosT));
       var b = bases[ci % bases.length] || [[1, 0, 0], [0, 0, 1]];
       var dd = dirs[ci % dirs.length] || [0, 0, 1];
-      var rad = 292 + 196 * t;
+      var rad = DOC_R0 + (DOC_R1 - DOC_R0) * t;
       var nx = cosT * dd[0] + sinT * (Math.cos(ang) * b[0][0] + Math.sin(ang) * b[1][0]);
       var ny = cosT * dd[1] + sinT * (Math.cos(ang) * b[0][1] + Math.sin(ang) * b[1][1]);
       var nz = cosT * dd[2] + sinT * (Math.cos(ang) * b[0][2] + Math.sin(ang) * b[1][2]);
+      var origin = catPos[ci] || [0, 0, 0];
       nodes.push({
-        kind: 'doc', x: nx * rad, y: ny * rad, z: nz * rad,
+        kind: 'doc',
+        x: origin[0] + nx * rad,
+        y: origin[1] + ny * rad,
+        z: origin[2] + nz * rad,
         r: 2.2, color: cats[ci] ? cats[ci].color : '#2563eb',
         label: rec[0], url: rec[1], ci: ci
       });
     }
-    nodes.push({ kind: 'hub', x: 0, y: 0, z: 0, r: 9, color: '#2563eb', label: '知识库', name: '知识库' });
 
-    var yaw = -0.5, pitch = 0.3, dist = 950, vYaw = 0, vPitch = 0;
+    for (i = 0; i < secs.length; i++) {
+      nodes.push({
+        kind: 'galaxy', x: secPos[i][0], y: secPos[i][1], z: secPos[i][2],
+        r: 11, color: secs[i].color, label: secs[i].name, name: secs[i].name, si: i
+      });
+    }
+    nodes.push({ kind: 'hub', x: 0, y: 0, z: 0, r: 13, color: '#2563eb', label: '我', name: '我' });
+
+    var yaw = 0.0, pitch = 0.34, dist = 980, vYaw = 0, vPitch = 0;
     var focal = 640, hover = null, dragging = false;
     var lastX = 0, lastY = 0, moved = 0, downAt = 0, idleAt = 0;
     var raf = 0, lastT = 0, slow = false;
@@ -174,24 +203,80 @@
       ctx.fillText(text, bx + pad, by - 7);
     }
 
+    function drawRays(colors) {
+      var t = (window.performance && performance.now ? performance.now() : Date.now()) / 1000;
+      var cx = w / 2, cy = h / 2;
+      var span = Math.max(w, h) * 0.62;
+
+      // 中心光晕
+      var halo = ctx.createRadialGradient(cx, cy, 0, cx, cy, span * 0.55);
+      halo.addColorStop(0, 'rgba(124,58,237,0.16)');
+      halo.addColorStop(0.45, 'rgba(37,99,235,0.07)');
+      halo.addColorStop(1, 'rgba(37,99,235,0)');
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = halo;
+      ctx.fillRect(0, 0, w, h);
+
+      // 缓慢旋转的光芒
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.globalCompositeOperation = 'lighter';
+      var N = 54;
+      for (var i = 0; i < N; i++) {
+        var a = t * 0.05 + i * Math.PI * 2 / N;
+        var len = span * (i % 5 === 0 ? 1.0 : 0.62);
+        var g = ctx.createLinearGradient(0, 0, Math.cos(a) * len, Math.sin(a) * len);
+        g.addColorStop(0, i % 2 ? 'rgba(37,99,235,0.10)' : 'rgba(124,58,237,0.10)');
+        g.addColorStop(0.55, i % 2 ? 'rgba(37,99,235,0.03)' : 'rgba(124,58,237,0.03)');
+        g.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.strokeStyle = g;
+        ctx.lineWidth = i % 5 === 0 ? 2.2 : 1;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(a) * 16, Math.sin(a) * 16);
+        ctx.lineTo(Math.cos(a) * len, Math.sin(a) * len);
+        ctx.stroke();
+      }
+      ctx.restore();
+      ctx.globalCompositeOperation = 'source-over';
+    }
+
     function draw() {
       var colors = colorCache || readColors(canvas);
       ctx.clearRect(0, 0, w, h);
+      drawRays(colors);
       screen = project();
 
       var hub = null;
       for (var i = 0; i < screen.length; i++) if (screen[i].node.kind === 'hub') hub = screen[i];
 
+      // 我 -> 星系 -> 分类 的连线
       ctx.lineWidth = 1;
       for (i = 0; i < screen.length; i++) {
         var it = screen[i];
-        if (it.node.kind !== 'cat' || !hub) continue;
-        ctx.globalAlpha = 0.16;
-        ctx.strokeStyle = it.node.color;
-        ctx.beginPath();
-        ctx.moveTo(hub.x, hub.y);
-        ctx.lineTo(it.x, it.y);
-        ctx.stroke();
+        if (!hub) break;
+        if (it.node.kind === 'galaxy') {
+          ctx.globalAlpha = 0.35;
+          ctx.strokeStyle = it.node.color;
+          ctx.beginPath();
+          ctx.moveTo(hub.x, hub.y);
+          ctx.lineTo(it.x, it.y);
+          ctx.stroke();
+        } else if (it.node.kind === 'cat') {
+          var gp = null;
+          for (var k = 0; k < screen.length; k++) {
+            if (screen[k].node.kind === 'galaxy' && screen[k].node.si === (cats[it.node.ci] || {}).sec) {
+              gp = screen[k];
+              break;
+            }
+          }
+          if (!gp) continue;
+          ctx.globalAlpha = 0.14;
+          ctx.strokeStyle = it.node.color;
+          ctx.beginPath();
+          ctx.moveTo(gp.x, gp.y);
+          ctx.lineTo(it.x, it.y);
+          ctx.stroke();
+        }
       }
 
       for (i = 0; i < screen.length; i++) {
@@ -201,19 +286,47 @@
         var isHover = hover && hover.node === n;
         ctx.globalAlpha = n.kind === 'doc' ? fade * 0.85 : fade;
 
+        if (n.kind === 'galaxy' || n.kind === 'hub') {
+          ctx.shadowColor = n.color;
+          ctx.shadowBlur = n.kind === 'hub' ? 26 : 18;
+        } else {
+          ctx.shadowBlur = 0;
+        }
+
         ctx.beginPath();
         ctx.arc(s0.x, s0.y, isHover ? s0.r * 1.8 : s0.r, 0, Math.PI * 2);
         ctx.fillStyle = n.color;
         ctx.fill();
+        ctx.shadowBlur = 0;
 
         if (n.kind === 'hub') {
-          ctx.globalAlpha = 1;
+          ctx.globalAlpha = 0.9;
           ctx.strokeStyle = n.color;
           ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.arc(s0.x, s0.y, s0.r + 4, 0, Math.PI * 2);
+          ctx.arc(s0.x, s0.y, s0.r + 6, 0, Math.PI * 2);
           ctx.stroke();
         }
+      }
+
+      // 星系名字（知识库 / 实战库）
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '700 13px ' + fontFamily;
+      for (i = 0; i < screen.length; i++) {
+        var g0 = screen[i];
+        if (g0.node.kind !== 'galaxy') continue;
+        ctx.globalAlpha = clamp(g0.s * 2.6, 0.5, 1);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = colors.bg;
+        var sgn = g0.x >= w / 2 ? 1 : -1;
+        ctx.textAlign = sgn > 0 ? 'left' : 'right';
+        var lx = g0.x + sgn * (g0.r + 10);
+        var ly = g0.y - g0.r - 10;
+        ctx.strokeText(g0.node.label, lx, ly);
+        ctx.fillStyle = g0.node.color;
+        ctx.fillText(g0.node.label, lx, ly);
+        ctx.textAlign = 'center';
       }
 
       // 分类标签最后画，并做一次简单的避让（重叠就往下错位）
@@ -381,6 +494,7 @@
         var hit = pick(p.x, p.y);
         if (hit && hit.node.kind === 'doc' && hit.node.url) open(hit.node.url);
         else if (hit && hit.node.kind === 'cat') open(catUrl(hit.node.ci));
+        else if (hit && hit.node.kind === 'galaxy') open(secUrl(hit.node.si));
       }
     }
 
@@ -398,13 +512,18 @@
     }
 
     function onReset() {
-      yaw = -0.5; pitch = 0.3; dist = 1000;
+      yaw = 0.0; pitch = 0.34; dist = 980;
       vYaw = vPitch = 0;
     }
 
     function catUrl(ci) {
       var cat = cats[ci];
       return cat && cat.rel ? cat.rel : null;
+    }
+
+    function secUrl(si) {
+      var s = secs[si];
+      return s && s.rel ? s.rel : null;
     }
 
     function open(url) {

@@ -504,3 +504,19 @@
   .search-mode { margin-left: auto; }
   .search-results { max-height: 45vh; }
 }
+
+/* 导航栏：文章级叶子（递归到底） */
+.page-nav-docs {
+  display: flex; flex-direction: column; gap: 1px;
+  margin: 2px 0 6px 10px; padding-left: 9px;
+  border-left: 1px dashed var(--border);
+}
+.page-nav-doc {
+  display: flex; align-items: center; gap: 6px;
+  padding: 3px 6px; border-radius: 6px;
+  color: var(--text-soft); font-size: 11.5px; line-height: 1.35;
+  transition: color .15s ease, background .15s ease;
+}
+.page-nav-doc:hover { color: var(--brand); background: var(--brand-soft, rgba(37,99,235,.08)); }
+.page-nav-doc .page-nav-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.page-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .5; flex: none; }
