@@ -78,33 +78,31 @@ def nav_doc_list(rels, child_dirs):
 
 
 def build_nav_sections(sections, docs, child_dirs):
+    """按真实目录递归建树：每一层目录都是节点，叶子是文章。"""
+
+    def make(rel, depth):
+        children = []
+        for sub in sorted(child_dirs.get(rel, []), key=lambda r: natural_key(os.path.basename(r))):
+            children.append(make(sub, depth + 1))
+        direct = [r for r in docs if os.path.dirname(r) == rel]
+        return {
+            "rel": rel,
+            "name": os.path.basename(rel),
+            "depth": depth,
+            "count": len(docs_under(docs, rel)),
+            "docs": nav_doc_list(sorted(direct, key=natural_key), child_dirs),
+            "children": children,
+        }
+
     nav = []
     for section in sections:
-        cats = []
-        total = len(docs_under(docs, section["slug"]))
-        for cat_rel in child_dirs.get(section["slug"], []):
-            cat_docs = [r for r in docs if os.path.dirname(r) == cat_rel]
-            subs = []
-            for sub in child_dirs.get(cat_rel, []):
-                subs.append({
-                    "rel": sub,
-                    "name": os.path.basename(sub),
-                    "count": len(docs_under(docs, sub)),
-                    "docs": nav_doc_list(docs_under(docs, sub), child_dirs),
-                })
-            cats.append({
-                "rel": cat_rel,
-                "name": os.path.basename(cat_rel),
-                "count": len(docs_under(docs, cat_rel)),
-                "docs": nav_doc_list(cat_docs, child_dirs),
-                "subs": subs,
-            })
+        node = make(section["slug"], 1)
         nav.append({
             "slug": section["slug"],
             "title": section["title"],
             "color": section["color"],
-            "total": total,
-            "cats": cats,
+            "total": len(docs_under(docs, section["slug"])),
+            "tree": node,
         })
     return nav
 
@@ -1498,83 +1496,74 @@ def side_nav_for(out_dir):
         return ""
 
     parts = [p for p in os.path.relpath(out_dir, SITE_DIR).split(os.sep) if p and p != "."]
-    active_section = None
-    active_cat = None
-    active_sub = None
-
-    if parts:
-        first = parts[0]
-        if any(section["slug"] == first for section in NAV_SECTIONS):
-            active_section = first
-            if len(parts) > 1:
-                active_cat = parts[1]
-            if len(parts) > 2:
-                active_sub = parts[2]
+    prefixes = set()
+    for i in range(1, len(parts) + 1):
+        prefixes.add(os.sep.join(parts[:i]))
 
     home_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html")))
     library_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "资料库", "index.html")))
     note_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "写笔记", "index.html")))
     library_active = os.path.basename(out_dir.rstrip(os.sep)) == "资料库"
     note_active = os.path.basename(out_dir.rstrip(os.sep)) == "写笔记"
-    rows = []
-    for section in NAV_SECTIONS:
-        section_active = section["slug"] == active_section
-        section_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, section["slug"], "index.html")))
-        rows.append(
-            f'<a class="quick-cat page-nav-section{" is-active" if section_active else ""}" '
-            f'href="{section_href}" title="{esc(section["title"])}">'
-            f'<span class="quick-dot" style="background:{section["color"]}"></span>'
-            f'<span class="quick-name">{esc(section["title"])}</span>'
-            f'<span class="quick-count">{section["total"]}</span></a>'
+
+    def page_href(rel):
+        segs = rel.split(os.sep)
+        page = os.path.join(rel, "index.html") if len(segs) <= 3 else os.path.join(*segs[:3], "index.html")
+        return quote_url(rel_from(out_dir, os.path.join(SITE_DIR, page)))
+
+    def doc_href(href):
+        page, _, anchor = href.partition("#")
+        url = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, page)))
+        return url + ("#" + anchor if anchor else "")
+
+    def doc_row(d, depth, active=False):
+        cls = "page-nav-doc" + (" is-active" if active else "")
+        return (
+            '<a class="%s" style="--d:%d" href="%s" title="%s">'
+            '<span class="page-nav-dot"></span><span class="page-nav-name">%s</span></a>'
+            % (cls, depth, doc_href(d["href"]), esc(d["title"]), esc(d["title"]))
         )
 
+    def render_node(node, depth):
+        kids = node["children"]
+        docs = node["docs"]
+        if not kids and not docs:
+            return ""
+        if depth <= 3:
+            head = (
+                '<summary><a class="page-nav-name" href="%s">%s</a>'
+                '<span class="page-nav-count">%d</span></summary>'
+                % (page_href(node["rel"]), esc(node["name"]), node["count"])
+            )
+        else:
+            head = (
+                '<summary><span class="page-nav-name">%s</span>'
+                '<span class="page-nav-count">%d</span></summary>'
+                % (esc(node["name"]), node["count"])
+            )
+        inner = [render_node(k, depth + 1) for k in kids]
+        inner += [doc_row(d, depth) for d in docs]
+        open_attr = " open" if node["rel"] in prefixes else ""
+        return '<details class="page-nav-node" style="--d:%d"%s>%s%s</details>' % (
+            depth, open_attr, head, "".join(inner))
+
+    rows = []
+    for section in NAV_SECTIONS:
+        section_active = bool(parts) and section["slug"] == parts[0]
+        section_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, section["slug"], "index.html")))
+        rows.append(
+            '<a class="quick-cat page-nav-section%s" href="%s" title="%s">'
+            '<span class="quick-dot" style="background:%s"></span>'
+            '<span class="quick-name">%s</span>'
+            '<span class="quick-count">%d</span></a>'
+            % (" is-active" if section_active else "", section_href, esc(section["title"]),
+               section["color"], esc(section["title"]), section["total"])
+        )
         if section_active:
-            cat_rows = []
-            for cat in section["cats"]:
-                cat_active = active_cat is not None and cat["rel"] == os.path.join(active_section, active_cat)
-                cat_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, cat["rel"], "index.html")))
-                cat_rows.append(
-                    f'<a class="page-nav-cat{" is-active" if cat_active else ""}" href="{cat_href}">'
-                    f'<span class="page-nav-name">{esc(cat["name"])}</span>'
-                    f'<span class="page-nav-count">{cat["count"]}</span></a>'
-                )
-                if cat_active:
-                    if cat.get("docs"):
-                        cat_rows.append(
-                            '<div class="page-nav-docs">'
-                            + "".join(
-                                f'<a class="page-nav-doc" href="{quote_url(rel_from(out_dir, os.path.join(SITE_DIR, d["href"].split("#")[0])))}'
-                                f'#{d["href"].split("#")[1]}" title="{esc(d["title"])}">'
-                                f'<span class="page-nav-dot"></span>'
-                                f'<span class="page-nav-name">{esc(d["title"])}</span></a>'
-                                for d in cat["docs"]
-                            )
-                            + "</div>"
-                        )
-                    sub_rows = []
-                    for sub in cat["subs"]:
-                        sub_active = active_sub is not None and os.path.basename(sub["rel"]) == active_sub
-                        sub_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, sub["rel"], "index.html")))
-                        sub_rows.append(
-                            f'<a class="page-nav-subcat{" is-active" if sub_active else ""}" href="{sub_href}">'
-                            f'<span class="page-nav-name">{esc(sub["name"])}</span>'
-                            f'<span class="page-nav-count">{sub["count"]}</span></a>'
-                        )
-                        if sub_active and sub.get("docs"):
-                            sub_rows.append(
-                                '<div class="page-nav-docs">'
-                                + "".join(
-                                    f'<a class="page-nav-doc" href="{quote_url(rel_from(out_dir, os.path.join(SITE_DIR, d["href"].split("#")[0])))}'
-                                    f'#{d["href"].split("#")[1]}" title="{esc(d["title"])}">'
-                                    f'<span class="page-nav-dot"></span>'
-                                    f'<span class="page-nav-name">{esc(d["title"])}</span></a>'
-                                    for d in sub["docs"]
-                                )
-                                + "</div>"
-                            )
-                    if sub_rows:
-                        cat_rows.append('<div class="page-nav-subcats">' + "".join(sub_rows) + "</div>")
-            rows.append('<div class="page-nav-sub">' + "".join(cat_rows) + "</div>")
+            tree = section["tree"]
+            inner = [render_node(k, 2) for k in tree["children"]]
+            inner += [doc_row(d, 1) for d in tree["docs"]]
+            rows.append('<div class="page-nav-tree">' + "".join(inner) + "</div>")
 
     return f"""
 <aside class="quick-nav page-nav" aria-label="层级导航">
@@ -1649,7 +1638,6 @@ def build_satellite(sections, docs, dir_docs, child_dirs):
     return (
         '<div class="satellite" id="sections">\n'
         '<canvas class="sat-canvas" role="img" aria-label="知识卫星图：中心是我，拖动旋转、滚轮缩放，点击节点进入文章"></canvas>\n'
-        '<div class="sat-core" aria-hidden="true"><strong>我</strong><span>梁双宇 · ' + str(len(items)) + ' 篇</span></div>\n'
         '<div class="sat-legend">' + "".join(legend) +
         '<span class="sat-hint">拖动旋转 · 滚轮缩放 · 点击进入文章</span></div>\n'
         '<ul class="sat-sr">' + fallback + '</ul>\n'

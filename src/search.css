@@ -520,3 +520,25 @@
 .page-nav-doc:hover { color: var(--brand); background: var(--brand-soft, rgba(37,99,235,.08)); }
 .page-nav-doc .page-nav-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .page-nav-dot { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .5; flex: none; }
+
+
+/* 导航栏：按真实目录递归（details/summary） */
+.page-nav-tree { margin: 2px 0 6px; }
+.page-nav-node { margin: 0; }
+.page-nav-node > summary {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 8px 4px calc(6px + (var(--d, 2) - 2) * 10px);
+  border-radius: 6px; cursor: pointer; list-style: none;
+  color: var(--text); font-size: 12px; line-height: 1.4;
+}
+.page-nav-node > summary::-webkit-details-marker { display: none; }
+.page-nav-node > summary::before {
+  content: "▸"; font-size: 9px; color: var(--text-soft); flex: none;
+  transition: transform .15s ease;
+}
+.page-nav-node[open] > summary::before { transform: rotate(90deg); }
+.page-nav-node > summary:hover { background: var(--brand-soft, rgba(37,99,235,.08)); }
+.page-nav-node > summary .page-nav-count { margin-left: auto; color: var(--text-soft); font-size: 10.5px; }
+.page-nav-node .page-nav-doc {
+  padding: 3px 8px 3px calc(16px + (var(--d, 2) - 2) * 10px);
+}
