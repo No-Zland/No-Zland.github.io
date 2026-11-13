@@ -91,6 +91,35 @@ hugo server
 > 笔记有改动后，重新运行 `python build_blog.py` 即可；如果预览页仍显示旧样式/脚本，重启一下 `hugo server`。
 > 需要全量清理旧输出时使用 `python build_blog.py --clean`（会删除并重建 `site/`）。
 
+### 自动发布（改完就自动上线）
+
+不想每次都手动构建 + 提交 + 推送的话，开一个监听进程就行：
+
+```bash
+python autopublish.py          # 常驻监听，Ctrl+C 停
+python autopublish.py --once   # 只跑一轮
+python autopublish.py --dry-run
+python autopublish.py --no-build   # 跳过本地构建校验
+python autopublish.py --no-push    # 只提交不推送
+```
+
+Windows 上直接双击 `autopublish.bat` 也可以。
+
+工作方式：
+
+- 盯着 `content/post`、`src/`、`layouts/`、`build_blog.py`、`hugo.toml`，每次轮询 2 秒
+- 最后一次改动后**静置 8 秒**才动手，避免 Obsidian 自动保存时反复触发
+- 先跑 `python build_blog.py --clean` 做一次构建校验，构建报错就**不提交**，把错误写进 `autopublish.log`
+- 构建通过 → `git add -A` → 用 `auto: N 个文件 · 时间` 提交 → 推送
+- 推送失败（断网）不会丢改动：提交留在本地，后台每 5 分钟重试一次；也可以随时 `python autopublish.py --once` 手动补推
+- GitHub Actions 的 `pages.yml` 在收到 push 后 build + 部署，所以推上去就等于上线
+
+开机自启（可选，Windows 当前用户，不需要管理员）：
+
+```powershell
+schtasks /create /tn "Blog Autopublish" /tr "pythonw \"D:\My Personal Blogs\autopublish.py\"" /sc onlogon
+```
+
 ## 项目结构
 
 ```
