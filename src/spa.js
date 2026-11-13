@@ -127,6 +127,7 @@
     if (window.BlogQuotes) window.BlogQuotes.init();
     if (window.BlogNoteEditor) window.BlogNoteEditor.init();
     if (window.BlogSatellite) window.BlogSatellite.init();
+    if (window.BlogNavSync) window.BlogNavSync.init();
     typesetMath(doc);
     scrollToHash(targetUrl.hash);
 

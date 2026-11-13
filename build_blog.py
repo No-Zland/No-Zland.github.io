@@ -1593,6 +1593,42 @@ def doc_page_target(rel, child_dirs):
     return page.replace(os.sep, "/")
 
 
+def frontmatter_tags(path, limit=4):
+    """从 frontmatter 里取标签，用于卫星图悬停提示。"""
+    try:
+        text = read_text(path)
+    except OSError:
+        return []
+    if not text.startswith("---"):
+        return []
+    end = text.find("\n---", 3)
+    if end < 0:
+        return []
+    block = text[:end]
+    m = re.search(r"^tags:\s*(.*)$", block, re.M)
+    if not m:
+        return []
+    tags = []
+    inline = m.group(1).strip()
+    if inline.startswith("["):
+        for item in inline.strip("[]").split(","):
+            item = item.strip().strip('"').strip("'").lstrip("#").strip()
+            if item:
+                tags.append(item)
+    else:
+        for line in block[m.end():].splitlines():
+            s = line.strip()
+            if not s:
+                continue
+            if s.startswith("-"):
+                item = s[1:].strip().strip('"').strip("'").lstrip("#").strip()
+                if item:
+                    tags.append(item)
+            elif re.match(r"^[^\s-][^:]*:", s):
+                break
+    return tags[:limit]
+
+
 def build_satellite(sections, docs, dir_docs, child_dirs):
     """首页知识卫星图：中心是「我」，两个星系分别是知识库和实战库，Python 只打包数据。"""
     cats, items, legend, meta = [], [], [], []
@@ -1616,7 +1652,8 @@ def build_satellite(sections, docs, dir_docs, child_dirs):
             for rel in ds:
                 title = DOC_TITLE.get(rel) or os.path.splitext(os.path.basename(rel))[0]
                 href = quote_url(doc_page_target(rel, child_dirs)) + "#" + doc_anchor(rel)
-                items.append([title, href, ci])
+                crumb = os.path.dirname(rel).replace(os.sep, " / ")
+                items.append([title, href, ci, frontmatter_tags(os.path.join(POST_DIR, rel)), crumb])
         if added:
             meta.append({
                 "name": section["title"],
@@ -1633,7 +1670,7 @@ def build_satellite(sections, docs, dir_docs, child_dirs):
         ensure_ascii=False, separators=(",", ":"),
     )
     payload = payload.replace("</", "<\\/")
-    fallback = "".join('<li><a href="%s">%s</a></li>' % (href, esc(title)) for title, href, _ in items)
+    fallback = "".join('<li><a href="%s">%s</a></li>' % (d[1], esc(d[0])) for d in items)
 
     return (
         '<div class="satellite" id="sections">\n'
@@ -2026,10 +2063,11 @@ def main():
     agent_js = read_text(os.path.join(SRC_DIR, "agent.js"))
     quotes_js = read_text(os.path.join(SRC_DIR, "quotes.js"))
     satellite_js = read_text(os.path.join(SRC_DIR, "satellite.js"))
+    nav_sync_js = read_text(os.path.join(SRC_DIR, "nav-sync.js"))
     anti_crawler_js = read_text(os.path.join(SRC_DIR, "anti-crawler.js"))
     spa_js = read_text(os.path.join(SRC_DIR, "spa.js"))
     style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css + "\n" + note_css + "\n" + agent_css
-    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + satellite_js + "\n" + note_js + "\n" + brightness_js + "\n" + agent_js + "\n" + anti_crawler_js + "\n" + spa_js
+    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + satellite_js + "\n" + nav_sync_js + "\n" + note_js + "\n" + brightness_js + "\n" + agent_js + "\n" + anti_crawler_js + "\n" + spa_js
     write_text(os.path.join(ASSET_DIR, "style.css"), style_text)
     write_text(os.path.join(ASSET_DIR, "app.js"), app_text)
 

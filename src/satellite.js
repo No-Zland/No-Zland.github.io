@@ -53,7 +53,7 @@
 
     // ---- 布局：中心是「我」，两侧各一个星系（知识库 / 实战库），分类绕星系，文章绕分类 ----
     var secs = data.sections || [{ name: '知识库', color: '#2563eb' }];
-    var GALAXY_R = 272, CAT_R = 132, DOC_R0 = 74, DOC_R1 = 176;
+    var GALAXY_R = 300, CAT_R = 126, DOC_R0 = 70, DOC_R1 = 168;
     var secPos = [];
     for (var s = 0; s < secs.length; s++) {
       var ga = Math.PI * s;                    // 两个星系分居左右
@@ -108,7 +108,7 @@
         y: origin[1] + ny * rad,
         z: origin[2] + nz * rad,
         r: 2.2, color: cats[ci] ? cats[ci].color : '#2563eb',
-        label: rec[0], url: rec[1], ci: ci
+        label: rec[0], url: rec[1], ci: ci, tags: rec[3] || [], crumb: rec[4] || ''
       });
     }
 
@@ -118,13 +118,14 @@
         r: 11, color: secs[i].color, label: secs[i].name, name: secs[i].name, si: i
       });
     }
-    nodes.push({ kind: 'hub', x: 0, y: 0, z: 0, r: 13, color: '#2563eb', label: '我', name: '我' });
+    nodes.push({ kind: 'hub', x: 0, y: 0, z: 0, r: 14, color: '#f59e0b', label: '', name: 'me' });
 
     var yaw = 0.0, pitch = 0.34, dist = 980, vYaw = 0, vPitch = 0;
     var focal = 640, hover = null, dragging = false;
     var lastX = 0, lastY = 0, moved = 0, downAt = 0, idleAt = 0;
     var raf = 0, lastT = 0, slow = false;
     var pointers = {}, pinch = 0;
+    var panX = 0, panY = 0, mode = 'rotate';
     var screen = [];
 
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -165,7 +166,7 @@
         if (depth < 80) continue;
         var s = focal / depth;
         out.push({
-          node: n, x: cx + x1 * s, y: cyy + y1 * s, s: s, depth: depth,
+          node: n, x: cx + x1 * s + panX, y: cyy + y1 * s + panY, s: s, depth: depth,
           r: clamp(n.r * s * 2.8, 1.4, 17)
         });
       }
@@ -184,23 +185,40 @@
     }
 
     function drawTooltip(item, colors) {
-      var text = item.node.label;
-      ctx.font = '500 13px ' + fontFamily;
-      var tw = ctx.measureText(text).width;
-      var pad = 7;
-      var bx = clamp(item.x + 12, 6, w - tw - pad * 2 - 6);
-      var by = clamp(item.y - 12, 6, h - 30);
+      var title = item.node.label || '';
+      var tags = item.node.tags || [];
+      var tagLine = tags.length ? tags.join(' · ') : (item.node.crumb || '');
+      var pad = 9;
+
+      ctx.font = '600 13px ' + fontFamily;
+      var tw = ctx.measureText(title).width;
+      ctx.font = '500 11px ' + fontFamily;
+      var gw = tagLine ? ctx.measureText(tagLine).width : 0;
+      var boxW = Math.max(tw, gw) + pad * 2;
+      var boxH = tagLine ? 44 : 28;
+
+      var bx = clamp(item.x + 14, 6, Math.max(6, w - boxW - 6));
+      var by = clamp(item.y - 16, 6, Math.max(6, h - boxH - 6));
+
       ctx.globalAlpha = 1;
-      roundRect(bx, by - 20, tw + pad * 2, 26, 8);
+      roundRect(bx, by, boxW, boxH, 8);
       ctx.fillStyle = colors.bg;
       ctx.fill();
       ctx.strokeStyle = colors.border;
       ctx.lineWidth = 1;
       ctx.stroke();
-      ctx.fillStyle = colors.text;
+
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      ctx.fillText(text, bx + pad, by - 7);
+      ctx.fillStyle = colors.text;
+      ctx.font = '600 13px ' + fontFamily;
+      ctx.fillText(title, bx + pad, by + 14);
+
+      if (tagLine) {
+        ctx.fillStyle = colors.soft;
+        ctx.font = '500 11px ' + fontFamily;
+        ctx.fillText(tagLine, bx + pad, by + 32);
+      }
     }
 
     function drawRays(colors) {
@@ -427,7 +445,7 @@
         var it = screen[i];
         var dx = it.x - x, dy = it.y - y;
         var d = Math.sqrt(dx * dx + dy * dy);
-        var lim = Math.max(9, it.r + 7);
+        var lim = Math.max(12, it.r + 9);
         if (d < lim && d < bestD) { bestD = d; best = it; }
       }
       return best;
@@ -447,6 +465,7 @@
       downAt = Date.now();
       lastX = p.x; lastY = p.y;
       vYaw = vPitch = 0;
+      mode = (e.button === 2 || e.shiftKey || e.button === 1) ? 'pan' : 'rotate';
       canvas.setPointerCapture && canvas.setPointerCapture(e.pointerId);
       canvas.style.cursor = 'grabbing';
     }
@@ -459,18 +478,29 @@
       if (ids.length === 2) {
         var a = pointers[ids[0]], b = pointers[ids[1]];
         var d = Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
-        if (pinch) dist = clamp(dist * (pinch / Math.max(d, 1)), 430, 2400);
+        if (pinch) dist = clamp(dist * (pinch / Math.max(d, 1)), 430, 2600);
         pinch = d;
+        panX += (a.x + b.x) / 2 - lastX;
+        panY += (a.y + b.y) / 2 - lastY;
+        lastX = (a.x + b.x) / 2;
+        lastY = (a.y + b.y) / 2;
         return;
       }
 
       if (dragging) {
         var dx = p.x - lastX, dy = p.y - lastY;
         moved += Math.abs(dx) + Math.abs(dy);
-        yaw += dx * 0.007;
-        pitch = clamp(pitch + dy * 0.007, -1.2, 1.2);
-        vYaw = dx * 0.0016;
-        vPitch = dy * 0.0016;
+        if (mode === 'pan') {
+          panX += dx;
+          panY += dy;
+          panX = clamp(panX, -w * 0.8, w * 0.8);
+          panY = clamp(panY, -h * 0.8, h * 0.8);
+        } else {
+          yaw += dx * 0.007;
+          pitch = clamp(pitch + dy * 0.007, -1.2, 1.2);
+          vYaw = dx * 0.0016;
+          vPitch = dy * 0.0016;
+        }
         lastX = p.x; lastY = p.y;
         idleAt = Date.now();
         return;
@@ -478,19 +508,21 @@
 
       var hit = pick(p.x, p.y);
       hover = hit;
-      canvas.style.cursor = hit && hit.node.kind === 'doc' ? 'pointer' : 'grab';
+      canvas.style.cursor = hit ? 'pointer' : 'grab';
     }
 
     function onUp(e) {
       delete pointers[e.pointerId];
       if (Object.keys(pointers).length < 2) pinch = 0;
+      var wasPan = mode === 'pan';
       dragging = false;
+      mode = 'rotate';
       canvas.style.cursor = 'grab';
       idleAt = Date.now();
 
       var p;
       try { p = localXY(e); } catch (err) { return; }
-      if (moved < 9 && Date.now() - downAt < 600) {
+      if (!wasPan && moved < 9 && Date.now() - downAt < 600) {
         var hit = pick(p.x, p.y);
         if (hit && hit.node.kind === 'doc' && hit.node.url) open(hit.node.url);
         else if (hit && hit.node.kind === 'cat') open(catUrl(hit.node.ci));
@@ -513,6 +545,7 @@
 
     function onReset() {
       yaw = 0.0; pitch = 0.34; dist = 980;
+      panX = 0; panY = 0;
       vYaw = vPitch = 0;
     }
 
@@ -543,6 +576,7 @@
     canvas.addEventListener('pointerleave', onLeave);
     canvas.addEventListener('wheel', onWheel, { passive: false });
     canvas.addEventListener('dblclick', onReset);
+    canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     window.addEventListener('resize', resize);
 
     resize();
