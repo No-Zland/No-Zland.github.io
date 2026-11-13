@@ -69,7 +69,10 @@ def snapshot():
 
 
 def run(cmd, timeout=600):
-    proc = subprocess.run(cmd, cwd=ROOT, capture_output=True)
+    try:
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        return 124, "", "超时（%ss）" % timeout
     out = (proc.stdout or b"").decode("utf-8", "replace").strip()
     err = (proc.stderr or b"").decode("utf-8", "replace").strip()
     return proc.returncode, out, err
@@ -96,9 +99,37 @@ def build():
     return True
 
 
+def has_unpushed():
+    code, out, _ = run(["git", "rev-list", "--count", "@{u}..HEAD"], timeout=60)
+    if code != 0:
+        code, out, _ = run(["git", "rev-list", "--count", "origin/HEAD..HEAD"], timeout=60)
+    try:
+        return int(out.strip() or 0) > 0
+    except ValueError:
+        return False
+
+
+def push(do_push=True):
+    if not do_push:
+        return True
+    for attempt in range(1, PUSH_RETRIES + 1):
+        code, out, err = run(["git", "push", "origin", "HEAD"], timeout=120)
+        if code == 0:
+            log("推送成功")
+            return True
+        last = ((err or out).strip().splitlines() or [""])[-1]
+        log("推送失败（第 %d/%d 次）：%s" % (attempt, PUSH_RETRIES, last))
+        time.sleep(min(60, 8 * attempt))
+    log("推送多次失败，本地提交已保留；后台每 5 分钟再试（或加 --once 手动重试）")
+    return False
+
+
 def publish(message=None, do_build=True, do_push=True):
     changes = git_changes()
     if not changes:
+        if has_unpushed():
+            log("没有新改动，但有 %s 个本地提交待推送" % "若干")
+            return push(do_push)
         log("没有需要提交的改动")
         return True
 
@@ -114,7 +145,7 @@ def publish(message=None, do_build=True, do_push=True):
     staged = [ln for ln in out.splitlines() if ln.strip()]
     if not staged:
         log("暂存区为空，跳过")
-        return True
+        return push(do_push) if has_unpushed() else True
 
     if not message:
         message = "auto: %d 个文件 · %s" % (
@@ -126,20 +157,7 @@ def publish(message=None, do_build=True, do_push=True):
         return False
     log("已提交：" + message)
 
-    if not do_push:
-        return True
-
-    for attempt in range(1, PUSH_RETRIES + 1):
-        code, out, err = run(["git", "push", "origin", "HEAD"])
-        if code == 0:
-            log("推送成功")
-            return True
-        last = ((err or out).strip().splitlines() or [""])[-1]
-        log("推送失败（第 %d/%d 次）：%s" % (attempt, PUSH_RETRIES, last))
-        time.sleep(min(60, 8 * attempt))
-
-    log("推送多次失败，改动已留在本地，等下一轮改动时重试（也可以加 --once 手动重试）")
-    return False
+    return push(do_push)
 
 
 def watch():
@@ -147,6 +165,7 @@ def watch():
     log("监听目录：" + "、".join(os.path.relpath(d, ROOT) for d in WATCH_DIRS))
     state = snapshot()
     dirty_since = None
+    last_push_try = 0.0
     try:
         while True:
             time.sleep(POLL)
@@ -159,6 +178,13 @@ def watch():
                 dirty_since = None
                 log("检测到改动，准备发布")
                 publish()
+                last_push_try = time.time()
+                continue
+            # 之前推送失败（比如断网）的话，后台每 5 分钟补推一次
+            if time.time() - last_push_try > 300 and not git_changes() and has_unpushed():
+                last_push_try = time.time()
+                log("有本地提交没推上去，重试")
+                push()
     except KeyboardInterrupt:
         log("已停止监听")
 
