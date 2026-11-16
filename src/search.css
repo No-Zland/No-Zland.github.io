@@ -658,3 +658,7 @@ body.side-hidden .side-column { display: none; }
 .cert-item img { width: 100%; height: auto; display: block; }
 .cert-item span { display: block; padding: 6px 9px; font-size: 11px; color: var(--text-soft); }
 .side-toggle-top[aria-pressed="true"] { color: var(--brand); border-color: var(--brand); }
+
+
+/* 中文排版：长段落首行缩进两格（引用、列表、表格、短句不缩进） */
+.doc-body p.p-indent { text-indent: 2em; }

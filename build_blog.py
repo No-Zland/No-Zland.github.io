@@ -677,6 +677,41 @@ def normalize_math(text):
     return "\n".join(out)
 
 
+def indent_paragraphs(html_text, min_chars=24):
+    """给长段落的 <p> 加上 p-indent 类（CSS 首行缩进两格）。
+
+    引用块、列表、表格里的段落不动；短句（标签、图注、“输入：”这类）也不缩进。
+    """
+    parts = re.split(
+        r"(<blockquote\b[^>]*>|</blockquote>|<li\b[^>]*>|</li>|<td\b[^>]*>|</td>|<th\b[^>]*>|</th>)",
+        html_text,
+        flags=re.I,
+    )
+
+    def mark(m):
+        inner = m.group(1)
+        plain = re.sub(r"<[^>]+>", "", inner)
+        plain = re.sub(r"\s+", "", plain)
+        if len(plain) < min_chars:
+            return m.group(0)
+        return '<p class="p-indent">' + inner + "</p>"
+
+    depth = 0
+    out = []
+    for part in parts:
+        low = part.lower()
+        if low.startswith("<blockquote") or low.startswith("<li") or low.startswith("<td") or low.startswith("<th"):
+            depth += 1
+            out.append(part)
+            continue
+        if low.startswith("</blockquote") or low.startswith("</li") or low.startswith("</td") or low.startswith("</th"):
+            depth = max(0, depth - 1)
+            out.append(part)
+            continue
+        out.append(re.sub(r"<p>(.*?)</p>", mark, part, flags=re.S) if depth == 0 else part)
+    return "".join(out)
+
+
 def convert_md(text):
     md = markdown.Markdown(
         extensions=[
@@ -702,7 +737,7 @@ def convert_md(text):
         html_out,
         flags=re.S,
     )
-    return html_out
+    return indent_paragraphs(html_out)
 
 
 def render_doc(rel, out_dir, images):
