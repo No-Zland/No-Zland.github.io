@@ -268,34 +268,59 @@
       var hub = null;
       for (var i = 0; i < screen.length; i++) if (screen[i].node.kind === 'hub') hub = screen[i];
 
-      // 我 -> 星系 -> 分类 的连线
-      ctx.lineWidth = 1;
+      // 连线：层级不同颜色不同（我=琥珀，星系=板块色，分类=亮一档）
+      var docLinks = [];
       for (i = 0; i < screen.length; i++) {
         var it = screen[i];
+        if (it.node.kind === 'doc') docLinks.push(it);
+      }
+      for (i = 0; i < screen.length; i++) {
+        var it2 = screen[i];
         if (!hub) break;
-        if (it.node.kind === 'galaxy') {
-          ctx.globalAlpha = 0.35;
-          ctx.strokeStyle = it.node.color;
+        if (it2.node.kind === 'galaxy') {
+          ctx.globalAlpha = 0.55;
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#f59e0b';
           ctx.beginPath();
           ctx.moveTo(hub.x, hub.y);
-          ctx.lineTo(it.x, it.y);
+          ctx.lineTo(it2.x, it2.y);
           ctx.stroke();
-        } else if (it.node.kind === 'cat') {
+        } else if (it2.node.kind === 'cat') {
           var gp = null;
           for (var k = 0; k < screen.length; k++) {
-            if (screen[k].node.kind === 'galaxy' && screen[k].node.si === (cats[it.node.ci] || {}).sec) {
+            if (screen[k].node.kind === 'galaxy' && screen[k].node.si === (cats[it2.node.ci] || {}).sec) {
               gp = screen[k];
               break;
             }
           }
+          var fromHub = false;
+          if (!gp) { gp = hub; fromHub = true; }
           if (!gp) continue;
-          ctx.globalAlpha = 0.14;
-          ctx.strokeStyle = it.node.color;
+          ctx.globalAlpha = fromHub ? 0.75 : 0.45;
+          ctx.lineWidth = fromHub ? 2.2 : 1.6;
+          ctx.strokeStyle = fromHub ? '#f59e0b' : it2.node.color;
           ctx.beginPath();
           ctx.moveTo(gp.x, gp.y);
-          ctx.lineTo(it.x, it.y);
+          ctx.lineTo(it2.x, it2.y);
           ctx.stroke();
         }
+      }
+
+      // 分类 -> 它下面文章的细线，让归属看得见
+      ctx.lineWidth = 1;
+      for (i = 0; i < docLinks.length; i++) {
+        var d0 = docLinks[i];
+        var host = null;
+        for (var m = 0; m < screen.length; m++) {
+          if (screen[m].node.kind === 'cat' && screen[m].node.ci === d0.node.ci) { host = screen[m]; break; }
+        }
+        if (!host) continue;
+        ctx.globalAlpha = 0.2;
+        ctx.strokeStyle = d0.node.color;
+        ctx.beginPath();
+        ctx.moveTo(host.x, host.y);
+        ctx.lineTo(d0.x, d0.y);
+        ctx.stroke();
       }
 
       for (i = 0; i < screen.length; i++) {
@@ -303,17 +328,18 @@
         var n = s0.node;
         var fade = clamp(s0.s * 2.2, 0.22, 1);
         var isHover = hover && hover.node === n;
-        ctx.globalAlpha = n.kind === 'doc' ? fade * 0.85 : fade;
+        ctx.globalAlpha = n.kind === 'doc' ? fade * 0.9 : fade;
 
-        if (n.kind === 'galaxy' || n.kind === 'hub') {
+        // 发光只给知识点（文章），中心和分类保持干净
+        if (n.kind === 'doc') {
           ctx.shadowColor = n.color;
-          ctx.shadowBlur = n.kind === 'hub' ? 26 : 18;
+          ctx.shadowBlur = isHover ? 16 : 7;
         } else {
           ctx.shadowBlur = 0;
         }
 
         ctx.beginPath();
-        ctx.arc(s0.x, s0.y, isHover ? s0.r * 1.8 : s0.r, 0, Math.PI * 2);
+        ctx.arc(s0.x, s0.y, isHover ? s0.r * 1.9 : s0.r, 0, Math.PI * 2);
         ctx.fillStyle = n.color;
         ctx.fill();
         ctx.shadowBlur = 0;

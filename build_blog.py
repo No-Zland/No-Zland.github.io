@@ -44,6 +44,19 @@ NAV_SECTIONS = []  # 侧栏层级导航数据，main 中构建
 SEARCH_TEXT_LIMIT = 30000  # 单篇索引的正文上限，避免超长笔记撑大索引
 MAX_PDF_BYTES = 10 * 1024 * 1024  # GitHub Pages 只上传 10MB 以内的 PDF
 
+def _load_cert_thumbs():
+    path = os.path.join(ROOT, "assets", "certs", "manifest.json")
+    if not os.path.isfile(path):
+        return {}
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
+CERT_THUMBS = {}
+
 SECTION_SPECS = [
     {
         "slug": "01-个人知识体系的构建",
@@ -1460,6 +1473,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
 </div>
 <header class="topbar">
   <button class="icon-btn" id="menuBtn" aria-label="打开个人主页">&#9776;</button>
+  <button class="icon-btn side-toggle-top" type="button" data-side-toggle aria-label="显示/隐藏侧栏" title="显示/隐藏侧栏" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button>
   <a class="home-btn" href="{home_href}" title="返回首页" aria-label="返回首页" data-i18n-title="home" data-i18n-aria-label="home">{HOME_SVG}</a>
   <a class="icon-btn shelf-btn" href="{shelf_href}" title="书架" aria-label="书架">{SHELF_SVG}</a>
   <button type="button" class="icon-btn top-search" id="searchTrigger" data-home="{home_href}" aria-haspopup="dialog" aria-expanded="false" title="搜索文章" aria-label="搜索文章" data-i18n-title="search-title" data-i18n-aria-label="search-title">{SEARCH_SVG}</button>
@@ -1875,8 +1889,22 @@ def build_gallery(section, docs, dir_docs, child_dirs, dir_earliest, out_dir, im
             if not is_image(fn):
                 continue
             src = os.path.join(dirpath, fn)
-            url = copy_asset(src, out_dir)
+            rel_cert = os.path.relpath(src, POST_DIR).replace(os.sep, "/")
             title = os.path.splitext(fn)[0]
+            meta = CERT_THUMBS.get(rel_cert)
+            if meta:
+                thumb_src = os.path.join(ROOT, "assets", "certs", meta["thumb"])
+                full_src = os.path.join(ASSET_DIR, "certs", meta["thumb"])
+                if os.path.isfile(thumb_src):
+                    url = rel_from(out_dir, full_src)
+                    tag = ('<img src="%s" alt="%s" width="%d" height="%d" loading="lazy" decoding="async">'
+                           % (quote_url(url), esc(title), meta["w"], meta["h"]))
+                    certs.append(
+                        '<a class="cert-item" href="%s" target="_blank" rel="noopener">%s<span>%s</span></a>'
+                        % (quote_url(url), tag, esc(title))
+                    )
+                    continue
+            url = copy_asset(src, out_dir)
             certs.append(
                 '<a class="cert-item" href="%s" target="_blank" rel="noopener">'
                 '<img src="%s" alt="%s" loading="lazy" decoding="async"><span>%s</span></a>'
@@ -2203,7 +2231,8 @@ def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=
 # 主流程
 # --------------------------------------------------------------------------- #
 def main():
-    global AVATAR_NAME, UPDATES_JSON, NAV_SECTIONS, MUSIC_JSON, QUOTES_JSON, QUOTES, ASSET_VERSION, NOTE_SECTIONS_JSON
+    global AVATAR_NAME, UPDATES_JSON, NAV_SECTIONS, MUSIC_JSON, QUOTES_JSON, QUOTES, ASSET_VERSION, NOTE_SECTIONS_JSON, CERT_THUMBS
+    CERT_THUMBS = _load_cert_thumbs()
     docs, images, dir_earliest = scan()
     dir_docs, child_dirs = build_tree(docs)
 
@@ -2348,6 +2377,12 @@ def main():
     library_out = os.path.join(SITE_DIR, "资料库")
     write_text(os.path.join(library_out, "index.html"), build_library_page(pdfs, library_out))
 
+    cert_src = os.path.join(ROOT, "assets", "certs")
+    if os.path.isdir(cert_src):
+        cert_dst = os.path.join(ASSET_DIR, "certs")
+        if os.path.isdir(cert_dst):
+            force_rmtree(cert_dst)
+        shutil.copytree(cert_src, cert_dst)
     shelf_src = os.path.join(ROOT, "assets", "shelf")
     if os.path.isdir(shelf_src):
         shelf_dst = os.path.join(ASSET_DIR, "shelf")
