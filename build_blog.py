@@ -682,6 +682,7 @@ def convert_md(text):
     )
     html_out = md.convert(text)
     # 表格单元格里连着几个空行会变成一串 <br>，塌缩成一个，避免行高爆炸
+    html_out = re.sub(r"<img (?![^>]*\bloading=)", '<img loading="lazy" decoding="async" ', html_out)
     html_out = re.sub(
         r"<td([^>]*)>(.*?)</td>",
         lambda m: "<td" + m.group(1) + ">" + re.sub(r"(?:<br\s*/?>\s*){2,}", "<br>", m.group(2)) + "</td>",
@@ -1593,7 +1594,6 @@ def side_nav_for(out_dir):
   <nav class="page-nav-list">{''.join(rows)}</nav>
   <a class="page-nav-home page-nav-note{' is-active' if note_active else ''}" href="{note_href}">在线写笔记</a>
   <a class="page-nav-home page-nav-library{' is-active' if library_active else ''}" href="{library_href}">PDF / 图片资料</a>
-  <a class="page-nav-home page-nav-shelf" href="{shelf_href}">书架</a>
 </aside>
 """
 
@@ -1759,7 +1759,7 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
       <h2 class="home-motto-text" id="homeQuote">{esc(QUOTES[0]["text"])}</h2>
       <div class="quote-author" id="homeQuoteAuthor">—— {esc(QUOTES[0]["author"])}</div>
     </div>
-    <div class="section-grid">{build_satellite(sections, docs, dir_docs, child_dirs)}</div>
+    <div class="section-grid">{build_satellite(sections, docs, dir_docs, child_dirs, only=(sections[0]["slug"] if sections else None))}</div>
     <div class="home-stats">{len(sections)} 个板块 · {article_total} 篇文章</div>
   </div>
 </div>
@@ -1879,7 +1879,7 @@ def build_gallery(section, docs, dir_docs, child_dirs, dir_earliest, out_dir, im
             title = os.path.splitext(fn)[0]
             certs.append(
                 '<a class="cert-item" href="%s" target="_blank" rel="noopener">'
-                '<img src="%s" alt="%s" loading="lazy"><span>%s</span></a>'
+                '<img src="%s" alt="%s" loading="lazy" decoding="async"><span>%s</span></a>'
                 % (url, url, esc(title), esc(title))
             )
 
@@ -1954,10 +1954,10 @@ def build_shelf_page(out_dir):
         for b in groups[top]:
             cover = rel_from(out_dir, os.path.join(ASSET_DIR, "shelf", b["cover"]))
             inner = (
-                '<div class="book-cover"><img src="%s" alt="%s" loading="lazy"></div>'
+                '<div class="book-cover"><img src="%s" alt="%s" width="%d" height="%d" loading="lazy" decoding="async"></div>'
                 '<div class="book-title">%s</div>'
                 '<div class="book-meta">%s · %.1f MB</div>'
-                % (quote_url(cover), esc(b["title"]), esc(b["title"]), esc(b.get("folder", "")), b.get("size", 0))
+                % (quote_url(cover), esc(b["title"]), b.get("w", 300), b.get("h", 400), esc(b["title"]), esc(b.get("folder", "")), b.get("size", 0))
             )
             if b.get("online"):
                 href = rel_from(out_dir, os.path.join(SITE_DIR, copy_pdf(b["rel"])))

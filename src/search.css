@@ -636,3 +636,11 @@ body.side-hidden .side-column { display: none; }
   padding: 1px 6px; border-radius: 999px;
   background: rgba(15, 23, 42, .72); color: #fff; font-size: 9.5px; letter-spacing: .04em;
 }
+
+
+/* 多篇模式：屏幕外的文章跳过渲染，长页面明显更快 */
+[data-reading-root][data-multi="1"] > .doc-stack > .doc {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1200px;
+}
+.doc-body img { max-width: 100%; height: auto; }

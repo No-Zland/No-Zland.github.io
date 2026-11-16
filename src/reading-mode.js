@@ -101,6 +101,7 @@
 
     function show(index, options) {
       current = Math.max(0, Math.min(articles.length - 1, index));
+      root.dataset.multi = multi ? '1' : '0';
       articles.forEach(function (article, i) { article.hidden = multi ? false : i !== current; });
       renderPager();
       renderToc();
@@ -151,6 +152,7 @@
       modeBtn.textContent = multi ? '单篇阅读' : '并排阅读';
       modeBtn.addEventListener('click', function () {
         multi = !multi;
+        root.dataset.multi = multi ? '1' : '0';
         try { localStorage.setItem('blog-reading-multi', multi ? '1' : '0'); } catch (e) {}
         modeBtn.textContent = multi ? '单篇阅读' : '并排阅读';
         show(current, {});
