@@ -682,3 +682,21 @@ body.side-hidden .side-column { display: none; }
   .sat-tools { right: 4px; top: 4px; }
   .sat-tools button { width: 28px; height: 28px; font-size: 13px; }
 }
+
+
+/* 导航里的项目：两列小卡片 */
+.page-nav-chips {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px; padding: 2px 0 8px 6px;
+}
+.page-nav-chip {
+  display: flex; align-items: center; justify-content: space-between; gap: 4px;
+  padding: 6px 8px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg-soft);
+  font-size: 11.5px; color: var(--text-soft); text-decoration: none;
+  min-width: 0;
+}
+.page-nav-chip-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.page-nav-chip-count { flex: 0 0 auto; font-size: 9.5px; opacity: .65; }
+.page-nav-chip:hover { color: var(--brand); border-color: var(--brand); background: var(--card); }
+.page-nav-doc.is-leaf { font-weight: 500; }

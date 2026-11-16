@@ -100,7 +100,7 @@ def nav_doc_list(rels, child_dirs):
     return items
 
 
-def build_nav_sections(sections, docs, child_dirs):
+def build_nav_sections(sections, docs, child_dirs, dir_image_counts=None):
     """按真实目录递归建树：每一层目录都是节点，叶子是文章。"""
 
     def make(rel, depth):
@@ -108,11 +108,14 @@ def build_nav_sections(sections, docs, child_dirs):
         for sub in sorted(child_dirs.get(rel, []), key=lambda r: natural_key(os.path.basename(r))):
             children.append(make(sub, depth + 1))
         direct = [r for r in docs if os.path.dirname(r) == rel]
+        _imgs = dir_image_counts or {}
+        img_docs = _imgs.get(rel.replace(os.sep, "/"), 0) or _imgs.get(rel, 0)
+        total = len(docs_under(docs, rel)) if docs_under(docs, rel) else img_docs
         return {
             "rel": rel,
             "name": os.path.basename(rel),
             "depth": depth,
-            "count": len(docs_under(docs, rel)),
+            "count": total,
             "docs": nav_doc_list(sorted(direct, key=natural_key), child_dirs),
             "children": children,
         }
@@ -344,6 +347,7 @@ def scan():
     docs = []
     images = defaultdict(list)
     image_dirs = set()
+    dir_image_counts = defaultdict(int)
     dir_earliest = {}  # 目录(相对) -> 最早 mtime
 
     def touch(rel_dir, mtime):
@@ -379,9 +383,10 @@ def scan():
                 images[fn.lower()].append(abs_path)
                 if rel_dir:
                     image_dirs.add(rel_dir)
+                    dir_image_counts[rel_dir] += 1
 
     docs.sort(key=lambda r: natural_key(r.replace("\\", "/")))
-    return docs, images, dir_earliest, image_dirs
+    return docs, images, dir_earliest, image_dirs, dir_image_counts
 
 
 def collect_updates(docs):
@@ -1671,10 +1676,41 @@ def side_nav_for(out_dir):
             % (cls, depth, doc_href(d["href"]), esc(d["title"]), esc(d["title"]))
         )
 
+    gallery_slugs = {s["slug"] for s in SECTION_SPECS if s.get("layout") == "gallery"}
+
+    def leaf_chip(node, depth):
+        return (
+            '<a class="page-nav-chip" href="%s" title="%s" style="--d:%d">'
+            '<span class="page-nav-chip-name">%s</span>'
+            '<span class="page-nav-chip-count">%d</span></a>'
+            % (page_href(node["rel"]), esc(node["name"].lstrip("_")),
+               depth, esc(node["name"].lstrip("_")), node["count"])
+        )
+
     def render_node(node, depth):
         kids = node["children"]
         docs = node["docs"]
+
+        # 画廊板块（成果展示）：项目两列排开，不再逐个展开文章
+        if node["rel"] in gallery_slugs and kids:
+            head = (
+                '<summary><a class="page-nav-name" href="%s">%s</a>'
+                '<span class="page-nav-count">%d</span></summary>'
+                % (page_href(node["rel"]), esc(node["name"]), node["count"])
+            )
+            chips = "".join(leaf_chip(k, depth) for k in kids)
+            open_attr = " open" if node["rel"] in prefixes or not prefixes else ""
+            return ('<details class="page-nav-node" style="--d:%d"%s>%s'
+                    '<div class="page-nav-chips">%s</div></details>'
+                    % (depth, open_attr, head, chips))
+
         if not kids and not docs:
+            if node["count"]:
+                return ('<a class="page-nav-doc is-leaf" style="--d:%d" href="%s" title="%s">'
+                        '<span class="page-nav-dot"></span><span class="page-nav-name">%s</span>'
+                        '<span class="page-nav-count">%d</span></a>'
+                        % (depth, page_href(node["rel"]), esc(node["name"].lstrip("_")),
+                           esc(node["name"].lstrip("_")), node["count"]))
             return ""
         if depth <= 3:
             head = (
@@ -1708,7 +1744,11 @@ def side_nav_for(out_dir):
         )
         if section_active:
             tree = section["tree"]
-            inner = [render_node(k, 2) for k in tree["children"]]
+            if section["slug"] in gallery_slugs and tree["children"]:
+                chips = "".join(leaf_chip(k, 1) for k in tree["children"])
+                inner = ['<div class="page-nav-chips">' + chips + "</div>"]
+            else:
+                inner = [render_node(k, 2) for k in tree["children"]]
             inner += [doc_row(d, 1) for d in tree["docs"]]
             rows.append('<div class="page-nav-tree">' + "".join(inner) + "</div>")
 
@@ -2359,7 +2399,7 @@ def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=
 def main():
     global AVATAR_NAME, UPDATES_JSON, NAV_SECTIONS, MUSIC_JSON, QUOTES_JSON, QUOTES, ASSET_VERSION, NOTE_SECTIONS_JSON, CERT_THUMBS
     CERT_THUMBS = _load_cert_thumbs()
-    docs, images, dir_earliest, image_dirs = scan()
+    docs, images, dir_earliest, image_dirs, dir_image_counts = scan()
     dir_docs, child_dirs = build_tree(docs, image_dirs)
 
     # 默认不删除 site 根目录：Hugo server 可能占用文件。需要全量清理时使用 --clean。
@@ -2428,7 +2468,7 @@ def main():
                      if os.path.isdir(os.path.join(section_path, d)) and not d.startswith(".")],
         })
     NOTE_SECTIONS_JSON = json.dumps(note_sections_data, ensure_ascii=False, separators=(",", ":"))
-    NAV_SECTIONS = build_nav_sections(sections, docs, child_dirs)
+    NAV_SECTIONS = build_nav_sections(sections, docs, child_dirs, dir_image_counts)
 
     page_count = 1
     doc_page_urls = {}
