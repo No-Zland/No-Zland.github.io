@@ -1466,10 +1466,11 @@ def build_drawer(out_dir, avatar_name=None):
 
 
 HOME_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>'
+MUSIC_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>'
 NOTE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5 17.5 10.5"/></svg>'
 SHELF_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h4v16H4zM10 4h4v16h-4zM17 5l3-1 4 15-3 1z"/></svg>'
 SEARCH_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'
-BACK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>'
+BACK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h9.5a5.5 5.5 0 0 1 0 11H11"/></svg>'
 
 
 def search_overlay_html():
@@ -1604,6 +1605,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
   {back_html}
   <a class="brand" href="{home_href}"><span class="brand-name" data-i18n="brand">梁双宇</span><span class="brand-sep">·</span><span class="brand-site" data-i18n="site-title">个人博客</span></a>
   <div class="spacer"></div>
+  <button type="button" class="icon-btn music-btn" id="musicToggle" title="播放 / 暂停" aria-label="播放 / 暂停" aria-pressed="false">{MUSIC_SVG}</button>
   <a class="icon-btn note-btn" href="{note_href_top}" title="在线写笔记" aria-label="在线写笔记">{NOTE_SVG}</a>
   <button class="icon-btn" id="langBtn" title="中英切换">EN</button>
   <button class="icon-btn" id="themeBtn" title="切换主题">&#9789;</button>
@@ -1909,6 +1911,8 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
   </aside>
   {music_player_html()}
   </div>
+  <button type="button" class="side-tab" data-side-toggle aria-label="收起侧栏" title="收起侧栏">&#8249;</button>
+  <button type="button" class="side-tab-restore" data-side-toggle aria-label="展开侧栏" title="展开侧栏" hidden>&#8250;</button>
     <div class="home-content">
     <div class="home-motto-block" id="sections">
       <div class="home-motto-head">

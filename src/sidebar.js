@@ -11,10 +11,21 @@
     try { localStorage.setItem(KEY, hidden ? '1' : '0'); } catch (e) {}
   }
 
+  function placeTab() {
+    var col = document.querySelector('.side-column');
+    if (!col) return;
+    var rect = col.getBoundingClientRect();
+    document.documentElement.style.setProperty('--side-edge', Math.round(rect.right) + 'px');
+  }
+
   function init() {
+    placeTab();
+    window.addEventListener('resize', placeTab);
+    window.addEventListener('load', placeTab);
     var saved = null;
     try { saved = localStorage.getItem(KEY); } catch (e) {}
     apply(saved === '1');
+    placeTab();
     var buttons = document.querySelectorAll('[data-side-toggle]');
     for (var i = 0; i < buttons.length; i++) {
       var btn = buttons[i];

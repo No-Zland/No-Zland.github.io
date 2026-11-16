@@ -754,3 +754,25 @@ body.side-hidden .side-tab { display: none; }
 @media (min-width: 1200px) {
   .page-home .main, .main-wide { padding-left: 8px; padding-right: 8px; }
 }
+
+
+/* 卫星图更高一点 */
+.sat-canvas { height: clamp(520px, 70vh, 780px); }
+
+/* 侧栏把手：打开/收起都在视口垂直中点 */
+.side-tab {
+  position: fixed; top: 50%; transform: translateY(-50%);
+  left: var(--side-edge, 240px); right: auto;
+}
+.side-tab-restore {
+  position: fixed; left: 0; top: 50%; transform: translateY(-50%);
+}
+/* 顶栏音乐按钮：播放中高亮 */
+.music-btn.is-playing { color: var(--brand); border-color: var(--brand); }
+@media (max-width: 860px) {
+  .sat-canvas { height: clamp(420px, 62vh, 620px); }
+}
+
+
+/* 图例不要被底部的亮度条压住 */
+.sat-legend { margin: 10px 0 58px; }

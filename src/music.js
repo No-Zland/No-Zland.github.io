@@ -117,7 +117,7 @@
 
   function updateMode() {
     var key = mode === 'random' ? 'random' : (mode === 'loop' ? 'loop' : 'sequence');
-    var symbol = key === 'random' ? '⇄' : (key === 'loop' ? '↻' : '→');
+    var symbol = key === 'random' ? '⇄' : (key === 'loop' ? '↻' : '⇉');
     modeBtn.textContent = symbol;
     modeBtn.title = t(key);
     modeBtn.setAttribute('aria-label', t('sequence') + ' / ' + t('random') + ' / ' + t('loop'));
@@ -515,6 +515,28 @@
     leaving = true;
     saveState();
   });
+  // 顶栏音乐图标：点一下播放/暂停，并同步状态
+  var topBtn = document.getElementById('musicToggle');
+  if (topBtn) {
+    topBtn.addEventListener('click', function () {
+      if (!playlist.length) return;
+      playPause();
+    });
+    audio.addEventListener('play', function () {
+      topBtn.classList.add('is-playing');
+      topBtn.setAttribute('aria-pressed', 'true');
+    });
+    audio.addEventListener('pause', function () {
+      topBtn.classList.remove('is-playing');
+      topBtn.setAttribute('aria-pressed', 'false');
+    });
+  }
+
+  window.BlogMusic = {
+    toggle: function () { if (playlist.length) playPause(); },
+    isPlaying: function () { return !audio.paused; }
+  };
+
   window.addEventListener('beforeunload', function () {
     leaving = true;
     saveState();
