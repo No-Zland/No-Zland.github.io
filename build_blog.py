@@ -1518,6 +1518,12 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
     drawer_html = build_drawer(out_dir)
     shelf_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "书架", "index.html")))
     note_href_top = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "写笔记", "index.html")))
+    nav_sections = NAV_SECTIONS or []
+    stats_html = ""
+    if nav_sections:
+        articles_total = sum(s.get("total", 0) for s in nav_sections)
+        stats_html = ('<span class="brand-stats">%d 个板块 · %d 篇文章</span>'
+                      % (len(nav_sections), articles_total))
     math = ""
     if with_math:
         mj = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "mathjax", "tex-svg.js")))
@@ -1604,6 +1610,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
   <button type="button" class="icon-btn top-search" id="searchTrigger" data-home="{home_href}" aria-haspopup="dialog" aria-expanded="false" title="搜索文章" aria-label="搜索文章" data-i18n-title="search-title" data-i18n-aria-label="search-title">{SEARCH_SVG}</button>
   {back_html}
   <a class="brand" href="{home_href}"><span class="brand-name" data-i18n="brand">梁双宇</span><span class="brand-sep">·</span><span class="brand-site" data-i18n="site-title">个人博客</span></a>
+  {stats_html}
   <div class="spacer"></div>
   <button type="button" class="icon-btn music-btn" id="musicToggle" title="播放 / 暂停" aria-label="播放 / 暂停" aria-pressed="false">{MUSIC_SVG}</button>
   <a class="icon-btn note-btn" href="{note_href_top}" title="在线写笔记" aria-label="在线写笔记">{NOTE_SVG}</a>
@@ -2084,12 +2091,6 @@ def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, ou
     home_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html")))
     body = f"""
 <div class="crumb"><a href="{home_href}">首页</a> / {esc(section["title"])}</div>
-<section class="section-hero" style="--section-color:{section["color"]}">
-  <div class="section-hero-kicker">Section</div>
-  <h1>{esc(section["title"])}</h1>
-  <p>{esc(section["desc"])}</p>
-  <div class="section-hero-meta">{len(cats)} 个分类 · {total} 篇文章</div>
-</section>
 {extra}
 """
     return page(out_dir, section["title"], body, parent_href=home_href)

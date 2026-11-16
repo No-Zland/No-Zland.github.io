@@ -638,7 +638,15 @@
       slow = true;
     }
 
-    function onReset() {
+    function onReset(e) {
+      if (e && e.clientX !== undefined) {
+        var lp = localXY(e);
+        var h2 = pick(lp.x, lp.y);
+        if (h2 && h2.node.kind !== 'hub') {
+          openNode(h2.node);
+          return;
+        }
+      }
       yaw = 0.0; pitch = 0.34; dist = 980;
       panX = 0; panY = 0;
       vYaw = vPitch = 0;
@@ -658,9 +666,7 @@
 
     function setFocus(node) {
       if (!hubNode || node.kind === 'hub') return;
-      if (selected && selected !== node) selected.hidden = false;
       selected = node;
-      node.hidden = true;
       focusPos = { x: node.x, y: node.y, z: node.z };
       hubNode.x = node.x; hubNode.y = node.y; hubNode.z = node.z;
       hubNode.color = node.color;
@@ -670,7 +676,6 @@
     }
 
     function clearFocus() {
-      if (selected) selected.hidden = false;
       selected = null;
       focusPos = { x: 0, y: 0, z: 0 };
       if (hubNode) {
