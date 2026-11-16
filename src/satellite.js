@@ -127,6 +127,7 @@
     var raf = 0, lastT = 0, slow = false;
     var pointers = {}, pinch = 0;
     var panX = 0, panY = 0, mode = 'rotate';
+    var introAt = (window.performance && performance.now ? performance.now() : Date.now());
     var screen = [];
 
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -166,9 +167,18 @@
         var depth = dist - z2;
         if (depth < 80) continue;
         var s = focal / depth;
+        var px = cx + x1 * s + panX;
+        var py = cyy + y1 * s + panY;
+        // 入场时从中心往外散开
+        var nowT = (window.performance && performance.now ? performance.now() : Date.now());
+        var prog = clamp((nowT - introAt) / 900, 0, 1);
+        var ease = 1 - Math.pow(1 - prog, 3);
+        px = cx + (px - cx) * ease;
+        py = cyy + (py - cyy) * ease;
         out.push({
-          node: n, x: cx + x1 * s + panX, y: cyy + y1 * s + panY, s: s, depth: depth,
-          r: clamp(n.r * s * 2.8, 1.4, 17)
+          node: n, x: px, y: py, s: s, depth: depth,
+          r: clamp(n.r * s * 2.8, 1.4, 17) * (0.4 + 0.6 * ease),
+          alpha: ease
         });
       }
       out.sort(function (a, b) { return b.depth - a.depth; });
@@ -294,6 +304,7 @@
       drawRings(colors);
       screen = project();
 
+      var showDocs = dist < 1650;
       var hub = null;
       for (var i = 0; i < screen.length; i++) if (screen[i].node.kind === 'hub') hub = screen[i];
 
@@ -337,7 +348,7 @@
 
       // 分类 -> 它下面文章的细线，让归属看得见
       ctx.lineWidth = 1;
-      for (i = 0; i < docLinks.length; i++) {
+      for (i = 0; showDocs && i < docLinks.length; i++) {
         var d0 = docLinks[i];
         var host = null;
         for (var m = 0; m < screen.length; m++) {
@@ -355,6 +366,7 @@
       for (i = 0; i < screen.length; i++) {
         var s0 = screen[i];
         var n = s0.node;
+        if (!showDocs && n.kind === 'doc' && !(hover && hover.node === n)) continue;
         var fade = clamp(s0.s * 2.2, 0.22, 1);
         var isHover = hover && hover.node === n;
         var focusCi = hover && (hover.node.kind === 'doc' || hover.node.kind === 'cat') ? hover.node.ci : -1;
@@ -426,7 +438,7 @@
           ly = h / 2 + cy0 * scale;
         }
         labels.push({
-          node: c.node,
+          node: c.node, lx0: c.x, ly0: c.y,
           alpha: clamp(c.s * 2.4, 0.35, 1),
           lx: lx,
           ly: ly,
@@ -455,7 +467,20 @@
         ctx.globalAlpha = L.alpha;
         ctx.lineWidth = 4;
         ctx.strokeStyle = colors.bg;
-        ctx.strokeText(L.node.label, L.lx, L.ly);
+        ctx.globalAlpha = L.alpha * 0.3;
+        ctx.strokeStyle = L.node.color;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(L.lx0, L.ly0);
+        ctx.lineTo(L.lx, L.ly);
+        ctx.stroke();
+        // 标签底下垫一块背景，压在点上也看得清
+        var tw = ctx.measureText(L.node.label).width;
+        ctx.globalAlpha = L.alpha * 0.82;
+        ctx.fillStyle = colors.bg;
+        roundRect(L.lx - tw / 2 - 5, L.ly - 10, tw + 10, 20, 6);
+        ctx.fill();
+        ctx.globalAlpha = L.alpha;
         ctx.fillStyle = L.node.color;
         ctx.fillText(L.node.label, L.lx, L.ly);
       }
