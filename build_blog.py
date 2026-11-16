@@ -1327,6 +1327,7 @@ def build_drawer(out_dir, avatar_name=None):
 
 
 HOME_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>'
+SHELF_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h4v16H4zM10 4h4v16h-4zM17 5l3-1 4 15-3 1z"/></svg>'
 SEARCH_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'
 BACK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>'
 
@@ -1374,6 +1375,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
     music_base = "/assets/music"
     home_href = "/"
     drawer_html = build_drawer(out_dir)
+    shelf_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "书架", "index.html")))
     math = ""
     if with_math:
         mj = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "mathjax", "tex-svg.js")))
@@ -1458,6 +1460,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
 <header class="topbar">
   <button class="icon-btn" id="menuBtn" aria-label="打开个人主页">&#9776;</button>
   <a class="home-btn" href="{home_href}" title="返回首页" aria-label="返回首页" data-i18n-title="home" data-i18n-aria-label="home">{HOME_SVG}</a>
+  <a class="icon-btn shelf-btn" href="{shelf_href}" title="书架" aria-label="书架">{SHELF_SVG}</a>
   <button type="button" class="icon-btn top-search" id="searchTrigger" data-home="{home_href}" aria-haspopup="dialog" aria-expanded="false" title="搜索文章" aria-label="搜索文章" data-i18n-title="search-title" data-i18n-aria-label="search-title">{SEARCH_SVG}</button>
   {back_html}
   <a class="brand" href="{home_href}"><span class="brand-name" data-i18n="brand">梁双宇</span><span class="brand-sep">·</span><span class="brand-site" data-i18n="site-title">个人博客</span></a>
@@ -1518,6 +1521,7 @@ def side_nav_for(out_dir):
     home_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html")))
     library_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "资料库", "index.html")))
     note_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "写笔记", "index.html")))
+    shelf_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "书架", "index.html")))
     library_active = os.path.basename(out_dir.rstrip(os.sep)) == "资料库"
     note_active = os.path.basename(out_dir.rstrip(os.sep)) == "写笔记"
 
@@ -1589,6 +1593,7 @@ def side_nav_for(out_dir):
   <nav class="page-nav-list">{''.join(rows)}</nav>
   <a class="page-nav-home page-nav-note{' is-active' if note_active else ''}" href="{note_href}">在线写笔记</a>
   <a class="page-nav-home page-nav-library{' is-active' if library_active else ''}" href="{library_href}">PDF / 图片资料</a>
+  <a class="page-nav-home page-nav-shelf" href="{shelf_href}">书架</a>
 </aside>
 """
 
@@ -1930,6 +1935,57 @@ def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, ou
 {extra}
 """
     return page(out_dir, section["title"], body, parent_href=home_href)
+
+
+def build_shelf_page(out_dir):
+    manifest_path = os.path.join(ROOT, "assets", "shelf", "manifest.json")
+    if not os.path.isfile(manifest_path):
+        return page(out_dir, "书架", '<div class="doc-body"><p>书架还是空的：先运行 <code>python tools/make_covers.py</code>。</p></div>')
+
+    books = json.loads(read_text(manifest_path))
+    groups = defaultdict(list)
+    for b in books:
+        top = (b.get("folder") or "其他").split(" / ")[0]
+        groups[top].append(b)
+
+    sections = []
+    for top in sorted(groups):
+        cards = []
+        for b in groups[top]:
+            cover = rel_from(out_dir, os.path.join(ASSET_DIR, "shelf", b["cover"]))
+            inner = (
+                '<div class="book-cover"><img src="%s" alt="%s" loading="lazy"></div>'
+                '<div class="book-title">%s</div>'
+                '<div class="book-meta">%s · %.1f MB</div>'
+                % (quote_url(cover), esc(b["title"]), esc(b["title"]), esc(b.get("folder", "")), b.get("size", 0))
+            )
+            if b.get("online"):
+                href = rel_from(out_dir, os.path.join(SITE_DIR, copy_pdf(b["rel"])))
+                cards.append(
+                    '<a class="book" href="%s" target="_blank" rel="noopener" title="%s">%s</a>'
+                    % (quote_url(href), esc(b["title"]), inner)
+                )
+            else:
+                cards.append(
+                    '<div class="book is-local" title="%s">%s<span class="book-badge">仅本地</span></div>'
+                    % (esc(b["title"]), inner)
+                )
+        sections.append(
+            '<section class="shelf-group"><h2 class="shelf-title">%s</h2>'
+            '<div class="shelf-grid">%s</div></section>' % (esc(top), "".join(cards))
+        )
+
+    body = (
+        '<div class="crumb"><a href="%s">首页</a> / 书架</div>'
+        '<div class="page-head"><h1>书架</h1><div class="count">共 %d 本书</div></div>'
+        '<p class="shelf-desc">每本书的封面是 PDF 的第一页；点封面打开 PDF，“仅本地”表示这本书太大没有上传。</p>'
+        "%s"
+    ) % (
+        quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html"))),
+        len(books),
+        "".join(sections),
+    )
+    return page(out_dir, "书架", body)
 
 
 def build_note_page(out_dir):
@@ -2291,6 +2347,16 @@ def main():
             pdf["path"] = copy_pdf(pdf["rel"])
     library_out = os.path.join(SITE_DIR, "资料库")
     write_text(os.path.join(library_out, "index.html"), build_library_page(pdfs, library_out))
+
+    shelf_src = os.path.join(ROOT, "assets", "shelf")
+    if os.path.isdir(shelf_src):
+        shelf_dst = os.path.join(ASSET_DIR, "shelf")
+        if os.path.isdir(shelf_dst):
+            force_rmtree(shelf_dst)
+        shutil.copytree(shelf_src, shelf_dst)
+    shelf_out = os.path.join(SITE_DIR, "书架")
+    write_text(os.path.join(shelf_out, "index.html"), build_shelf_page(shelf_out))
+    page_count += 1
     page_count += 1
 
     note_out = os.path.join(SITE_DIR, "写笔记")
