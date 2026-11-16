@@ -109,6 +109,7 @@
         y: origin[1] + ny * rad,
         z: origin[2] + nz * rad,
         r: 2.2, color: cats[ci] ? cats[ci].color : '#2563eb',
+        tint: cats[ci] ? cats[ci].color : '#2563eb',
         label: rec[0], url: rec[1], ci: ci, tags: rec[3] || [], crumb: rec[4] || ''
       });
     }
@@ -120,6 +121,9 @@
       });
     }
     nodes.push({ kind: 'hub', x: 0, y: 0, z: 0, r: 14, color: '#f59e0b', label: '', name: 'me' });
+    var hubNode = nodes[nodes.length - 1];
+    var selected = null;
+    var focusPos = { x: 0, y: 0, z: 0 };
 
     var yaw = 0.0, pitch = 0.34, dist = 980, vYaw = 0, vPitch = 0;
     var focal = 640, hover = null, dragging = false;
@@ -160,9 +164,11 @@
       var out = [];
       for (var i = 0; i < nodes.length; i++) {
         var n = nodes[i];
-        var x1 = n.x * cy - n.z * sy;
-        var z1 = n.x * sy + n.z * cy;
-        var y1 = n.y * cp - z1 * sp;
+        if (n.hidden) continue;
+        var wx = n.x - focusPos.x, wy = n.y - focusPos.y, wz = n.z - focusPos.z;
+        var x1 = wx * cy - wz * sy;
+        var z1 = wx * sy + wz * cy;
+        var y1 = wy * cp - z1 * sp;
         var z2 = n.y * sp + z1 * cp;
         var depth = dist - z2;
         if (depth < 80) continue;
@@ -576,8 +582,8 @@
         if (mode === 'pan') {
           panX += dx;
           panY += dy;
-          panX = clamp(panX, -w * 0.8, w * 0.8);
-          panY = clamp(panY, -h * 0.8, h * 0.8);
+          panX = clamp(panX, -w * 2.5, w * 2.5);
+          panY = clamp(panY, -h * 2.5, h * 2.5);
         } else {
           yaw += dx * 0.007;
           pitch = clamp(pitch + dy * 0.007, -1.2, 1.2);
@@ -607,9 +613,15 @@
       try { p = localXY(e); } catch (err) { return; }
       if (!wasPan && moved < 9 && Date.now() - downAt < 600) {
         var hit = pick(p.x, p.y);
-        if (hit && hit.node.kind === 'doc' && hit.node.url) open(hit.node.url);
-        else if (hit && hit.node.kind === 'cat') open(catUrl(hit.node.ci));
-        else if (hit && hit.node.kind === 'galaxy') open(secUrl(hit.node.si));
+        if (!hit) {
+          clearFocus();
+        } else if (hit.node.kind === 'hub') {
+          clearFocus();
+        } else if (selected === hit.node) {
+          openNode(hit.node);
+        } else {
+          setFocus(hit.node);
+        }
       }
     }
 
@@ -630,6 +642,8 @@
       yaw = 0.0; pitch = 0.34; dist = 980;
       panX = 0; panY = 0;
       vYaw = vPitch = 0;
+      clearFocus();
+      if (hubNode) { hubNode.color = '#f59e0b'; hubNode.r = 14; }
     }
 
     function catUrl(ci) {
@@ -640,6 +654,37 @@
     function secUrl(si) {
       var s = secs[si];
       return s && s.rel ? s.rel : null;
+    }
+
+    function setFocus(node) {
+      if (!hubNode || node.kind === 'hub') return;
+      if (selected && selected !== node) selected.hidden = false;
+      selected = node;
+      node.hidden = true;
+      focusPos = { x: node.x, y: node.y, z: node.z };
+      hubNode.x = node.x; hubNode.y = node.y; hubNode.z = node.z;
+      hubNode.color = node.color;
+      hubNode.r = 13;
+      slow = true;
+      idleAt = Date.now();
+    }
+
+    function clearFocus() {
+      if (selected) selected.hidden = false;
+      selected = null;
+      focusPos = { x: 0, y: 0, z: 0 };
+      if (hubNode) {
+        hubNode.x = 0; hubNode.y = 0; hubNode.z = 0;
+        hubNode.color = '#f59e0b';
+        hubNode.r = 14;
+      }
+      idleAt = Date.now();
+    }
+
+    function openNode(node) {
+      if (node.kind === 'doc' && node.url) open(node.url);
+      else if (node.kind === 'cat') open(catUrl(node.ci));
+      else if (node.kind === 'galaxy') open(secUrl(node.si));
     }
 
     function open(url) {

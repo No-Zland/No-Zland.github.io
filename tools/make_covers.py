@@ -13,7 +13,7 @@ OUT = os.path.join(ROOT, "assets", "shelf")
 PS = os.path.join(ROOT, "tools", "pdfcover.ps1")
 os.makedirs(OUT, exist_ok=True)
 
-SHELF_ROOT = os.path.join(POST, "01-个人知识体系的构建", "书架")
+SHELF_ROOT = os.path.join(POST, "书架")
 pdfs = sorted(glob.glob(os.path.join(SHELF_ROOT, "**", "*.pdf"), recursive=True))
 manifest = []
 

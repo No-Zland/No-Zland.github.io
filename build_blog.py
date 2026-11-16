@@ -80,6 +80,13 @@ SECTION_SPECS = [
         "color": "#0ea5b7",
         "layout": "gallery",
     },
+    {
+        "slug": "书架",
+        "title": "书架",
+        "desc": "正在读的电子书，封面取 PDF 的第一页。",
+        "color": "#b45309",
+        "layout": "shelf",
+    },
 ]
 
 
@@ -1797,6 +1804,12 @@ def frontmatter_tags(path, limit=4):
     return tags[:limit]
 
 
+CAT_PALETTE = [
+    "#2563eb", "#7c3aed", "#0ea5b7", "#f59e0b",
+    "#ec4899", "#10b981", "#ef4444", "#6366f1",
+]
+
+
 def build_satellite(sections, docs, dir_docs, child_dirs, only=None):
     if only:
         sections = [s for s in sections if s["slug"] == only]
@@ -1813,7 +1826,7 @@ def build_satellite(sections, docs, dir_docs, child_dirs, only=None):
             ci = len(cats)
             cats.append({
                 "name": os.path.basename(cat_rel),
-                "color": section["color"],
+                "color": CAT_PALETTE[ci % len(CAT_PALETTE)],
                 "count": len(ds),
                 "rel": quote_url(os.path.join(cat_rel, "index.html")),
                 "sec": len(meta),
@@ -1851,7 +1864,7 @@ def build_satellite(sections, docs, dir_docs, child_dirs, only=None):
         '<button type="button" data-sat-zoom="reset" title="复位" aria-label="复位">⟲</button>'
         '</div>\n'
         '<div class="sat-legend">' + "".join(legend) +
-        '<span class="sat-hint">拖动旋转 · 滚轮缩放 · 点击进入文章</span></div>\n'
+        '<span class="sat-hint">拖动旋转 · 右键/双指平移 · 滚轮缩放 · 点一次聚焦，再点进入</span></div>\n'
         '<ul class="sat-sr">' + fallback + '</ul>\n'
         '<script type="application/json" class="sat-data">' + payload + '</script>\n'
         '</div>'
@@ -1885,10 +1898,6 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
       <div class="quick-kicker" data-i18n="quick-title">导航栏</div>
       <div class="quick-total">{len(sections)} 个板块</div>
     </div>
-    <a class="quick-link" href="写笔记/index.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="m13.5 6.5 4 4"/></svg>
-      <span>在线写笔记</span>
-    </a>
     <div class="quick-label" data-i18n="quick-cats">板块</div>
     <nav class="quick-list" aria-label="板块目录">
       {''.join(quick_items)}
@@ -2055,6 +2064,14 @@ def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, ou
         extra = build_timeline(section, docs, dir_docs, child_dirs, dir_earliest, out_dir)
     elif layout == "gallery":
         extra = build_gallery(section, docs, dir_docs, child_dirs, dir_earliest, out_dir, images or {})
+    elif layout == "shelf":
+        extra = build_shelf_grid(out_dir)
+        if direct:
+            href = rel_from(out_dir, os.path.join(SITE_DIR, section["slug"], "direct.html"))
+            extra += (
+                '<div class="shelf-notes"><a class="shelf-notes-link" href="%s">'
+                "书架里的 %d 篇读书笔记 →</a></div>" % (quote_url(href), len(direct))
+            )
     else:
         extra = '<div class="cat-list section-cats" style="--section-color:%s">%s</div>' % (
             section["color"], "".join(items))
@@ -2074,7 +2091,7 @@ def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, ou
     return page(out_dir, section["title"], body, parent_href=home_href)
 
 
-def build_shelf_page(out_dir):
+def build_shelf_grid(out_dir):
     manifest_path = os.path.join(ROOT, "assets", "shelf", "manifest.json")
     if not os.path.isfile(manifest_path):
         return page(out_dir, "书架", '<div class="doc-body"><p>书架还是空的：先运行 <code>python tools/make_covers.py</code>。</p></div>')
@@ -2113,17 +2130,10 @@ def build_shelf_page(out_dir):
             '<div class="shelf-grid">%s</div></section>' % (esc(top), "".join(cards))
         )
 
-    body = (
-        '<div class="crumb"><a href="%s">首页</a> / 书架</div>'
-        '<div class="page-head"><h1>书架</h1><div class="count">共 %d 本书</div></div>'
-        '<p class="shelf-desc">每本书的封面是 PDF 的第一页；点封面打开 PDF，“仅本地”表示这本书太大没有上传。</p>'
+    return (
+        '<p class="shelf-desc">共 %d 本书，封面取 PDF 的第一页；点封面打开 PDF，“仅本地”表示体积太大没有上传。</p>'
         "%s"
-    ) % (
-        quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html"))),
-        len(books),
-        "".join(sections),
-    )
-    return page(out_dir, "书架", body)
+    ) % (len(books), "".join(sections))
 
 
 def build_note_page(out_dir):
@@ -2501,12 +2511,24 @@ def main():
                     write_text(os.path.join(cat_out, "index.html"), html)
                     page_count += 1
         else:
-            for rel in docs_under(docs, slug):
-                doc_page_urls[rel] = quote_url(os.path.join(slug, "index.html"))
-            parent = quote_url(rel_from(section_out, home_index))
-            html = build_reading_page(slug, docs, dir_docs, child_dirs, images, section_out, parent_href=parent)
+            custom = section.get("layout") in ("shelf", "gallery", "map", "timeline")
+            html = build_section_page(section, l1_sections, docs, dir_docs, child_dirs, dir_earliest, section_out, images)
             write_text(os.path.join(section_out, "index.html"), html)
             page_count += 1
+            if custom and direct:
+                parent = quote_url(rel_from(section_out, os.path.join(section_out, "index.html")))
+                for rel in direct:
+                    doc_page_urls[rel] = quote_url(os.path.join(slug, "direct.html"))
+                html = build_reading_page(slug, docs, dir_docs, child_dirs, images, section_out, doc_list=direct, parent_href=parent)
+                write_text(os.path.join(section_out, "direct.html"), html)
+                page_count += 1
+            elif not custom:
+                for rel in docs_under(docs, slug):
+                    doc_page_urls[rel] = quote_url(os.path.join(slug, "index.html"))
+                parent = quote_url(rel_from(section_out, home_index))
+                html = build_reading_page(slug, docs, dir_docs, child_dirs, images, section_out, parent_href=parent)
+                write_text(os.path.join(section_out, "index.html"), html)
+                page_count += 1
 
     # 文章标题在渲染阶段才收集，首页卫星图要用到，所以首页最后生成
     home_html = build_home(docs, dir_docs, child_dirs, dir_earliest, SITE_DIR)
@@ -2532,9 +2554,7 @@ def main():
         if os.path.isdir(shelf_dst):
             force_rmtree(shelf_dst)
         shutil.copytree(shelf_src, shelf_dst)
-    shelf_out = os.path.join(SITE_DIR, "书架")
-    write_text(os.path.join(shelf_out, "index.html"), build_shelf_page(shelf_out))
-    page_count += 1
+
     page_count += 1
 
     note_out = os.path.join(SITE_DIR, "写笔记")
