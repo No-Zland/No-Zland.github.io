@@ -1,0 +1,10 @@
+[Unit]
+Description=Sync blog from GitHub and rebuild site
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/blog/src
+ExecStart=/bin/bash /opt/blog/src/server/update.sh
+TimeoutStartSec=900

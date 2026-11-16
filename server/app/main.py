@@ -108,6 +108,32 @@ def run_build() -> str:
         BUILD_LOCK.release()
 
 
+@app.post("/api/update", dependencies=[Depends(require_auth)])
+def update_from_github():
+    """拉取 GitHub 最新代码并重建站点（只在服务器上跑）。"""
+    script = SRC / "server" / "update.sh"
+    if not script.exists():
+        raise HTTPException(status_code=500, detail="找不到 server/update.sh，请先更新仓库")
+    if not BUILD_LOCK.acquire(blocking=False):
+        raise HTTPException(status_code=409, detail="正在构建，请稍后再试")
+    try:
+        result = subprocess.run(
+            ["bash", str(script)],
+            cwd=str(SRC),
+            capture_output=True,
+            text=True,
+            timeout=600,
+        )
+        output = ((result.stdout or "") + (result.stderr or "")).strip()
+        return {
+            "ok": result.returncode == 0,
+            "code": result.returncode,
+            "output": output[-4000:],
+        }
+    finally:
+        BUILD_LOCK.release()
+
+
 @app.get("/api/health")
 def health():
     return {"ok": True, "time": int(time.time())}
