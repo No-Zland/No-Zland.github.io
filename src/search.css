@@ -747,3 +747,10 @@ body.side-hidden .side-tab { display: none; }
   .side-tab { display: none; }
   .side-tab-restore { display: flex; }
 }
+
+
+/* 页面占满屏幕：左侧有导航时也不留大片空白 */
+.page-home .main, .main-wide { max-width: none; }
+@media (min-width: 1200px) {
+  .page-home .main, .main-wide { padding-left: 8px; padding-right: 8px; }
+}

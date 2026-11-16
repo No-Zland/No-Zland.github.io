@@ -13,7 +13,8 @@ OUT = os.path.join(ROOT, "assets", "shelf")
 PS = os.path.join(ROOT, "tools", "pdfcover.ps1")
 os.makedirs(OUT, exist_ok=True)
 
-pdfs = sorted(glob.glob(os.path.join(POST, "**", "*.pdf"), recursive=True))
+SHELF_ROOT = os.path.join(POST, "01-个人知识体系的构建", "书架")
+pdfs = sorted(glob.glob(os.path.join(SHELF_ROOT, "**", "*.pdf"), recursive=True))
 manifest = []
 
 for i, path in enumerate(pdfs, 1):
@@ -21,7 +22,7 @@ for i, path in enumerate(pdfs, 1):
     key = hashlib.md5(rel.encode("utf-8")).hexdigest()[:10]
     cover = key + ".png"
     out = os.path.join(OUT, cover)
-    if not os.path.exists(out):
+    if not os.path.exists(out) and not os.path.exists(os.path.join(OUT, key + ".webp")):
         try:
             subprocess.run(
                 ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", PS,

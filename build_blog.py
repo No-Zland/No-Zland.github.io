@@ -1459,6 +1459,7 @@ def build_drawer(out_dir, avatar_name=None):
 
 
 HOME_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>'
+NOTE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5 17.5 10.5"/></svg>'
 SHELF_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h4v16H4zM10 4h4v16h-4zM17 5l3-1 4 15-3 1z"/></svg>'
 SEARCH_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>'
 BACK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>'
@@ -1508,6 +1509,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
     home_href = "/"
     drawer_html = build_drawer(out_dir)
     shelf_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "书架", "index.html")))
+    note_href_top = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "写笔记", "index.html")))
     math = ""
     if with_math:
         mj = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "mathjax", "tex-svg.js")))
@@ -1595,6 +1597,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
   {back_html}
   <a class="brand" href="{home_href}"><span class="brand-name" data-i18n="brand">梁双宇</span><span class="brand-sep">·</span><span class="brand-site" data-i18n="site-title">个人博客</span></a>
   <div class="spacer"></div>
+  <a class="icon-btn note-btn" href="{note_href_top}" title="在线写笔记" aria-label="在线写笔记">{NOTE_SVG}</a>
   <button class="icon-btn" id="langBtn" title="中英切换">EN</button>
   <button class="icon-btn" id="themeBtn" title="切换主题">&#9789;</button>
 </header>
@@ -1739,8 +1742,6 @@ def side_nav_for(out_dir):
     <div class="quick-total">{len(NAV_SECTIONS)} 个板块</div>
   </div>
   <nav class="page-nav-list">{''.join(rows)}</nav>
-  <a class="page-nav-home page-nav-note{' is-active' if note_active else ''}" href="{note_href}">在线写笔记</a>
-  <a class="page-nav-home page-nav-library{' is-active' if library_active else ''}" href="{library_href}">PDF / 图片资料</a>
 </aside>
 """
 
@@ -1884,10 +1885,6 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
       <div class="quick-kicker" data-i18n="quick-title">导航栏</div>
       <div class="quick-total">{len(sections)} 个板块</div>
     </div>
-    <a class="quick-link" href="资料库/index.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
-      <span>PDF / 图片资料</span>
-    </a>
     <a class="quick-link" href="写笔记/index.html">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="m13.5 6.5 4 4"/></svg>
       <span>在线写笔记</span>
@@ -2085,7 +2082,8 @@ def build_shelf_page(out_dir):
     books = json.loads(read_text(manifest_path))
     groups = defaultdict(list)
     for b in books:
-        top = (b.get("folder") or "其他").split(" / ")[0]
+        parts = (b.get("folder") or "其他").split(" / ")
+        top = "书架" if "书架" in parts else parts[0]
         groups[top].append(b)
 
     sections = []
@@ -2520,8 +2518,7 @@ def main():
     for pdf in pdfs:
         if pdf.get("available", True):
             pdf["path"] = copy_pdf(pdf["rel"])
-    library_out = os.path.join(SITE_DIR, "资料库")
-    write_text(os.path.join(library_out, "index.html"), build_library_page(pdfs, library_out))
+    library_out = os.path.join(SITE_DIR, "资料库")  # 已下线：不再生成资料库页面
 
     cert_src = os.path.join(ROOT, "assets", "certs")
     if os.path.isdir(cert_src):
