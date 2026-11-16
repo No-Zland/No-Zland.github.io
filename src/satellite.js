@@ -259,10 +259,39 @@
       ctx.globalCompositeOperation = 'source-over';
     }
 
+    function drawRings(colors) {
+      var cx = w / 2, cy = h / 2;
+      var cyw = Math.cos(yaw), syw = Math.sin(yaw);
+      var cp = Math.cos(pitch), sp = Math.sin(pitch);
+      var radii = [150, 235, 320];
+      ctx.lineWidth = 1;
+      for (var r = 0; r < radii.length; r++) {
+        ctx.beginPath();
+        for (var k = 0; k <= 64; k++) {
+          var a = k / 64 * Math.PI * 2;
+          var wx = Math.cos(a) * radii[r], wz = Math.sin(a) * radii[r];
+          var x1 = wx * cyw - wz * syw;
+          var z1 = wx * syw + wz * cyw;
+          var y1 = 0 * cp - z1 * sp;
+          var z2 = 0 * sp + z1 * cp;
+          var depth = dist - z2;
+          if (depth < 80) { continue; }
+          var s = focal / depth;
+          var px = cx + x1 * s + panX, py = cy + y1 * s + panY;
+          if (k === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+        }
+        ctx.globalAlpha = 0.1;
+        ctx.strokeStyle = colors.soft;
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+    }
+
     function draw() {
       var colors = colorCache || readColors(canvas);
       ctx.clearRect(0, 0, w, h);
       drawRays(colors);
+      drawRings(colors);
       screen = project();
 
       var hub = null;
@@ -328,7 +357,9 @@
         var n = s0.node;
         var fade = clamp(s0.s * 2.2, 0.22, 1);
         var isHover = hover && hover.node === n;
-        ctx.globalAlpha = n.kind === 'doc' ? fade * 0.9 : fade;
+        var focusCi = hover && (hover.node.kind === 'doc' || hover.node.kind === 'cat') ? hover.node.ci : -1;
+        var dim = focusCi >= 0 && n.ci !== undefined && n.ci !== focusCi && (n.kind === 'doc' || n.kind === 'cat');
+        ctx.globalAlpha = (n.kind === 'doc' ? fade * 0.9 : fade) * (dim ? 0.18 : 1);
 
         // 发光只给知识点（文章），中心和分类保持干净
         if (n.kind === 'doc') {
@@ -339,7 +370,7 @@
         }
 
         ctx.beginPath();
-        ctx.arc(s0.x, s0.y, isHover ? s0.r * 1.9 : s0.r, 0, Math.PI * 2);
+        ctx.arc(s0.x, s0.y, isHover ? s0.r * 2.1 : (dim ? s0.r * 0.85 : s0.r), 0, Math.PI * 2);
         ctx.fillStyle = n.color;
         ctx.fill();
         ctx.shadowBlur = 0;
@@ -444,7 +475,7 @@
         pitch = clamp(pitch + vPitch, -1.2, 1.2);
         vYaw *= 0.93;
         vPitch *= 0.93;
-        if (!reduced && !slow && t - idleAt > 2200) yaw += 0.00002 * dt;
+        if (!reduced && !slow && !hover && t - idleAt > 2200) yaw += 0.00002 * dt;
       }
       draw();
     }
@@ -603,6 +634,20 @@
     canvas.addEventListener('pointerleave', onLeave);
     canvas.addEventListener('wheel', onWheel, { passive: false });
     canvas.addEventListener('dblclick', onReset);
+
+    var zoomBtns = root.querySelectorAll('[data-sat-zoom]');
+    for (var zb = 0; zb < zoomBtns.length; zb++) {
+      (function (btn) {
+        btn.addEventListener('click', function () {
+          var act = btn.getAttribute('data-sat-zoom');
+          if (act === 'in') dist = clamp(dist * 0.82, 430, 2600);
+          else if (act === 'out') dist = clamp(dist / 0.82, 430, 2600);
+          else onReset();
+          idleAt = Date.now();
+          slow = true;
+        });
+      })(zoomBtns[zb]);
+    }
     canvas.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     window.addEventListener('resize', resize);
 

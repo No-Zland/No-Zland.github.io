@@ -1746,6 +1746,11 @@ def build_satellite(sections, docs, dir_docs, child_dirs, only=None):
     return (
         '<div class="satellite" id="sections">\n'
         '<canvas class="sat-canvas" role="img" aria-label="知识卫星图：中心是我，拖动旋转、滚轮缩放，点击节点进入文章"></canvas>\n'
+        '<div class="sat-tools">'
+        '<button type="button" data-sat-zoom="in" title="放大" aria-label="放大">＋</button>'
+        '<button type="button" data-sat-zoom="out" title="缩小" aria-label="缩小">－</button>'
+        '<button type="button" data-sat-zoom="reset" title="复位" aria-label="复位">⟲</button>'
+        '</div>\n'
         '<div class="sat-legend">' + "".join(legend) +
         '<span class="sat-hint">拖动旋转 · 滚轮缩放 · 点击进入文章</span></div>\n'
         '<ul class="sat-sr">' + fallback + '</ul>\n'

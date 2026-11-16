@@ -662,3 +662,23 @@ body.side-hidden .side-column { display: none; }
 
 /* 中文排版：长段落首行缩进两格（引用、列表、表格、短句不缩进） */
 .doc-body p.p-indent { text-indent: 2em; }
+
+
+/* 卫星图工具按钮 */
+.satellite { position: relative; }
+.sat-tools {
+  position: absolute; right: 8px; top: 8px; z-index: 3;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.sat-tools button {
+  width: 30px; height: 30px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--card); color: var(--text-soft);
+  font-size: 14px; line-height: 1; cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: color .15s ease, border-color .15s ease;
+}
+.sat-tools button:hover { color: var(--brand); border-color: var(--brand); }
+@media (max-width: 760px) {
+  .sat-tools { right: 4px; top: 4px; }
+  .sat-tools button { width: 28px; height: 28px; font-size: 13px; }
+}
