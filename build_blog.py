@@ -1523,11 +1523,9 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
     if nav_html:
         main_class = "main main-wide"
         side_html = (
-        '<div class="side-column">'
-        '<button type="button" class="side-toggle" data-side-toggle aria-label="收起侧栏" title="收起侧栏">&#8249;</button>'
-        + nav_html + music_player_html() + side_extra +
-        '</div>'
-        '<button type="button" class="side-restore" data-side-toggle aria-label="展开侧栏" title="展开侧栏" hidden>&#8250;</button>'
+        '<div class="side-column">' + nav_html + music_player_html() + side_extra + '</div>'
+        '<button type="button" class="side-tab" data-side-toggle aria-label="收起侧栏" title="收起侧栏">&#8249;</button>'
+        '<button type="button" class="side-tab-restore" data-side-toggle aria-label="展开侧栏" title="展开侧栏" hidden>&#8250;</button>'
     )
         main_inner = f'<div class="page-layout">{side_html}<div class="page-main">{body}</div></div>'
     else:
@@ -1591,7 +1589,6 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
 </div>
 <header class="topbar">
   <button class="icon-btn" id="menuBtn" aria-label="打开个人主页">&#9776;</button>
-  <button class="icon-btn side-toggle-top" type="button" data-side-toggle aria-label="显示/隐藏侧栏" title="显示/隐藏侧栏" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button>
   <a class="home-btn" href="{home_href}" title="返回首页" aria-label="返回首页" data-i18n-title="home" data-i18n-aria-label="home">{HOME_SVG}</a>
   <a class="icon-btn shelf-btn" href="{shelf_href}" title="书架" aria-label="书架">{SHELF_SVG}</a>
   <button type="button" class="icon-btn top-search" id="searchTrigger" data-home="{home_href}" aria-haspopup="dialog" aria-expanded="false" title="搜索文章" aria-label="搜索文章" data-i18n-title="search-title" data-i18n-aria-label="search-title">{SEARCH_SVG}</button>
@@ -1691,19 +1688,6 @@ def side_nav_for(out_dir):
         kids = node["children"]
         docs = node["docs"]
 
-        # 画廊板块（成果展示）：项目两列排开，不再逐个展开文章
-        if node["rel"] in gallery_slugs and kids:
-            head = (
-                '<summary><a class="page-nav-name" href="%s">%s</a>'
-                '<span class="page-nav-count">%d</span></summary>'
-                % (page_href(node["rel"]), esc(node["name"]), node["count"])
-            )
-            chips = "".join(leaf_chip(k, depth) for k in kids)
-            open_attr = " open" if node["rel"] in prefixes or not prefixes else ""
-            return ('<details class="page-nav-node" style="--d:%d"%s>%s'
-                    '<div class="page-nav-chips">%s</div></details>'
-                    % (depth, open_attr, head, chips))
-
         if not kids and not docs:
             if node["count"]:
                 return ('<a class="page-nav-doc is-leaf" style="--d:%d" href="%s" title="%s">'
@@ -1744,11 +1728,7 @@ def side_nav_for(out_dir):
         )
         if section_active:
             tree = section["tree"]
-            if section["slug"] in gallery_slugs and tree["children"]:
-                chips = "".join(leaf_chip(k, 1) for k in tree["children"])
-                inner = ['<div class="page-nav-chips">' + chips + "</div>"]
-            else:
-                inner = [render_node(k, 2) for k in tree["children"]]
+            inner = [render_node(k, 2) for k in tree["children"]]
             inner += [doc_row(d, 1) for d in tree["docs"]]
             rows.append('<div class="page-nav-tree">' + "".join(inner) + "</div>")
 
@@ -2154,11 +2134,11 @@ def build_note_page(out_dir):
 <div class="crumb"><a href="{home_href}">首页</a> / 在线写笔记</div>
 <div class="note-page-head">
   <h1>在线写笔记</h1>
-  <div class="count">主人专用 · 登录后才能写作与发布</div>
+  <div class="count">管理员专用 · 登录后才能写作与发布</div>
 </div>
 <section class="note-gate" data-note-gate>
   <div class="note-gate-lock" aria-hidden="true">🔒</div>
-  <h2>主人专用</h2>
+  <h2>管理员专用</h2>
   <p>访客只能阅读博客。写笔记、删除草稿和任务同步都需要先登录服务器。</p>
   <div class="note-gate-login" data-note-gate-login>
     <input class="note-input" type="password" data-note-gate-password placeholder="博客后台密码" autocomplete="off">

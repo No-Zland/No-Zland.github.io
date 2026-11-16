@@ -75,7 +75,7 @@ systemctl enable --now blog-update.timer
 
 ### 免 SSH 触发
 
-登录站点后（主人模式）可以调用接口，效果和跑 `update.sh` 一样：
+登录站点后（管理员模式）可以调用接口，效果和跑 `update.sh` 一样：
 
 ```bash
 curl -X POST --cookie "blog_session=..." http://47.93.173.214/api/update

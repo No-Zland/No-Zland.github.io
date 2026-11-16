@@ -5,10 +5,9 @@
 
   function apply(hidden) {
     document.body.classList.toggle('side-hidden', hidden);
-    var restores = document.querySelectorAll('.side-restore');
+    var restores = document.querySelectorAll('.side-tab-restore');
     for (var i = 0; i < restores.length; i++) restores[i].hidden = !hidden;
-    var presses = document.querySelectorAll('.side-toggle-top');
-    for (var j = 0; j < presses.length; j++) presses[j].setAttribute('aria-pressed', hidden ? 'true' : 'false');
+
     try { localStorage.setItem(KEY, hidden ? '1' : '0'); } catch (e) {}
   }
 

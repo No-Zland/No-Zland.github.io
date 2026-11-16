@@ -700,3 +700,50 @@ body.side-hidden .side-column { display: none; }
 .page-nav-chip-count { flex: 0 0 auto; font-size: 9.5px; opacity: .65; }
 .page-nav-chip:hover { color: var(--brand); border-color: var(--brand); background: var(--card); }
 .page-nav-doc.is-leaf { font-weight: 500; }
+
+
+/* 侧栏把手：贴在侧栏右边缘、垂直居中；收起后在同一个高度出现 */
+.side-tab, .side-tab-restore {
+  position: absolute; right: -13px; top: 50%; transform: translateY(-50%);
+  width: 24px; height: 60px; z-index: 6;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-left: none;
+  border-radius: 0 10px 10px 0;
+  background: var(--card); color: var(--text-soft);
+  font-size: 15px; line-height: 1; cursor: pointer;
+  box-shadow: 2px 0 10px rgba(15, 23, 42, .06);
+  transition: color .15s ease, background .15s ease;
+}
+.side-tab:hover, .side-tab-restore:hover { color: var(--brand); background: var(--bg-soft); }
+.side-tab-restore {
+  position: fixed; left: 0; right: auto; top: 50%;
+  border-left: 1px solid var(--border);
+  border-radius: 0 10px 10px 0;
+}
+body.side-hidden .side-column { display: none; }
+body.side-hidden .main, body.side-hidden .main-wide, body.side-hidden .page-home .main { max-width: none; }
+
+/* 成果展示：项目两列 */
+.gallery-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 760px) { .gallery-grid { grid-template-columns: 1fr; } }
+
+
+/* 侧栏把手的定位修整 */
+.page-layout, .home-layout { position: relative; }
+.side-tab {
+  position: absolute; left: 220px; top: 50%; transform: translateY(-50%);
+  right: auto; width: 24px; height: 60px; z-index: 6;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-left: none;
+  border-radius: 0 10px 10px 0;
+  background: var(--card); color: var(--text-soft);
+  font-size: 15px; line-height: 1; cursor: pointer;
+  box-shadow: 2px 0 10px rgba(15, 23, 42, .06);
+}
+.side-tab:hover { color: var(--brand); background: var(--bg-soft); }
+body.side-hidden .side-tab { display: none; }
+.side-tab[hidden], .side-tab-restore[hidden] { display: none; }
+@media (max-width: 860px) {
+  .side-tab { display: none; }
+  .side-tab-restore { display: flex; }
+}
