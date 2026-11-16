@@ -518,9 +518,24 @@
   // 顶栏音乐图标：点一下播放/暂停，并同步状态
   var topBtn = document.getElementById('musicToggle');
   if (topBtn) {
-    topBtn.addEventListener('click', function () {
-      if (!playlist.length) return;
-      playPause();
+    var panel = document.getElementById('musicPanel');
+    topBtn.addEventListener('click', function (event) {
+      if (!panel) return;
+      event.stopPropagation();
+      panel.hidden = !panel.hidden;
+      topBtn.classList.toggle('is-open', !panel.hidden);
+    });
+    document.addEventListener('click', function (event) {
+      if (!panel || panel.hidden) return;
+      if (panel.contains(event.target) || topBtn.contains(event.target)) return;
+      panel.hidden = true;
+      topBtn.classList.remove('is-open');
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && panel && !panel.hidden) {
+        panel.hidden = true;
+        topBtn.classList.remove('is-open');
+      }
     });
     audio.addEventListener('play', function () {
       topBtn.classList.add('is-playing');

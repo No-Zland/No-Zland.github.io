@@ -87,6 +87,13 @@ SECTION_SPECS = [
         "color": "#b45309",
         "layout": "shelf",
     },
+    {
+        "slug": "题库",
+        "title": "题库",
+        "desc": "刷过的题目与课程作业，按语言和专题归档。",
+        "color": "#db2777",
+        "layout": "cards",
+    },
 ]
 
 
@@ -389,8 +396,10 @@ def scan():
             elif is_image(abs_path):
                 images[fn.lower()].append(abs_path)
                 if rel_dir:
-                    image_dirs.add(rel_dir)
                     dir_image_counts[rel_dir] += 1
+                    # 只有带 _index.md 的图片目录才算分类（如证书墙），pics 之类不算
+                    if os.path.isfile(os.path.join(dirpath, "_index.md")):
+                        image_dirs.add(rel_dir)
 
     docs.sort(key=lambda r: natural_key(r.replace("\\", "/")))
     return docs, images, dir_earliest, image_dirs, dir_image_counts
@@ -1466,6 +1475,7 @@ def build_drawer(out_dir, avatar_name=None):
 
 
 HOME_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>'
+BANK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3" width="17" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>'
 MUSIC_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>'
 NOTE_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4l10-10a2.8 2.8 0 0 0-4-4L4 16v4z"/><path d="M13.5 6.5 17.5 10.5"/></svg>'
 SHELF_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h4v16H4zM10 4h4v16h-4zM17 5l3-1 4 15-3 1z"/></svg>'
@@ -1518,6 +1528,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
     drawer_html = build_drawer(out_dir)
     shelf_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "书架", "index.html")))
     note_href_top = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "写笔记", "index.html")))
+    bank_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "题库", "index.html")))
     nav_sections = NAV_SECTIONS or []
     stats_html = ""
     if nav_sections:
@@ -1539,7 +1550,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
     if nav_html:
         main_class = "main main-wide"
         side_html = (
-        '<div class="side-column">' + nav_html + music_player_html() + side_extra + '</div>'
+        '<div class="side-column">' + nav_html + side_extra + '</div>'
         '<button type="button" class="side-tab" data-side-toggle aria-label="收起侧栏" title="收起侧栏">&#8249;</button>'
         '<button type="button" class="side-tab-restore" data-side-toggle aria-label="展开侧栏" title="展开侧栏" hidden>&#8250;</button>'
     )
@@ -1607,6 +1618,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
   <button class="icon-btn" id="menuBtn" aria-label="打开个人主页">&#9776;</button>
   <a class="home-btn" href="{home_href}" title="返回首页" aria-label="返回首页" data-i18n-title="home" data-i18n-aria-label="home">{HOME_SVG}</a>
   <a class="icon-btn shelf-btn" href="{shelf_href}" title="书架" aria-label="书架">{SHELF_SVG}</a>
+  <a class="icon-btn bank-btn" href="{bank_href}" title="题库" aria-label="题库">{BANK_SVG}</a>
   <button type="button" class="icon-btn top-search" id="searchTrigger" data-home="{home_href}" aria-haspopup="dialog" aria-expanded="false" title="搜索文章" aria-label="搜索文章" data-i18n-title="search-title" data-i18n-aria-label="search-title">{SEARCH_SVG}</button>
   {back_html}
   <a class="brand" href="{home_href}"><span class="brand-name" data-i18n="brand">梁双宇</span><span class="brand-sep">·</span><span class="brand-site" data-i18n="site-title">个人博客</span></a>
@@ -1620,6 +1632,9 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
 <main class="{main_class}">
 {main_inner}
 </main>
+<div class="music-panel" id="musicPanel" hidden>
+{music_player_html()}
+</div>
 <script>window.BLOG_UPDATES = {UPDATES_JSON};</script>
 <script>window.MUSIC_BASE = "{music_base}"; window.MUSIC_PLAYLIST = {MUSIC_JSON};</script>
 <script>window.NOTE_SECTIONS = {NOTE_SECTIONS_JSON};</script>
@@ -1916,7 +1931,6 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
       <span data-i18n="quick-profile">个人信息 / 日历</span>
     </a>
   </aside>
-  {music_player_html()}
   </div>
   <button type="button" class="side-tab" data-side-toggle aria-label="收起侧栏" title="收起侧栏">&#8249;</button>
   <button type="button" class="side-tab-restore" data-side-toggle aria-label="展开侧栏" title="展开侧栏" hidden>&#8250;</button>
@@ -2139,6 +2153,48 @@ def build_shelf_grid(out_dir):
         '<p class="shelf-desc">共 %d 本书，封面取 PDF 的第一页；点封面打开 PDF，“仅本地”表示体积太大没有上传。</p>'
         "%s"
     ) % (len(books), "".join(sections))
+
+
+def build_bank_page(docs, child_dirs, out_dir):
+    """题库：把算法题复盘里的题目按来源平台归堆。"""
+    groups = defaultdict(list)
+    for rel in docs:
+        if "算法" not in rel.replace(os.sep, "/"):
+            continue
+        title = DOC_TITLE.get(rel) or os.path.splitext(os.path.basename(rel))[0]
+        m = re.match(r"^\[([A-Za-z]+)", title)
+        platform = (m.group(1).upper() if m else "其他")
+        href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, doc_page_target(rel, child_dirs))))
+        href += "#" + doc_anchor(rel)
+        crumb = os.path.dirname(rel).replace(os.sep, " / ")
+        groups[platform].append((title, href, crumb))
+
+    order = sorted(groups, key=lambda k: (k == "其他", k))
+    sections = []
+    total = 0
+    for key in order:
+        items = sorted(groups[key], key=lambda x: natural_key(x[0]))
+        total += len(items)
+        rows = "".join(
+            '<a class="bank-item" href="%s"><span class="bank-title">%s</span>'
+            '<span class="bank-crumb">%s</span></a>' % (href, esc(title), esc(crumb))
+            for title, href, crumb in items
+        )
+        sections.append(
+            '<section class="bank-group"><h2 class="bank-group-title">%s<span>%d 题</span></h2>'
+            '<div class="bank-list">%s</div></section>' % (esc(key), len(items), rows)
+        )
+
+    body = (
+        '<div class="crumb"><a href="%s">首页</a> / 题库</div>'
+        '<div class="page-head"><h1>题库</h1><div class="count">共 %d 题</div></div>'
+        '<p class="bank-desc">算法题复盘里的题目，按来源平台分组。</p>%s'
+    ) % (
+        quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html"))),
+        total,
+        "".join(sections) or '<p class="bank-empty">还没有题目，去「算法题复盘」写一篇吧。</p>',
+    )
+    return page(out_dir, "题库", body)
 
 
 def build_note_page(out_dir):

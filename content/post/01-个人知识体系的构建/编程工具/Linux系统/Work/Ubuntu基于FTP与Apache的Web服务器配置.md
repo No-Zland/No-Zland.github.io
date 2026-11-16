@@ -1,5 +1,5 @@
 ---
-updated: 2026-11-16 14:40
+updated: 2026-11-16 21:07
 ---
 # 基于FTP与Apache的web服务器配置
 
@@ -35,7 +35,7 @@ updated: 2026-11-16 14:40
 
 - vsftpd 3.0.5 为 Ubuntu 20.04 LTS 默认稳定版本，Apache2 2.4.52 为对应系统适配版本，无需手动升级，避免兼容性问题。
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image000.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image000.png)
 
 # 实验步骤
 
@@ -79,7 +79,7 @@ updated: 2026-11-16 14:40
 
 - 私有目录/home/ftpuser/private后续将与 Apache 私有站点目录关联，提前创建并绑定用户组，为后续权限联动铺垫。
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image001.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image001.png)
 
 ## vsftpd 精细化安装与配置
 
@@ -89,7 +89,7 @@ updated: 2026-11-16 14:40
 
 |---|
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image002.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image002.png)
 
 ### 配置文件分层优化
 
@@ -99,7 +99,7 @@ updated: 2026-11-16 14:40
 
 |---|
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image003.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image003.png)
 
 核心配置（新增安全与功能项）：
 
@@ -155,7 +155,7 @@ updated: 2026-11-16 14:40
 
 | sudo nano /etc/vsftpd/user_conf/ftpuser  # 为ftpuser创建专属配置 |
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image004.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image004.png)
 
 内容：
 
@@ -165,7 +165,7 @@ updated: 2026-11-16 14:40
 
 | write_enable=YES |
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image005.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image005.png)
 
 ### 用户创建与权限绑定
 
@@ -185,7 +185,7 @@ updated: 2026-11-16 14:40
 
 - 私有目录/home/ftpuser/private权限设为 750（用户读 / 写 / 执行，组读 / 执行，其他无权限），仅允许 ftpuser 本人和 ftpgroup 组内用户访问，增强数据安全性。
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image006.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image006.png)
 
 ### 防火墙与服务启动
 
@@ -213,9 +213,9 @@ updated: 2026-11-16 14:40
 
 - 执行ufw status后需确认所有端口状态为 “ALLOW”，且防火墙状态为 “active”，否则客户端无法连接。
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image007.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image007.png)
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image008.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image008.png)
 
 ## Apache2 深度配置与联动
 
@@ -231,7 +231,7 @@ updated: 2026-11-16 14:40
 
 - 私有站点/var/www/private所有者设为 ftpuser:ftpgroup，且权限为 775（组可写），允许 FTP 用户（ftpuser）上传文件到该目录，同时 Apache 服务（www-data 属于 www-data 组，需确保 www-data 组有读权限）能读取文件并提供 Web 访问。
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image009.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image009.png)
 
 ### Apache 多站点与权限配置
 
@@ -247,7 +247,7 @@ updated: 2026-11-16 14:40
 
 | sudo chmod 775 /var/www/private  # 组可写（便于FTP用户上传） |
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image010.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image010.png)
 
 #### 配置公共站点（001-public.conf）：
 
@@ -255,7 +255,7 @@ updated: 2026-11-16 14:40
 
 |---|
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image011.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image011.png)
 
 内容：
 
@@ -279,7 +279,7 @@ updated: 2026-11-16 14:40
 
 | </VirtualHost> |
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image012.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image012.png)
 
 #### 配置私有站点（002-private.conf）：
 
@@ -287,7 +287,7 @@ updated: 2026-11-16 14:40
 
 |---|
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image013.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image013.png)
 
 内容：
 
@@ -325,7 +325,7 @@ updated: 2026-11-16 14:40
 
 - AuthUserFile /etc/apache2/.htpasswd：指定认证密码文件路径，后续通过htpasswd命令创建该文件并设置密码。
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image014.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image014.png)
 
 #### 创建 Apache 认证文件：
 
@@ -333,7 +333,7 @@ updated: 2026-11-16 14:40
 
 |---|
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image015.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image015.png)
 
 ### 联动 FTP 与 Apache 目录
 
@@ -355,7 +355,7 @@ updated: 2026-11-16 14:40
 
 注意：修改配置后必须重启 vsftpd 服务（sudo systemctl restart vsftpd），否则配置不生效，可通过sudo systemctl status vsftpd确认服务状态为 “active (running)”。
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image016.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image016.png)
 
 #### 重启 vsftpd 使配置生效：
 
@@ -365,7 +365,7 @@ updated: 2026-11-16 14:40
 
 | sudo systemctl status vsftpd |
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image017.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image017.png)
 
 ### Apache 服务启动与模块启用
 
@@ -389,7 +389,7 @@ updated: 2026-11-16 14:40
 
 - 重启 Apache 服务后，需通过sudo systemctl status apache2确认服务正常运行，否则需检查站点配置文件语法（可通过sudo apache2ctl configtest排查语法错误）。
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image018.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image018.png)
 
 ## 多场景验证
 
@@ -427,9 +427,9 @@ updated: 2026-11-16 14:40
 
 若执行命令时出现 “Permission denied”，需检查目录权限（如/var/www/private是否为 ftpuser:ftpgroup 所有，且权限为 775）；若出现 “Connection refused”，需检查 vsftpd 服务是否启动、防火墙端口是否开放。
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image019.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image019.png)
 
-![](01-个人知识体系的构建/00-计算机系统与基础原理/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image020.png)
+![](01-个人知识体系的构建/编程工具/Linux系统/Work/Ubuntu基于FTP与Apache的Web服务器配置_assets/image020.png)
 
 #### FileZilla 图形化连接测试：
 

@@ -24,7 +24,8 @@
     window.addEventListener('load', placeTab);
     var saved = null;
     try { saved = localStorage.getItem(KEY); } catch (e) {}
-    apply(saved === '1');
+    // 默认收起：没有记录过就当作收起
+    apply(saved === null ? true : saved === '1');
     placeTab();
     var buttons = document.querySelectorAll('[data-side-toggle]');
     for (var i = 0; i < buttons.length; i++) {

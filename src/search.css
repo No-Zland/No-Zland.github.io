@@ -787,3 +787,16 @@ body.side-hidden .side-tab { display: none; }
 
 /* 侧栏把手浮在内容之上 */
 .side-tab, .side-tab-restore { z-index: 30; }
+
+
+/* 音乐面板：点顶栏图标才出现 */
+.music-panel {
+  position: fixed; right: 18px; top: 68px; z-index: 60;
+  width: 300px; max-width: calc(100vw - 32px);
+  padding: 12px; border-radius: 16px;
+  background: var(--card); border: 1px solid var(--border);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, .18);
+}
+.music-panel[hidden] { display: none; }
+.music-panel .music-player { margin: 0; border: none; box-shadow: none; background: transparent; }
+.music-btn.is-open { color: var(--brand); border-color: var(--brand); }

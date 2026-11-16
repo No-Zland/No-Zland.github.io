@@ -600,6 +600,8 @@
       canvas.style.cursor = hit ? 'pointer' : 'grab';
     }
 
+    var lastClickAt = 0, openedAt = 0;
+
     function onUp(e) {
       delete pointers[e.pointerId];
       if (Object.keys(pointers).length < 2) pinch = 0;
@@ -611,18 +613,31 @@
 
       var p;
       try { p = localXY(e); } catch (err) { return; }
-      if (!wasPan && moved < 9 && Date.now() - downAt < 600) {
-        var hit = pick(p.x, p.y);
-        if (!hit) {
-          clearFocus();
-        } else if (hit.node.kind === 'hub') {
-          clearFocus();
-        } else if (selected === hit.node) {
+      if (wasPan || moved >= 9 || Date.now() - downAt >= 600) return;
+
+      var hit = pick(p.x, p.y);
+      var now = Date.now();
+      var quick = now - lastClickAt < 650;
+
+      if (hit && hit.node.kind !== 'hub') {
+        if (selected === hit.node && quick) {
           openNode(hit.node);
-        } else {
-          setFocus(hit.node);
+          openedAt = now;
+          return;
         }
+        setFocus(hit.node);
+        lastClickAt = now;
+        return;
       }
+
+      // 点到空白或中心球：刚聚焦过就是「再点一次进入」
+      if (selected && quick) {
+        openNode(selected);
+        openedAt = now;
+        return;
+      }
+      if (hit && hit.node.kind === 'hub') return;
+      clearFocus();
     }
 
     function onLeave() {
@@ -639,11 +654,18 @@
     }
 
     function onReset(e) {
+      if (Date.now() - openedAt < 500) return;
+      if (selected) {
+        openNode(selected);
+        openedAt = Date.now();
+        return;
+      }
       if (e && e.clientX !== undefined) {
         var lp = localXY(e);
         var h2 = pick(lp.x, lp.y);
         if (h2 && h2.node.kind !== 'hub') {
           openNode(h2.node);
+          openedAt = Date.now();
           return;
         }
       }
