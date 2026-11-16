@@ -1834,54 +1834,94 @@ CAT_PALETTE = [
 ]
 
 
+def _lighten(hex_color, ratio):
+    h = hex_color.lstrip("#")
+    if len(h) != 6:
+        return hex_color
+    r, g, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
+    r = int(r + (255 - r) * ratio)
+    g = int(g + (255 - g) * ratio)
+    b = int(b + (255 - b) * ratio)
+    return "#%02x%02x%02x" % (r, g, b)
+
+
 def build_satellite(sections, docs, dir_docs, child_dirs, only=None):
+    """五层结构：我 → 板块 → 分类 → 子分类 → 文章（最多到目录第三层）。"""
     if only:
         sections = [s for s in sections if s["slug"] == only]
-    """首页知识卫星图：中心是「我」，两个星系分别是知识库和实战库，Python 只打包数据。"""
-    cats, items, legend, meta = [], [], [], []
+
+    node_list = []
+    index = {}
+    doc_rows = []
+    legend = []
+    section_count = 0
+
+    def dir_page(path, depth):
+        """目录对应的页面：三层以内有独立页，更深的并到祖先页。"""
+        return quote_url(os.path.join(path, "index.html"))
+
     for section in sections:
-        if not section["cats"]:
+        sec_docs = docs_under(docs, section["slug"])
+        if not sec_docs:
             continue
-        added = False
-        for cat_rel in section["cats"]:
-            ds = docs_under(docs, cat_rel)
-            if not ds:
-                continue
-            ci = len(cats)
-            cats.append({
-                "name": os.path.basename(cat_rel),
-                "color": CAT_PALETTE[ci % len(CAT_PALETTE)],
-                "count": len(ds),
-                "rel": quote_url(os.path.join(cat_rel, "index.html")),
-                "sec": len(meta),
-            })
-            added = True
-            for rel in ds:
-                title = DOC_TITLE.get(rel) or os.path.splitext(os.path.basename(rel))[0]
-                href = quote_url(doc_page_target(rel, child_dirs)) + "#" + doc_anchor(rel)
-                crumb = os.path.dirname(rel).replace(os.sep, " / ")
-                items.append([title, href, ci, frontmatter_tags(os.path.join(POST_DIR, rel)), crumb])
-        if added:
-            meta.append({
-                "name": section["title"],
-                "color": section["color"],
-                "rel": quote_url(os.path.join(section["slug"], "index.html")),
-            })
-            legend.append(
-                '<span class="sat-legend-item"><i style="background:%s"></i>%s</span>'
-                % (section["color"], esc(section["title"]))
-            )
+        sec_node = len(node_list)
+        node_list.append({
+            "name": section["title"],
+            "color": section["color"],
+            "depth": 1,
+            "parent": -1,
+            "count": len(sec_docs),
+            "rel": quote_url(os.path.join(section["slug"], "index.html")),
+        })
+        section_count += 1
+        legend.append(
+            '<span class="sat-legend-item"><i style="background:%s"></i>%s</span>'
+            % (section["color"], esc(section["title"]))
+        )
+
+        cat_seq = 0
+        for rel in sec_docs:
+            parts = os.path.dirname(rel).split(os.sep)
+            parent = sec_node
+            path = parts[0]
+            for depth, name in enumerate(parts[1:], start=2):
+                if depth > 4:
+                    break
+                path = path + os.sep + name
+                if path in index:
+                    parent = index[path]
+                    continue
+                if depth == 2:
+                    color = CAT_PALETTE[cat_seq % len(CAT_PALETTE)]
+                    cat_seq += 1
+                else:
+                    base = node_list[parent]["color"]
+                    color = _lighten(base, 0.18 if depth == 3 else 0.34)
+                node_list.append({
+                    "name": name.lstrip("_"),
+                    "color": color,
+                    "depth": depth,
+                    "parent": parent,
+                    "count": len(docs_under(docs, path)),
+                    "rel": dir_page(path, depth),
+                })
+                index[path] = len(node_list) - 1
+                parent = index[path]
+            title = DOC_TITLE.get(rel) or os.path.splitext(os.path.basename(rel))[0]
+            href = quote_url(doc_page_target(rel, child_dirs)) + "#" + doc_anchor(rel)
+            crumb = os.path.dirname(rel).replace(os.sep, " / ")
+            doc_rows.append([title, href, parent, frontmatter_tags(os.path.join(POST_DIR, rel)), crumb])
 
     payload = json.dumps(
-        {"cats": cats, "docs": items, "sections": meta},
+        {"sections": [], "nodes": node_list, "docs": doc_rows},
         ensure_ascii=False, separators=(",", ":"),
     )
     payload = payload.replace("</", "<\\/")
-    fallback = "".join('<li><a href="%s">%s</a></li>' % (d[1], esc(d[0])) for d in items)
+    fallback = "".join('<li><a href="%s">%s</a></li>' % (d[1], esc(d[0])) for d in doc_rows)
 
     return (
         '<div class="satellite" id="sections">\n'
-        '<canvas class="sat-canvas" role="img" aria-label="知识卫星图：中心是我，拖动旋转、滚轮缩放，点击节点进入文章"></canvas>\n'
+        '<canvas class="sat-canvas" role="img" aria-label="知识卫星图：中心是我，五层结构，拖动旋转、滚轮缩放"></canvas>\n'
         '<div class="sat-tools">'
         '<button type="button" data-sat-zoom="in" title="放大" aria-label="放大">＋</button>'
         '<button type="button" data-sat-zoom="out" title="缩小" aria-label="缩小">－</button>'
@@ -1942,7 +1982,7 @@ def build_home(docs, dir_docs, child_dirs, dir_earliest, out_dir):
       <h2 class="home-motto-text" id="homeQuote">{esc(QUOTES[0]["text"])}</h2>
       <div class="quote-author" id="homeQuoteAuthor">—— {esc(QUOTES[0]["author"])}</div>
     </div>
-    <div class="section-grid">{build_satellite(sections, docs, dir_docs, child_dirs, only=(sections[0]["slug"] if sections else None))}</div>
+    <div class="section-grid">{build_satellite(sections, docs, dir_docs, child_dirs, only=None)}</div>
     <div class="home-stats">{len(sections)} 个板块 · {article_total} 篇文章</div>
   </div>
 </div>
@@ -2084,7 +2124,7 @@ def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, ou
 
     extra = ""
     if layout == "map":
-        extra = build_satellite([section], docs, dir_docs, child_dirs, only=section["slug"])
+        extra = build_satellite(build_sections(l1), docs, dir_docs, child_dirs)
     elif layout == "timeline":
         extra = build_timeline(section, docs, dir_docs, child_dirs, dir_earliest, out_dir)
     elif layout == "gallery":
