@@ -28,6 +28,8 @@
     var prevBtn = document.querySelector('[data-reading-prev]');
     var nextBtn = document.querySelector('[data-reading-next]');
     var current = 0;
+    var multi = false;
+    try { multi = localStorage.getItem('blog-reading-multi') !== '0'; } catch (e) { multi = true; }
 
     function articleTitle(index) {
       return articles[index].getAttribute('data-title') || ('文章 ' + (index + 1));
@@ -99,7 +101,7 @@
 
     function show(index, options) {
       current = Math.max(0, Math.min(articles.length - 1, index));
-      articles.forEach(function (article, i) { article.hidden = i !== current; });
+      articles.forEach(function (article, i) { article.hidden = multi ? false : i !== current; });
       renderPager();
       renderToc();
       updateListActive();
@@ -141,6 +143,21 @@
         if (articles[i].id === hash) { initial = i; break; }
       }
     }
+    var head = document.querySelector('.page-head');
+    if (head && articles.length > 1 && !head.querySelector('.reading-mode-btn')) {
+      var modeBtn = document.createElement('button');
+      modeBtn.type = 'button';
+      modeBtn.className = 'reading-mode-btn';
+      modeBtn.textContent = multi ? '单篇阅读' : '并排阅读';
+      modeBtn.addEventListener('click', function () {
+        multi = !multi;
+        try { localStorage.setItem('blog-reading-multi', multi ? '1' : '0'); } catch (e) {}
+        modeBtn.textContent = multi ? '单篇阅读' : '并排阅读';
+        show(current, {});
+      });
+      head.appendChild(modeBtn);
+    }
+
     renderList();
     if (initial >= 0) show(initial, { scroll: true });
     else show(0, {});

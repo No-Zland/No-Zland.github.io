@@ -46,16 +46,25 @@ MAX_PDF_BYTES = 10 * 1024 * 1024  # GitHub Pages 只上传 10MB 以内的 PDF
 
 SECTION_SPECS = [
     {
-        "slug": "01-知识库",
-        "title": "知识库",
-        "desc": "算法、课程、语言与工具、科研与阅读的长期积累。",
+        "slug": "01-个人知识体系的构建",
+        "title": "个人知识体系的构建",
+        "desc": "从计算机系统到应用开发的知识网络，按主题而非时间组织。",
         "color": "#2563eb",
+        "layout": "map",
     },
     {
-        "slug": "02-实战库",
-        "title": "实战库",
-        "desc": "刷题、竞赛与项目的一次性实战记录。",
+        "slug": "02-竞赛科研经历与复盘",
+        "title": "竞赛科研经历与复盘",
+        "desc": "每一次比赛与科研训练的时间线、复盘与题解。",
         "color": "#7c3aed",
+        "layout": "timeline",
+    },
+    {
+        "slug": "03-成果展示",
+        "title": "成果展示",
+        "desc": "做过的项目与拿到的证书。",
+        "color": "#0ea5b7",
+        "layout": "gallery",
     },
 ]
 
@@ -1379,7 +1388,13 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
     nav_html = "" if is_home else side_nav_for(out_dir)
     if nav_html:
         main_class = "main main-wide"
-        side_html = f'<div class="side-column">{nav_html}{music_player_html()}{side_extra}</div>'
+        side_html = (
+        '<div class="side-column">'
+        '<button type="button" class="side-toggle" data-side-toggle aria-label="收起侧栏" title="收起侧栏">&#8249;</button>'
+        + nav_html + music_player_html() + side_extra +
+        '</div>'
+        '<button type="button" class="side-restore" data-side-toggle aria-label="展开侧栏" title="展开侧栏" hidden>&#8250;</button>'
+    )
         main_inner = f'<div class="page-layout">{side_html}<div class="page-main">{body}</div></div>'
     else:
         main_class = "main"
@@ -1629,7 +1644,9 @@ def frontmatter_tags(path, limit=4):
     return tags[:limit]
 
 
-def build_satellite(sections, docs, dir_docs, child_dirs):
+def build_satellite(sections, docs, dir_docs, child_dirs, only=None):
+    if only:
+        sections = [s for s in sections if s["slug"] == only]
     """首页知识卫星图：中心是「我」，两个星系分别是知识库和实战库，Python 只打包数据。"""
     cats, items, legend, meta = [], [], [], []
     for section in sections:
@@ -1784,9 +1801,99 @@ def music_player_html():
 
 
 
-def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, out_dir):
+def _cat_date(name):
+    """从目录名里取日期：202609 / 20260912 / 2026-09-12。"""
+    m = re.match(r"^(\d{4})(\d{2})(\d{2})?", name)
+    if not m:
+        m = re.match(r"^(\d{4})-(\d{2})-(\d{2})", name)
+        if m:
+            return "%s.%s.%s" % (m.group(1), m.group(2), m.group(3)), m.group(1) + m.group(2) + m.group(3)
+        return None, ""
+    y, mo, d = m.group(1), m.group(2), m.group(3)
+    if d:
+        return "%s.%s.%s" % (y, mo, d), y + mo + d
+    return "%s.%s" % (y, mo), y + mo
+
+
+def build_timeline(section, docs, dir_docs, child_dirs, dir_earliest, out_dir):
+    rows = []
+    for cat_rel in section["cats"]:
+        name = os.path.basename(cat_rel)
+        label, key = _cat_date(name)
+        count = len(docs_under(docs, cat_rel))
+        href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, cat_rel, "index.html")))
+        intro = folder_intro(cat_rel, dir_docs, child_dirs)
+        rows.append({
+            "key": key or "0",
+            "label": label or "未标注日期",
+            "name": name,
+            "href": href,
+            "count": count,
+            "intro": intro,
+        })
+    rows.sort(key=lambda r: r["key"], reverse=True)
+
+    items = []
+    for r in rows:
+        items.append(
+            '<div class="tl-item">'
+            '<div class="tl-date">%s</div>'
+            '<div class="tl-body">'
+            '<a class="tl-card" href="%s"><h3>%s</h3><p>%s</p>'
+            '<span class="tl-meta">%d 篇 · 进入 →</span></a>'
+            '</div></div>'
+            % (esc(r["label"]), r["href"], esc(r["name"]), esc(r["intro"]), r["count"])
+        )
+    if not items:
+        items.append('<div class="tl-item"><div class="tl-date">—</div><div class="tl-body"><div class="tl-card"><h3>暂无记录</h3></div></div></div>')
+    return '<div class="timeline">' + "".join(items) + '</div>'
+
+
+def build_gallery(section, docs, dir_docs, child_dirs, dir_earliest, out_dir, images):
+    cards = []
+    for i, cat_rel in enumerate(section["cats"]):
+        name = os.path.basename(cat_rel)
+        if name == "证书":
+            continue
+        count = len(docs_under(docs, cat_rel))
+        href = rel_from(out_dir, os.path.join(SITE_DIR, cat_rel, "index.html"))
+        intro = folder_intro(cat_rel, dir_docs, child_dirs)
+        cards.append(cat_item(name, href, count, folder_created(cat_rel, dir_earliest), intro, i))
+
+    # 证书墙：扫整个板块里路径带「证书」的图片
+    certs = []
+    section_root = os.path.join(POST_DIR, section["slug"])
+    for dirpath, _dirnames, filenames in os.walk(section_root):
+        if "证书" not in dirpath:
+            continue
+        for fn in filenames:
+            if not is_image(fn):
+                continue
+            src = os.path.join(dirpath, fn)
+            url = copy_asset(src, out_dir)
+            title = os.path.splitext(fn)[0]
+            certs.append(
+                '<a class="cert-item" href="%s" target="_blank" rel="noopener">'
+                '<img src="%s" alt="%s" loading="lazy"><span>%s</span></a>'
+                % (url, url, esc(title), esc(title))
+            )
+
+    certs.sort()
+    wall = ""
+    if certs:
+        wall = (
+            '<section class="cert-section"><h2 class="cert-title">证书墙</h2>'
+            '<div class="cert-wall">' + "".join(certs) + "</div></section>"
+        )
+
+    return '<div class="gallery-grid">' + "".join(cards) + "</div>" + wall
+
+
+def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, out_dir, images=None):
     items = []
     cats = section.get("cats", [])
+    layout = section.get("layout", "cards")
+
     for i, cat_rel in enumerate(cats):
         count = len(docs_under(docs, cat_rel))
         href = rel_from(out_dir, os.path.join(SITE_DIR, cat_rel, "index.html"))
@@ -1799,6 +1906,17 @@ def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, ou
         created = folder_created(section["slug"], dir_earliest)
         items.append(cat_item("散篇", "direct.html", len(direct), created, "未归入分类的散篇笔记", len(cats)))
 
+    extra = ""
+    if layout == "map":
+        extra = build_satellite([section], docs, dir_docs, child_dirs, only=section["slug"])
+    elif layout == "timeline":
+        extra = build_timeline(section, docs, dir_docs, child_dirs, dir_earliest, out_dir)
+    elif layout == "gallery":
+        extra = build_gallery(section, docs, dir_docs, child_dirs, dir_earliest, out_dir, images or {})
+    else:
+        extra = '<div class="cat-list section-cats" style="--section-color:%s">%s</div>' % (
+            section["color"], "".join(items))
+
     total = len(docs_under(docs, section["slug"]))
     home_href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, "index.html")))
     body = f"""
@@ -1809,7 +1927,7 @@ def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, ou
   <p>{esc(section["desc"])}</p>
   <div class="section-hero-meta">{len(cats)} 个分类 · {total} 篇文章</div>
 </section>
-<div class="cat-list section-cats" style="--section-color:{section["color"]}">{''.join(items)}</div>
+{extra}
 """
     return page(out_dir, section["title"], body, parent_href=home_href)
 
@@ -1998,10 +2116,6 @@ def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=
 
     content = ''.join(articles) if articles else '<div class="doc"><p>暂无文章</p></div>'
     side_extra = f"""
-<div class="side-card reading-list-card" data-reading-list-card hidden>
-  <div class="side-card-kicker">文章列表</div>
-  <nav class="reading-list" data-reading-list></nav>
-</div>
 <div class="side-card reading-toc-card" data-reading-toc-card hidden>
   <div class="side-card-kicker">本篇目录</div>
   <nav class="reading-toc" data-reading-toc></nav>
@@ -2064,10 +2178,11 @@ def main():
     quotes_js = read_text(os.path.join(SRC_DIR, "quotes.js"))
     satellite_js = read_text(os.path.join(SRC_DIR, "satellite.js"))
     nav_sync_js = read_text(os.path.join(SRC_DIR, "nav-sync.js"))
+    sidebar_js = read_text(os.path.join(SRC_DIR, "sidebar.js"))
     anti_crawler_js = read_text(os.path.join(SRC_DIR, "anti-crawler.js"))
     spa_js = read_text(os.path.join(SRC_DIR, "spa.js"))
     style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css + "\n" + note_css + "\n" + agent_css
-    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + satellite_js + "\n" + nav_sync_js + "\n" + note_js + "\n" + brightness_js + "\n" + agent_js + "\n" + anti_crawler_js + "\n" + spa_js
+    app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + satellite_js + "\n" + nav_sync_js + "\n" + sidebar_js + "\n" + note_js + "\n" + brightness_js + "\n" + agent_js + "\n" + anti_crawler_js + "\n" + spa_js
     write_text(os.path.join(ASSET_DIR, "style.css"), style_text)
     write_text(os.path.join(ASSET_DIR, "app.js"), app_text)
 
@@ -2115,7 +2230,7 @@ def main():
         direct = dir_docs.get(slug, [])
 
         if cats:
-            html = build_section_page(section, l1_sections, docs, dir_docs, child_dirs, dir_earliest, section_out)
+            html = build_section_page(section, l1_sections, docs, dir_docs, child_dirs, dir_earliest, section_out, images)
             write_text(os.path.join(section_out, "index.html"), html)
             page_count += 1
 

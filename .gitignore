@@ -46,3 +46,7 @@ content/post/**/*.plugin
 
 # 竞赛参考资料包（安装包 / 视频 / 镜像，合计 1GB+，仅本地保留，不上传）
 content/post/**/资源包_*/
+
+# 书架里的教材 PDF：体积太大，只在本地保留
+content/post/**/书架/*.pdf
+content/post/**/书架/**/*.pdf

@@ -56,6 +56,7 @@
     var GALAXY_R = 300, CAT_R = 126, DOC_R0 = 70, DOC_R1 = 168;
     var secPos = [];
     for (var s = 0; s < secs.length; s++) {
+      if (secs.length === 1) { secPos.push([0, 0, 0]); continue; }
       var ga = Math.PI * s;                    // 两个星系分居左右
       secPos.push([Math.cos(ga) * GALAXY_R, 0, Math.sin(ga) * GALAXY_R]);
     }
@@ -112,7 +113,7 @@
       });
     }
 
-    for (i = 0; i < secs.length; i++) {
+    for (i = 0; secs.length > 1 && i < secs.length; i++) {
       nodes.push({
         kind: 'galaxy', x: secPos[i][0], y: secPos[i][1], z: secPos[i][2],
         r: 11, color: secs[i].color, label: secs[i].name, name: secs[i].name, si: i
