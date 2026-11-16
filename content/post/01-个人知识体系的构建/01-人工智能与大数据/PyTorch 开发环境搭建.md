@@ -1,5 +1,6 @@
-# PyTorch 开发环境搭建
-
+---
+updated: 2026-11-16 19:35
+---
 在使用 Anaconda+VSCode+PyTorch 的工作流中，Anaconda 的核心作用是环境管理和包管理，以下是最常用的指令分类总结：
 
 # 环境管理（核心，推荐为 PyTorch 单独创建环境）

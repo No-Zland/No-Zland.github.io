@@ -11,6 +11,7 @@
 import os
 import re
 import math
+import glob
 import hashlib
 import sys
 import json
@@ -137,6 +138,57 @@ def section_for_category(cat):
     return None
 
 
+def frontmatter_dict(text):
+    """极简 frontmatter 解析：key: value 或 key:\n  - item。"""
+    if not text.startswith("---"):
+        return {}
+    end = text.find("\n---", 3)
+    if end < 0:
+        return {}
+    block = text[3:end]
+    data = {}
+    key = None
+    for raw in block.splitlines():
+        line = raw.rstrip()
+        if not line.strip():
+            continue
+        m = re.match(r"^([A-Za-z_][\w-]*)\s*:\s*(.*)$", line)
+        if m:
+            key = m.group(1).lower()
+            val = m.group(2).strip().strip('"').strip("'")
+            data[key] = val
+        elif key and line.strip().startswith("-"):
+            val = line.strip()[1:].strip().strip('"').strip("'")
+            data[key] = (data.get(key) or "") + ("," if data.get(key) else "") + val
+    return data
+
+
+def folder_meta(rel):
+    """读取目录下 _index.md 的 frontmatter，作为板块/分类的标题与说明。"""
+    for name in ("_index.md", "index.md"):
+        path = os.path.join(POST_DIR, rel, name)
+        if not os.path.isfile(path):
+            continue
+        try:
+            text = read_text(path)
+        except OSError:
+            continue
+        fm = frontmatter_dict(text)
+        body = strip_frontmatter(text).strip()
+        first_line = ""
+        for line in body.splitlines():
+            line = line.strip()
+            if line and not line.startswith("#"):
+                first_line = re.sub(r"[*_`>\-]", "", line).strip()
+                break
+        return {
+            "title": fm.get("title") or "",
+            "desc": fm.get("desc") or fm.get("description") or fm.get("summary") or first_line or "",
+            "color": fm.get("color") or "",
+        }
+    return {}
+
+
 def build_sections(l1):
     """顶层目录就是板块；板块下的子目录是分类。"""
     sections = []
@@ -154,6 +206,14 @@ def build_sections(l1):
             "desc": "其他内容。",
             "color": "#64748b",
         })
+    for section in sections:
+        meta = folder_meta(section["slug"])
+        if meta.get("title"):
+            section["title"] = meta["title"]
+        if meta.get("desc"):
+            section["desc"] = meta["desc"]
+        if meta.get("color"):
+            section["color"] = meta["color"]
     return sections
 
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".ico"}
@@ -283,6 +343,7 @@ def is_image(path):
 def scan():
     docs = []
     images = defaultdict(list)
+    image_dirs = set()
     dir_earliest = {}  # 目录(相对) -> 最早 mtime
 
     def touch(rel_dir, mtime):
@@ -295,7 +356,7 @@ def scan():
             d = os.path.dirname(d)
 
     for dirpath, dirnames, filenames in os.walk(POST_DIR):
-        dirnames[:] = [d for d in dirnames if not d.startswith(".") and d not in SKIP_DIRS]
+        dirnames[:] = [d for d in dirnames if not d.startswith(".") and d not in SKIP_DIRS and not d.endswith("_assets")]
         rel_dir = os.path.relpath(dirpath, POST_DIR)
         if rel_dir == ".":
             rel_dir = ""
@@ -316,9 +377,11 @@ def scan():
                 docs.append(rel)
             elif is_image(abs_path):
                 images[fn.lower()].append(abs_path)
+                if rel_dir:
+                    image_dirs.add(rel_dir)
 
     docs.sort(key=lambda r: natural_key(r.replace("\\", "/")))
-    return docs, images, dir_earliest
+    return docs, images, dir_earliest, image_dirs
 
 
 def collect_updates(docs):
@@ -511,15 +574,30 @@ def resolve_wikilink_asset(name, md_dir, images):
     return candidates[0]
 
 
+def resolve_image_path(rel_url, md_dir):
+    """图片可能写成：同目录文件名 / 同名 _assets 下的文件名 / 从 content/post 起的路径。"""
+    candidates = [
+        os.path.normpath(os.path.join(md_dir, rel_url)),
+        os.path.normpath(os.path.join(POST_DIR, rel_url)),
+    ]
+    base = os.path.basename(rel_url)
+    for assets_dir in sorted(glob.glob(os.path.join(md_dir, "*_assets"))):
+        candidates.append(os.path.join(assets_dir, base))
+    for candidate in candidates:
+        if os.path.isfile(candidate) and is_image(candidate):
+            return candidate
+    return None
+
+
 def preprocess(text, md_dir, out_dir, images):
     def std_img(m):
         alt = m.group(1)
         url = m.group(2).strip()
         if re.match(r"^[a-zA-Z][a-zA-Z0-9+.-]*://", url) or url.startswith(("data:", "/", "#")):
             return m.group(0)
-        decoded = urllib.parse.unquote(url)
-        src_abs = os.path.normpath(os.path.join(md_dir, decoded))
-        if os.path.isfile(src_abs) and is_image(src_abs):
+        decoded = urllib.parse.unquote(url).replace("\\", "/")
+        src_abs = resolve_image_path(decoded, md_dir)
+        if src_abs:
             new_url = copy_asset(src_abs, out_dir)
             return f"![{alt}]({new_url})"
         return m.group(0)
@@ -758,13 +836,13 @@ def render_doc(rel, out_dir, images):
 # --------------------------------------------------------------------------- #
 # 目录树与简介/创立时间
 # --------------------------------------------------------------------------- #
-def build_tree(docs):
+def build_tree(docs, extra_dirs=()):
     dir_docs = defaultdict(list)
     for rel in docs:
         d = os.path.dirname(rel)
         dir_docs[d].append(rel)
 
-    dirs_with_content = set()
+    dirs_with_content = set(extra_dirs)
     for rel in docs:
         d = os.path.dirname(rel)
         while True:
@@ -1531,12 +1609,12 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
 """
 
 
-def cat_item(name, href, count, created, intro, index=0):
+def cat_item(name, href, count, created, intro, index=0, unit="篇文章"):
     return f"""
 <a class="cat-item" href="{quote_url(href)}" style="--i:{min(index, 8)}">
   <div class="cat-title">{esc(name)}</div>
   <div class="cat-desc">{esc(intro)}</div>
-  <div class="cat-meta"><span>{count} 篇文章</span><span class="dot">·</span><span>创立于 {esc(created)}</span></div>
+  <div class="cat-meta"><span>{count} {esc(unit)}</span><span class="dot">·</span><span>创立于 {esc(created)}</span></div>
 </a>
 """
 
@@ -1602,13 +1680,13 @@ def side_nav_for(out_dir):
             head = (
                 '<summary><a class="page-nav-name" href="%s">%s</a>'
                 '<span class="page-nav-count">%d</span></summary>'
-                % (page_href(node["rel"]), esc(node["name"]), node["count"])
+                % (page_href(node["rel"]), esc(node["name"].lstrip("_")), node["count"])
             )
         else:
             head = (
                 '<summary><span class="page-nav-name">%s</span>'
                 '<span class="page-nav-count">%d</span></summary>'
-                % (esc(node["name"]), node["count"])
+                % (esc(node["name"].lstrip("_")), node["count"])
             )
         inner = [render_node(k, depth + 1) for k in kids]
         inner += [doc_row(d, depth) for d in docs]
@@ -1909,57 +1987,31 @@ def build_timeline(section, docs, dir_docs, child_dirs, dir_earliest, out_dir):
 
 
 def build_gallery(section, docs, dir_docs, child_dirs, dir_earliest, out_dir, images):
+    """项目卡片墙：每个目录一张卡，证书墙也是同级的一张卡。"""
     cards = []
     for i, cat_rel in enumerate(section["cats"]):
         name = os.path.basename(cat_rel)
-        if name == "证书":
-            continue
         count = len(docs_under(docs, cat_rel))
+        folder = os.path.join(POST_DIR, cat_rel)
+        unit = "篇文章"
+        if count == 0 and os.path.isdir(folder):
+            count = sum(1 for fn in os.listdir(folder)
+                        if os.path.isfile(os.path.join(folder, fn)) and is_image(fn))
+            if count:
+                unit = "张图片"
         href = rel_from(out_dir, os.path.join(SITE_DIR, cat_rel, "index.html"))
         intro = folder_intro(cat_rel, dir_docs, child_dirs)
-        cards.append(cat_item(name, href, count, folder_created(cat_rel, dir_earliest), intro, i))
+        meta = folder_meta(cat_rel)
+        if meta.get("desc"):
+            intro = meta["desc"]
+        elif unit == "张图片":
+            intro = "证书与获奖照片"
+        display = name.lstrip("_")
+        if meta.get("title"):
+            display = meta["title"]
+        cards.append(cat_item(display, href, count, folder_created(cat_rel, dir_earliest), intro, i, unit))
 
-    # 证书墙：扫整个板块里路径带「证书」的图片
-    certs = []
-    section_root = os.path.join(POST_DIR, section["slug"])
-    for dirpath, _dirnames, filenames in os.walk(section_root):
-        if "证书" not in dirpath:
-            continue
-        for fn in filenames:
-            if not is_image(fn):
-                continue
-            src = os.path.join(dirpath, fn)
-            rel_cert = os.path.relpath(src, POST_DIR).replace(os.sep, "/")
-            title = os.path.splitext(fn)[0]
-            meta = CERT_THUMBS.get(rel_cert)
-            if meta:
-                thumb_src = os.path.join(ROOT, "assets", "certs", meta["thumb"])
-                full_src = os.path.join(ASSET_DIR, "certs", meta["thumb"])
-                if os.path.isfile(thumb_src):
-                    url = rel_from(out_dir, full_src)
-                    tag = ('<img src="%s" alt="%s" width="%d" height="%d" loading="lazy" decoding="async">'
-                           % (quote_url(url), esc(title), meta["w"], meta["h"]))
-                    certs.append(
-                        '<a class="cert-item" href="%s" target="_blank" rel="noopener">%s<span>%s</span></a>'
-                        % (quote_url(url), tag, esc(title))
-                    )
-                    continue
-            url = copy_asset(src, out_dir)
-            certs.append(
-                '<a class="cert-item" href="%s" target="_blank" rel="noopener">'
-                '<img src="%s" alt="%s" loading="lazy" decoding="async"><span>%s</span></a>'
-                % (url, url, esc(title), esc(title))
-            )
-
-    certs.sort()
-    wall = ""
-    if certs:
-        wall = (
-            '<section class="cert-section"><h2 class="cert-title">证书墙</h2>'
-            '<div class="cert-wall">' + "".join(certs) + "</div></section>"
-        )
-
-    return '<div class="gallery-grid">' + "".join(cards) + "</div>" + wall
+    return '<div class="gallery-grid">' + "".join(cards) + "</div>"
 
 
 def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, out_dir, images=None):
@@ -2229,10 +2281,44 @@ def doc_copyright(rel, out_dir):
 """
 
 
+def folder_wall(rel, out_dir):
+    """把目录里的图片做成一面墙（证书、截图之类）。"""
+    folder = os.path.join(POST_DIR, rel)
+    if not os.path.isdir(folder):
+        return ""
+    items = []
+    for fn in sorted(os.listdir(folder)):
+        src = os.path.join(folder, fn)
+        if not os.path.isfile(src) or not is_image(fn):
+            continue
+        title = os.path.splitext(fn)[0]
+        rel_src = os.path.relpath(src, POST_DIR).replace(os.sep, "/")
+        meta = CERT_THUMBS.get(rel_src)
+        if meta and os.path.isfile(os.path.join(ASSET_DIR, "certs", meta["thumb"])):
+            url = rel_from(out_dir, os.path.join(ASSET_DIR, "certs", meta["thumb"]))
+            img = ('<img src="%s" alt="%s" width="%d" height="%d" loading="lazy" decoding="async">'
+                   % (quote_url(url), esc(title), meta["w"], meta["h"]))
+        else:
+            url = copy_asset(src, out_dir)
+            img = '<img src="%s" alt="%s" loading="lazy" decoding="async">' % (url, esc(title))
+        items.append('<a class="cert-item" href="%s" target="_blank" rel="noopener">%s<span>%s</span></a>'
+                     % (url, img, esc(title)))
+    if not items:
+        return ""
+    title = folder_meta(rel).get("title") or os.path.basename(rel).lstrip("_")
+    return ('<div class="page-head"><h1>%s</h1><div class="count">%d 张</div></div>'
+            '<div class="cert-wall">%s</div>' % (esc(title), len(items), "".join(items)))
+
+
 def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=None, parent_href=None):
     name = os.path.basename(d) if d else "全部文章"
     if doc_list is None:
         doc_list = docs_under(docs, d)
+    if not doc_list and d:
+        wall_html = folder_wall(d, out_dir)
+        if wall_html:
+            return page(out_dir, name, wall_html, parent_href=parent_href)
+
     articles = []
     for rel in doc_list:
         r = render_doc(rel, out_dir, images)
@@ -2273,8 +2359,8 @@ def build_reading_page(d, docs, dir_docs, child_dirs, images, out_dir, doc_list=
 def main():
     global AVATAR_NAME, UPDATES_JSON, NAV_SECTIONS, MUSIC_JSON, QUOTES_JSON, QUOTES, ASSET_VERSION, NOTE_SECTIONS_JSON, CERT_THUMBS
     CERT_THUMBS = _load_cert_thumbs()
-    docs, images, dir_earliest = scan()
-    dir_docs, child_dirs = build_tree(docs)
+    docs, images, dir_earliest, image_dirs = scan()
+    dir_docs, child_dirs = build_tree(docs, image_dirs)
 
     # 默认不删除 site 根目录：Hugo server 可能占用文件。需要全量清理时使用 --clean。
     if "--clean" in sys.argv and os.path.exists(SITE_DIR):
