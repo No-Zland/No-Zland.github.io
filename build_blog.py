@@ -1913,7 +1913,7 @@ def build_satellite(sections, docs, dir_docs, child_dirs, only=None):
 
     return (
         '<div class="satellite" id="sections">\n'
-        '<canvas class="sat-canvas" role="img" aria-label="知识图谱：中心是我的知识体系，五个板块各成一团，拖动旋转、滚轮缩放、点节点进入"></canvas>\n'
+        '<canvas class="sat-canvas" role="img" aria-label="知识图谱：每个分类是中心，文章挂在分类下，拖动旋转、滚轮缩放、点节点进入"></canvas>\n'
         '<div class="sat-tools">'
         '<button type="button" data-sat-zoom="in" title="放大" aria-label="放大">＋</button>'
         '<button type="button" data-sat-zoom="out" title="缩小" aria-label="缩小">－</button>'

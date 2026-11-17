@@ -76,6 +76,7 @@
   --sat-ring: rgba(70, 84, 120, .22);
   --sat-tip-bg: rgba(255, 255, 255, .97);
   --sat-tip-border: rgba(35, 42, 61, .14);
+  --sat-halo: rgba(250, 251, 255, .95);
   --sat-kicker: #5f4fd6;
   --sat-btn-bg: rgba(255, 255, 255, .78);
   --sat-btn-border: rgba(35, 42, 61, .14);
@@ -99,6 +100,7 @@
   --sat-ring: rgba(148, 163, 184, .55);
   --sat-tip-bg: rgba(9, 15, 28, .94);
   --sat-tip-border: rgba(148, 163, 184, .35);
+  --sat-halo: rgba(9, 14, 26, .88);
   --sat-kicker: #c7b8ff;
   --sat-btn-bg: rgba(9, 15, 28, .55);
   --sat-btn-border: rgba(148, 163, 184, .32);

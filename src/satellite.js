@@ -48,7 +48,8 @@
       star: v('--sat-star', 'rgba(31,36,48,.35)'),
       ring: v('--sat-ring', 'rgba(31,36,48,.18)'),
       tipBg: v('--sat-tip-bg', 'rgba(255,255,255,.97)'),
-      tipBorder: v('--sat-tip-border', 'rgba(31,36,48,.14)')
+      tipBorder: v('--sat-tip-border', 'rgba(31,36,48,.14)'),
+      halo: v('--sat-halo', 'rgba(250,251,255,.95)')
     };
   }
 
@@ -183,100 +184,129 @@
       layoutBranch(secIndexes[i], baseAngle - half, baseAngle + half, anchor);
     }
 
-    // ---------- 3D 团簇：中间一个「我的知识体系」中心，五个板块各成一球，绕中心分开摆 ----------
-    function bubbleLayout() {
-      var ci, cj, k, q;
-
-      // 体系中心节点：点它进知识库首页
-      var hub = {
-        kind: 'hub',
-        label: '我的知识体系',
-        color: '#6d5ae0',
-        depth: 0,
-        parentIndex: -1,
-        idx: nodes.length,
-        r: 13,
-        x: 0, y: 0, z: 0,
-        rel: nodes[secIndexes.length ? secIndexes[0] : 0].rel
-      };
-      nodes.push(hub);
+    // ---------- 树状知识图谱：每个分类（标签）自己是一个中心，文章围着自己的分类转 ----------
+    function treeLayout() {
+      var ci, k;
+      var GOLD = 2.399963229728653;
 
       var n = nodes.length;
-      var owner = new Int32Array(n);
-      owner[hub.idx] = -1;
-      for (ci = 0; ci < secIndexes.length; ci++) {
-        var stack = [secIndexes[ci]];
-        while (stack.length) {
-          var cur = stack.pop();
-          owner[cur] = ci;
-          for (q = 0; q < n; q++) if (nodes[q].parentIndex === cur) stack.push(q);
-        }
+
+      // 子树规模：文章算 1，目录算自己和所有后代
+      for (ci = 0; ci < n; ci++) nodes[ci].sub = 1;
+      for (ci = n - 1; ci >= 0; ci--) {
+        var p = nodes[ci].parentIndex;
+        if (p >= 0) nodes[p].sub += nodes[ci].sub;
       }
 
-      var members = [];
-      for (ci = 0; ci < secIndexes.length; ci++) members.push([]);
-      for (k = 0; k < n; k++) {
-        if (k === hub.idx) continue;
-        members[owner[k]].push(k);
-      }
-
-      var R = [];
-      for (ci = 0; ci < members.length; ci++) {
-        R.push(26 + 15 * Math.cbrt(Math.max(1, members[ci].length)));
-      }
-
-      // 五个方向手排：右下、左、右、左下、上，保证默认视角里五团互不重叠
-      var dirs = [];
-      var rawDirs = [
-        { x: 0.55, y: -0.72, z: 0.42 },
-        { x: -0.88, y: 0.28, z: 0.38 },
-        { x: 0.86, y: 0.30, z: -0.42 },
-        { x: -0.52, y: -0.62, z: -0.58 },
-        { x: -0.12, y: 0.95, z: 0.28 }
-      ];
-      for (ci = 0; ci < rawDirs.length; ci++) {
-        var dd = rawDirs[ci];
-        var dl = Math.sqrt(dd.x * dd.x + dd.y * dd.y + dd.z * dd.z) || 1;
-        dirs.push({ x: dd.x / dl, y: dd.y / dl, z: dd.z / dl });
-      }
-      var HUB_R = 96;
-      var GAP = 46;
-
-      var GOLD = 2.399963229728653;
-      for (ci = 0; ci < members.length; ci++) {
-        var d = dirs[ci % dirs.length];
-        var dist = HUB_R + R[ci] + GAP;
-        var c = { x: d.x * dist, y: d.y * dist, z: d.z * dist };
-
-        var list = members[ci].slice();
-        list.sort(function (a, b) {
-          var da = nodes[a].kind === 'section' ? 0 : nodes[a].depth;
-          var db = nodes[b].kind === 'section' ? 0 : nodes[b].depth;
-          if (da !== db) return da - db;
-          return a - b;
+      function kidsOf(i) {
+        var out = [];
+        for (var q = 0; q < n; q++) if (nodes[q].parentIndex === i) out.push(q);
+        out.sort(function (a, b) {
+          var ka = nodes[a].kind === 'doc' ? 1 : 0;
+          var kb = nodes[b].kind === 'doc' ? 1 : 0;
+          if (ka !== kb) return ka - kb;
+          return nodes[b].sub - nodes[a].sub;
         });
+        return out;
+      }
 
-        for (var ii = 0; ii < list.length; ii++) {
-          var nd = nodes[list[ii]];
-          if (nd.kind === 'section') {
-            nd.x = c.x; nd.y = c.y; nd.z = c.z;
-            nd.bubbleR = R[ci];
-            continue;
-          }
-          // 黄金角 + 体积均匀，把节点摊成实心球，而不是一个平面圆盘
-          var u = (ii + 0.5) / list.length;
-          var rad = R[ci] * Math.cbrt(u);
+      function place(i, cx, cy, cz) {
+        var kids = kidsOf(i);
+        if (!kids.length) return;
+        var radius = 22 + 7 * Math.sqrt(nodes[i].sub);
+        for (var j = 0; j < kids.length; j++) {
+          var kid = nodes[kids[j]];
+          var u = (j + 0.5) / kids.length;
           var vy = 1 - 2 * u;
           var ring = Math.sqrt(Math.max(0, 1 - vy * vy));
-          var phi = ii * GOLD;
-          nd.x = c.x + Math.cos(phi) * ring * rad;
-          nd.y = c.y + vy * rad;
-          nd.z = c.z + Math.sin(phi) * ring * rad;
+          var phi = j * GOLD + i * 0.9;
+          kid.x = cx + Math.cos(phi) * ring * radius;
+          kid.y = cy + vy * radius;
+          kid.z = cz + Math.sin(phi) * ring * radius;
+          if (kid.kind !== 'doc') place(kids[j], kid.x, kid.y, kid.z);
         }
       }
+
+      // 五个板块是五条独立的根系，各自向外生长
+      for (k = 0; k < secIndexes.length; k++) {
+        var rootNode = nodes[secIndexes[k]];
+        var u0 = (k + 0.5) / Math.max(1, secIndexes.length);
+        var vy0 = 1 - 2 * u0;
+        var ring0 = Math.sqrt(Math.max(0, 1 - vy0 * vy0));
+        var phi0 = k * GOLD;
+        rootNode.x = Math.cos(phi0) * ring0 * 150;
+        rootNode.y = vy0 * 150;
+        rootNode.z = Math.sin(phi0) * ring0 * 150;
+        place(secIndexes[k], rootNode.x, rootNode.y, rootNode.z);
+      }
+
+      // 轻量力导向：把挤在一团的节点推开，连线拉回，得到一张松散的网
+      var fx = new Float64Array(n), fy = new Float64Array(n), fz = new Float64Array(n);
+      var vx = new Float64Array(n), vy = new Float64Array(n), vz = new Float64Array(n);
+      var ITER = 240, step, i2, q2;
+      for (step = 0; step < ITER; step++) {
+        var cool = 1 - 0.75 * (step / ITER);
+        for (k = 0; k < n; k++) { fx[k] = 0; fy[k] = 0; fz[k] = 0; }
+
+        // 父子弹簧
+        for (k = 0; k < n; k++) {
+          var pi = nodes[k].parentIndex;
+          if (pi < 0) continue;
+          var sdx = nodes[k].x - nodes[pi].x;
+          var sdy = nodes[k].y - nodes[pi].y;
+          var sdz = nodes[k].z - nodes[pi].z;
+          var sd = Math.sqrt(sdx * sdx + sdy * sdy + sdz * sdz);
+          if (sd < 0.01) sd = 0.01;
+          var rest = nodes[k].kind === 'doc' ? 54 : 74;
+          var sf = (sd - rest) * 0.02 / sd;
+          fx[k] -= sdx * sf; fy[k] -= sdy * sf; fz[k] -= sdz * sf;
+          fx[pi] += sdx * sf; fy[pi] += sdy * sf; fz[pi] += sdz * sf;
+        }
+
+        // 节点互斥
+        for (i2 = 0; i2 < n; i2++) {
+          for (q2 = i2 + 1; q2 < n; q2++) {
+            var ddx = nodes[q2].x - nodes[i2].x;
+            var ddy = nodes[q2].y - nodes[i2].y;
+            var ddz = nodes[q2].z - nodes[i2].z;
+            var d2 = ddx * ddx + ddy * ddy + ddz * ddz;
+            if (d2 > 90000) continue;          // 300 以外不算
+            var rf = 9000 / (d2 + 1400);
+            fx[i2] -= ddx * rf; fy[i2] -= ddy * rf; fz[i2] -= ddz * rf;
+            fx[q2] += ddx * rf; fy[q2] += ddy * rf; fz[q2] += ddz * rf;
+          }
+        }
+
+        // 很弱的向心力，别让整张网飘散
+        for (k = 0; k < n; k++) {
+          fx[k] -= nodes[k].x * 0.0009;
+          fy[k] -= nodes[k].y * 0.0009;
+          fz[k] -= nodes[k].z * 0.0009;
+        }
+
+        for (k = 0; k < n; k++) {
+          vx[k] = (vx[k] + fx[k] * 0.5) * 0.88;
+          vy[k] = (vy[k] + fy[k] * 0.5) * 0.88;
+          vz[k] = (vz[k] + fz[k] * 0.5) * 0.88;
+          var mx = vx[k] * cool, my = vy[k] * cool, mz = vz[k] * cool;
+          var mag = Math.sqrt(mx * mx + my * my + mz * mz);
+          if (mag > 5) { mx *= 5 / mag; my *= 5 / mag; mz *= 5 / mag; }
+          nodes[k].x += mx;
+          nodes[k].y += my;
+          nodes[k].z += mz;
+        }
+      }
+
+      // 竖向压一点，整张图更贴合横向画布
+      for (k = 0; k < n; k++) nodes[k].y *= 0.72;
+
+      // 重新居中
+      var ox = 0, oy = 0, oz = 0;
+      for (k = 0; k < n; k++) { ox += nodes[k].x / n; oy += nodes[k].y / n; oz += nodes[k].z / n; }
+      for (k = 0; k < n; k++) { nodes[k].x -= ox; nodes[k].y -= oy; nodes[k].z -= oz; }
     }
 
-    bubbleLayout();
+    treeLayout();
     var homeCenter = { x: 0, y: 0, z: 0 };
 
     var focusPos = { x: homeCenter.x, y: homeCenter.y, z: homeCenter.z };
@@ -480,32 +510,22 @@
     }
 
     function drawLinks(showDeep) {
-      var hubScreen = null;
-      for (var h = 0; h < screen.length; h++) {
-        if (screen[h].node.kind === 'hub') { hubScreen = screen[h]; break; }
-      }
       for (var i = 0; i < screen.length; i++) {
         var it = screen[i];
         var nd = it.node;
-        var parent = null;
         if (nd.kind === 'hub') continue;
-        if (nd.kind === 'section') {
-          // 板块连回体系中心，这五条就是「一个中心」的骨架
-          parent = hubScreen;
-          if (!parent) continue;
-          ctx.globalAlpha = 0.5;
-          ctx.lineWidth = 1.8;
-        } else if (nd.kind === 'doc') {
+        var parent = nd.parentIndex >= 0 ? findScreen(nodes[nd.parentIndex]) : null;
+        if (!parent) continue;
+        if (nd.kind === 'doc') {
           if (!showDeep) continue;
-          parent = findScreen(nodes[nd.parentIndex]);
-          if (!parent) continue;
-          ctx.globalAlpha = 0.30;
+          ctx.globalAlpha = 0.28;
           ctx.lineWidth = 1;
+        } else if (nd.depth === 1) {
+          ctx.globalAlpha = 0.5;
+          ctx.lineWidth = 1.5;
         } else {
-          parent = nd.parentIndex >= 0 ? findScreen(nodes[nd.parentIndex]) : null;
-          if (!parent) continue;
-          ctx.globalAlpha = nd.depth === 2 ? 0.55 : 0.36;
-          ctx.lineWidth = nd.depth === 2 ? 1.6 : 1.1;
+          ctx.globalAlpha = nd.depth === 2 ? 0.5 : 0.32;
+          ctx.lineWidth = nd.depth === 2 ? 1.3 : 1;
         }
         ctx.strokeStyle = nd.color;
         ctx.beginPath();
@@ -605,25 +625,14 @@
         var c = screen[i];
         if (c.node.kind === 'doc') continue;
         if (c.s < 0.1) continue;
-        if (c.node.depth >= 3) continue;
-        if (c.node.depth === 2 && !(hover && owner[c.node.idx] === owner[hover.node.idx]) && dist > fitDist * 0.78) continue;
+        if (c.node.depth > 2) continue;
+        if (c.node.depth === 2 && (c.node.count || 0) < 2 && !(hover && hover.node === c.node)) continue;
         if (hover && dimmed(c.node)) continue;
-        var dx = c.x - w / 2, dy = c.y - h / 2;
-        var dl = Math.sqrt(dx * dx + dy * dy) || 1;
-        var lx, ly;
-        if (c.node.depth === 0) {
-          lx = c.x;
-          ly = c.y + c.r + 22;
-        } else if (c.node.depth === 1) {
-          lx = c.x;
-          ly = c.y - ((c.node.bubbleR || 40) * c.s + 20);
-        } else {
-          lx = c.x + dx / dl * (c.r + 14);
-          ly = c.y + dy / dl * (c.r + 14);
-        }
+        var lx = c.x;
+        var ly = c.node.depth === 0 ? c.y + c.r + 18 : c.y - (c.r + 15);
         labels.push({
           node: c.node, x0: c.x, y0: c.y, lx: lx, ly: ly,
-          alpha: clamp(c.s * 2.4, 0.4, 1),
+          alpha: clamp(c.s * 2.4, 0.45, 1),
           w: ctx.measureText(c.node.label).width,
           h: 16,
           big: c.node.depth <= 1
@@ -646,29 +655,25 @@
           }
         }
         boxes.push({ x: L.lx, y: L.ly, w: L.w, h: L.h });
-        ctx.font = (L.big ? '700 13px ' : '600 11.5px ') + fontFamily;
+        ctx.font = (L.big ? '700 12.5px ' : '500 11px ') + fontFamily;
         L.w = ctx.measureText(L.node.label).width;
         labelHits.push({
           node: L.node,
-          x: L.lx - L.w / 2 - 8, y: L.ly - 12, w: L.w + 16, h: 24
+          x: L.lx - L.w / 2 - 6, y: L.ly - 11, w: L.w + 12, h: 22
         });
-        ctx.globalAlpha = L.alpha * 0.35;
-        ctx.strokeStyle = cl.dark ? mixWhite(L.node.color, 0.3) : mixBlack(L.node.color, 0.2);
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(L.x0, L.y0);
-        ctx.lineTo(L.lx, L.ly);
-        ctx.stroke();
-        ctx.globalAlpha = L.alpha * (cl.dark ? 0.9 : 0.92);
-        ctx.fillStyle = cl.chip;
-        roundRect(L.lx - L.w / 2 - 7, L.ly - 10, L.w + 14, 21, 7);
-        ctx.fill();
         ctx.globalAlpha = L.alpha;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = cl.halo;
+        ctx.strokeText(L.node.label, L.lx, L.ly);
         ctx.fillStyle = cl.dark
-          ? mixWhite(L.node.color, L.big ? 0.62 : 0.5)
-          : mixBlack(L.node.color, L.big ? 0.28 : 0.16);
+          ? mixWhite(L.node.color, L.big ? 0.72 : 0.6)
+          : mixBlack(L.node.color, L.big ? 0.25 : 0.12);
         ctx.fillText(L.node.label, L.lx, L.ly);
       }
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
       ctx.globalAlpha = 1;
     }
 
