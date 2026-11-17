@@ -183,11 +183,27 @@
       layoutBranch(secIndexes[i], baseAngle - half, baseAngle + half, anchor);
     }
 
-    // ---------- 团簇布局：每团按自身大小摊成一个圆盘，五团紧贴成「汇聚但相斥」的一坨星云 ----------
+    // ---------- 3D 团簇：中间一个「我的知识体系」中心，五个板块各成一球，绕中心分开摆 ----------
     function bubbleLayout() {
+      var ci, cj, k, q;
+
+      // 体系中心节点：点它进知识库首页
+      var hub = {
+        kind: 'hub',
+        label: '我的知识体系',
+        color: '#6d5ae0',
+        depth: 0,
+        parentIndex: -1,
+        idx: nodes.length,
+        r: 13,
+        x: 0, y: 0, z: 0,
+        rel: nodes[secIndexes.length ? secIndexes[0] : 0].rel
+      };
+      nodes.push(hub);
+
       var n = nodes.length;
       var owner = new Int32Array(n);
-      var ci, cj, k, q;
+      owner[hub.idx] = -1;
       for (ci = 0; ci < secIndexes.length; ci++) {
         var stack = [secIndexes[ci]];
         while (stack.length) {
@@ -199,52 +215,39 @@
 
       var members = [];
       for (ci = 0; ci < secIndexes.length; ci++) members.push([]);
-      for (k = 0; k < n; k++) members[owner[k]].push(k);
+      for (k = 0; k < n; k++) {
+        if (k === hub.idx) continue;
+        members[owner[k]].push(k);
+      }
 
       var R = [];
       for (ci = 0; ci < members.length; ci++) {
-        R.push(14 + 16 * Math.sqrt(Math.max(1, members[ci].length)));
+        R.push(26 + 15 * Math.cbrt(Math.max(1, members[ci].length)));
       }
 
-      // 先大后小，逐个贴着已有的团摆，找一个离中心最近的空位
-      var centers = [];
-      for (ci = 0; ci < members.length; ci++) centers.push(null);
-      var placed = [];
-      var order = [];
-      for (ci = 0; ci < members.length; ci++) order.push(ci);
-      order.sort(function (a, b) { return R[b] - R[a]; });
-
-      for (var oi = 0; oi < order.length; oi++) {
-        var idx = order[oi];
-        if (!placed.length) {
-          centers[idx] = { x: 0, y: 0 };
-          placed.push(idx);
-          continue;
-        }
-        var bestT = 1e9, bestA = 0;
-        for (var ai = 0; ai < 128; ai++) {
-          var ang = (ai / 128) * Math.PI * 2;
-          var ux = Math.cos(ang), uy = Math.sin(ang);
-          var t = 0;
-          for (var pj = 0; pj < placed.length; pj++) {
-            var p = centers[placed[pj]];
-            var proj = p.x * ux + p.y * uy;
-            var perp2 = p.x * p.x + p.y * p.y - proj * proj;
-            var rr = R[placed[pj]] + R[idx] + 18;
-            var disc = rr * rr - perp2;
-            if (disc <= 0) continue;
-            var tt = proj + Math.sqrt(disc);
-            if (tt > t) t = tt;
-          }
-          if (t < bestT) { bestT = t; bestA = ang; }
-        }
-        centers[idx] = { x: Math.cos(bestA) * bestT, y: Math.sin(bestA) * bestT };
-        placed.push(idx);
+      // 五个方向手排：右下、左、右、左下、上，保证默认视角里五团互不重叠
+      var dirs = [];
+      var rawDirs = [
+        { x: 0.55, y: -0.72, z: 0.42 },
+        { x: -0.88, y: 0.28, z: 0.38 },
+        { x: 0.86, y: 0.30, z: -0.42 },
+        { x: -0.52, y: -0.62, z: -0.58 },
+        { x: -0.12, y: 0.95, z: 0.28 }
+      ];
+      for (ci = 0; ci < rawDirs.length; ci++) {
+        var dd = rawDirs[ci];
+        var dl = Math.sqrt(dd.x * dd.x + dd.y * dd.y + dd.z * dd.z) || 1;
+        dirs.push({ x: dd.x / dl, y: dd.y / dl, z: dd.z / dl });
       }
+      var HUB_R = 96;
+      var GAP = 46;
 
-      // 团内：父节点靠中心，文章往外撒，黄金角排均匀
       var GOLD = 2.399963229728653;
       for (ci = 0; ci < members.length; ci++) {
+        var d = dirs[ci % dirs.length];
+        var dist = HUB_R + R[ci] + GAP;
+        var c = { x: d.x * dist, y: d.y * dist, z: d.z * dist };
+
         var list = members[ci].slice();
         list.sort(function (a, b) {
           var da = nodes[a].kind === 'section' ? 0 : nodes[a].depth;
@@ -252,33 +255,30 @@
           if (da !== db) return da - db;
           return a - b;
         });
-        var c = centers[ci];
+
         for (var ii = 0; ii < list.length; ii++) {
           var nd = nodes[list[ii]];
           if (nd.kind === 'section') {
-            nd.x = c.x; nd.y = c.y; nd.z = 0;
+            nd.x = c.x; nd.y = c.y; nd.z = c.z;
             nd.bubbleR = R[ci];
             continue;
           }
-          var rel = (ii + 0.5) / list.length;
-          var rad = R[ci] * Math.sqrt(rel);
-          var aa = ii * GOLD;
-          nd.x = c.x + Math.cos(aa) * rad;
-          nd.y = c.y + Math.sin(aa) * rad;
-          nd.z = (((ii * 37) % 9) - 4) * 3;
+          // 黄金角 + 体积均匀，把节点摊成实心球，而不是一个平面圆盘
+          var u = (ii + 0.5) / list.length;
+          var rad = R[ci] * Math.cbrt(u);
+          var vy = 1 - 2 * u;
+          var ring = Math.sqrt(Math.max(0, 1 - vy * vy));
+          var phi = ii * GOLD;
+          nd.x = c.x + Math.cos(phi) * ring * rad;
+          nd.y = c.y + vy * rad;
+          nd.z = c.z + Math.sin(phi) * ring * rad;
         }
       }
-
-      // 整体居中
-      var ox = 0, oy = 0, oz = 0;
-      for (k = 0; k < n; k++) { ox += nodes[k].x / n; oy += nodes[k].y / n; oz += nodes[k].z / n; }
-      for (k = 0; k < n; k++) { nodes[k].x -= ox; nodes[k].y -= oy; nodes[k].z -= oz; }
     }
 
     bubbleLayout();
     var homeCenter = { x: 0, y: 0, z: 0 };
 
-    var selected = null;
     var focusPos = { x: homeCenter.x, y: homeCenter.y, z: homeCenter.z };
 
     var yaw = 0.0, pitch = -0.34, dist = 1500, fitDist = 1500, vYaw = 0, vPitch = 0;
@@ -289,6 +289,7 @@
     var panX = 0, panY = 0, mode = 'rotate';
     var introAt = (window.performance && performance.now ? performance.now() : Date.now());
     var screen = [];
+    var labelHits = [];
 
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var colorCache = null, colorAt = 0, fontFamily = 'sans-serif';
@@ -478,34 +479,23 @@
       }
     }
 
-    // 板块之间连一圈虚线：读起来是一个知识体系，而不是五个孤岛
-    function drawIslandRing(cl) {
-      var secs = [];
-      for (var k = 0; k < screen.length; k++) if (screen[k].node.kind === 'section') secs.push(screen[k]);
-      if (secs.length < 3) return;
-      secs.sort(function (a, b) { return a.node.angle - b.node.angle; });
-      ctx.globalAlpha = 0.30;
-      ctx.strokeStyle = cl.ring;
-      ctx.lineWidth = 1;
-      if (ctx.setLineDash) ctx.setLineDash([3, 7]);
-      ctx.beginPath();
-      for (var i = 0; i < secs.length; i++) {
-        var A = secs[i], B = secs[(i + 1) % secs.length];
-        ctx.moveTo(A.x, A.y);
-        ctx.lineTo(B.x, B.y);
-      }
-      ctx.stroke();
-      if (ctx.setLineDash) ctx.setLineDash([]);
-      ctx.globalAlpha = 1;
-    }
-
     function drawLinks(showDeep) {
+      var hubScreen = null;
+      for (var h = 0; h < screen.length; h++) {
+        if (screen[h].node.kind === 'hub') { hubScreen = screen[h]; break; }
+      }
       for (var i = 0; i < screen.length; i++) {
         var it = screen[i];
         var nd = it.node;
-        if (nd.kind === 'section') continue;
         var parent = null;
-        if (nd.kind === 'doc') {
+        if (nd.kind === 'hub') continue;
+        if (nd.kind === 'section') {
+          // 板块连回体系中心，这五条就是「一个中心」的骨架
+          parent = hubScreen;
+          if (!parent) continue;
+          ctx.globalAlpha = 0.5;
+          ctx.lineWidth = 1.8;
+        } else if (nd.kind === 'doc') {
           if (!showDeep) continue;
           parent = findScreen(nodes[nd.parentIndex]);
           if (!parent) continue;
@@ -526,7 +516,7 @@
       ctx.globalAlpha = 1;
     }
 
-    function showDeepNow() { return dist < 1500; }
+    function showDeepNow() { return dist < fitDist * 1.35; }
 
     // 悬停时只提亮「这一支 + 它的上游」，其余压暗
     function dimmed(n2) {
@@ -550,22 +540,26 @@
         if (!showDeep && n2.kind === 'doc' && !(hover && hover.node === n2)) continue;
         var fade = clamp(s0.s * 2.2, 0.22, 1);
         var isHover = hover && hover.node === n2;
-        var isSel = selected === n2;
+        var isHub = n2.kind === 'hub';
         var dim = dimmed(n2);
         ctx.globalAlpha = (n2.kind === 'doc' ? fade * 0.95 : fade) * (dim ? 0.16 : 1);
         ctx.shadowColor = n2.color;
-        ctx.shadowBlur = isHover ? 16 : (n2.kind === 'section' ? 22 : 8);
+        ctx.shadowBlur = isHover ? 16 : (isHub ? 30 : (n2.kind === 'section' ? 22 : 8));
         ctx.beginPath();
         ctx.arc(s0.x, s0.y, isHover ? s0.r * 2.1 : (dim ? s0.r * 0.85 : s0.r), 0, Math.PI * 2);
         ctx.fillStyle = (n2.kind === 'section' && cl.dark) ? mixWhite(n2.color, 0.22) : n2.color;
         ctx.fill();
         ctx.shadowBlur = 0;
-        if (isSel) {
-          ctx.globalAlpha = 0.9 * (dim ? 0.4 : 1);
-          ctx.strokeStyle = cl.dark ? mixWhite(n2.color, 0.55) : mixBlack(n2.color, 0.22);
+        if (isHub) {
+          ctx.globalAlpha = 0.85;
+          ctx.strokeStyle = cl.dark ? mixWhite(n2.color, 0.6) : mixBlack(n2.color, 0.1);
           ctx.lineWidth = 1.6;
           ctx.beginPath();
           ctx.arc(s0.x, s0.y, s0.r + 7, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(s0.x, s0.y, s0.r + 13, 0, Math.PI * 2);
+          ctx.globalAlpha = 0.3;
           ctx.stroke();
         }
       }
@@ -617,7 +611,10 @@
         var dx = c.x - w / 2, dy = c.y - h / 2;
         var dl = Math.sqrt(dx * dx + dy * dy) || 1;
         var lx, ly;
-        if (c.node.depth === 1) {
+        if (c.node.depth === 0) {
+          lx = c.x;
+          ly = c.y + c.r + 22;
+        } else if (c.node.depth === 1) {
           lx = c.x;
           ly = c.y - ((c.node.bubbleR || 40) * c.s + 20);
         } else {
@@ -629,7 +626,7 @@
           alpha: clamp(c.s * 2.4, 0.4, 1),
           w: ctx.measureText(c.node.label).width,
           h: 16,
-          big: c.node.depth === 1
+          big: c.node.depth <= 1
         });
       }
       labels.sort(function (a, b) { return a.ly - b.ly || a.lx - b.lx; });
@@ -651,6 +648,10 @@
         boxes.push({ x: L.lx, y: L.ly, w: L.w, h: L.h });
         ctx.font = (L.big ? '700 13px ' : '600 11.5px ') + fontFamily;
         L.w = ctx.measureText(L.node.label).width;
+        labelHits.push({
+          node: L.node,
+          x: L.lx - L.w / 2 - 8, y: L.ly - 12, w: L.w + 16, h: 24
+        });
         ctx.globalAlpha = L.alpha * 0.35;
         ctx.strokeStyle = cl.dark ? mixWhite(L.node.color, 0.3) : mixBlack(L.node.color, 0.2);
         ctx.lineWidth = 1;
@@ -677,9 +678,9 @@
       drawStars(cl);
       screen = project();
       drawIslandGlow(cl);
-      drawIslandRing(cl);
       drawLinks(showDeepNow());
       drawNodes(cl);
+      labelHits = [];
       drawLabels(cl);
       if (hover) drawTooltip(hover, cl);
       ctx.globalAlpha = 1;
@@ -718,6 +719,14 @@
     }
 
     function pick(x, y) {
+      // 先判标签：点文字比点小圆点顺手
+      for (var l = 0; l < labelHits.length; l++) {
+        var box = labelHits[l];
+        if (x >= box.x && x <= box.x + box.w && y >= box.y && y <= box.y + box.h) {
+          var sc = findScreen(box.node);
+          if (sc) return sc;
+        }
+      }
       var best = null, bestD = 1e9;
       for (var k = 0; k < screen.length; k++) {
         var it = screen[k];
@@ -732,19 +741,6 @@
     function localXY(e) {
       var rect = canvas.getBoundingClientRect();
       return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    }
-
-    function setFocus(node) {
-      selected = node;
-      focusPos = { x: node.x, y: node.y, z: node.z };
-      slow = true;
-      idleAt = Date.now();
-    }
-
-    function clearFocus() {
-      selected = null;
-      focusPos = { x: homeCenter.x, y: homeCenter.y, z: homeCenter.z };
-      idleAt = Date.now();
     }
 
     function openNode(node) {
@@ -808,7 +804,7 @@
       canvas.style.cursor = hit ? 'pointer' : 'grab';
     }
 
-    var lastClickAt = 0, openedAt = 0;
+    var openedAt = 0;
 
     function onUp(e) {
       delete pointers[e.pointerId];
@@ -824,25 +820,10 @@
       if (wasPan || moved >= 9 || Date.now() - downAt >= 600) return;
 
       var hit = pick(p.x, p.y);
-      var now = Date.now();
-      var quick = now - lastClickAt < 650;
-
-      if (hit) {
-        if (selected === hit.node && quick) {
-          openNode(hit.node);
-          openedAt = now;
-          return;
-        }
-        setFocus(hit.node);
-        lastClickAt = now;
-        return;
-      }
-      if (selected && quick) {
-        openNode(selected);
-        openedAt = now;
-        return;
-      }
-      clearFocus();
+      if (!hit) return;
+      if (Date.now() - openedAt < 400) return;   // 双击不重复打开
+      openNode(hit.node);
+      openedAt = Date.now();
     }
 
     function onLeave() {
@@ -858,26 +839,11 @@
       slow = true;
     }
 
-    function onReset(e) {
-      if (Date.now() - openedAt < 500) return;
-      if (selected) {
-        openNode(selected);
-        openedAt = Date.now();
-        return;
-      }
-      if (e && e.clientX !== undefined) {
-        var lp = localXY(e);
-        var h2 = pick(lp.x, lp.y);
-        if (h2) {
-          openNode(h2.node);
-          openedAt = Date.now();
-          return;
-        }
-      }
-      yaw = 0.0; pitch = -0.34; dist = 1500;
+    function onReset() {
+      yaw = 0.0; pitch = -0.34;
       panX = 0; panY = 0;
       vYaw = vPitch = 0;
-      clearFocus();
+      idleAt = Date.now();
       fitView(70);
     }
 
@@ -909,6 +875,14 @@
     fitView(w < 560 ? 34 : 70);
     window.addEventListener('resize', resize);
     raf = window.requestAnimationFrame(frame);
+
+    if (window.__SAT_DEBUG) {
+      window.__sat = {
+        labels: function () { return labelHits; },
+        screen: function () { return screen; },
+        pickAt: function (x, y) { return pick(x, y); }
+      };
+    }
 
     return { destroy: destroy };
   }

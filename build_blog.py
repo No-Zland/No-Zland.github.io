@@ -1913,14 +1913,14 @@ def build_satellite(sections, docs, dir_docs, child_dirs, only=None):
 
     return (
         '<div class="satellite" id="sections">\n'
-        '<canvas class="sat-canvas" role="img" aria-label="知识图谱：板块 → 分类 → 子分类 → 文章，拖动旋转、滚轮缩放"></canvas>\n'
+        '<canvas class="sat-canvas" role="img" aria-label="知识图谱：中心是我的知识体系，五个板块各成一团，拖动旋转、滚轮缩放、点节点进入"></canvas>\n'
         '<div class="sat-tools">'
         '<button type="button" data-sat-zoom="in" title="放大" aria-label="放大">＋</button>'
         '<button type="button" data-sat-zoom="out" title="缩小" aria-label="缩小">－</button>'
         '<button type="button" data-sat-zoom="reset" title="复位" aria-label="复位">⟲</button>'
         '</div>\n'
         '<div class="sat-legend"><span class="sat-kicker">知识图谱</span>' + "".join(legend) +
-        '<span class="sat-hint">拖动旋转 · 右键/双指平移 · 滚轮缩放 · 点一次聚焦，再点进入</span></div>\n'
+        '<span class="sat-hint">拖动旋转 · 右键/双指平移 · 滚轮缩放 · 点节点或名字进入</span></div>\n'
         '<ul class="sat-sr">' + fallback + '</ul>\n'
         '<script type="application/json" class="sat-data">' + payload + '</script>\n'
         '</div>'
