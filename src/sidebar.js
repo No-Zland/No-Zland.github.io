@@ -1,7 +1,7 @@
 /* 左侧栏收放：记忆状态，桌面与手机通用 */
 (function () {
   'use strict';
-  var KEY = 'blog-side-hidden';
+  var KEY = 'blog-side-hidden.v2';
 
   function apply(hidden) {
     document.body.classList.toggle('side-hidden', hidden);
@@ -24,8 +24,8 @@
     window.addEventListener('load', placeTab);
     var saved = null;
     try { saved = localStorage.getItem(KEY); } catch (e) {}
-    // 默认收起：没有记录过就当作收起
-    apply(saved === null ? true : saved === '1');
+    // 默认展开：只有手动收起过才记成收起
+    apply(saved === '1');
     placeTab();
     var buttons = document.querySelectorAll('[data-side-toggle]');
     for (var i = 0; i < buttons.length; i++) {

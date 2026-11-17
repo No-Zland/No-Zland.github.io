@@ -29,7 +29,7 @@
     var nextBtn = document.querySelector('[data-reading-next]');
     var current = 0;
     var multi = false;
-    try { multi = localStorage.getItem('blog-reading-multi') !== '0'; } catch (e) { multi = true; }
+    try { multi = localStorage.getItem('blog-reading-multi') === '1'; } catch (e) { multi = false; }
 
     function articleTitle(index) {
       return articles[index].getAttribute('data-title') || ('文章 ' + (index + 1));

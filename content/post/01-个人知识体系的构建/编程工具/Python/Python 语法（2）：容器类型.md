@@ -3,8 +3,9 @@ tags:
   - "#Python/语法"
 cssclasses:
 aliases:
-updated: 2026-11-14 23:45
+updated: 2026-11-17 20:26
 ---
+# Python 语法（2）：容器类型
 ## 1. 列表（list）
 
 ### 1.1 基本形式

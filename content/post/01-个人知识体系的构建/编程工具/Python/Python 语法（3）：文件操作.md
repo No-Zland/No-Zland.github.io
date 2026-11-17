@@ -3,8 +3,9 @@ tags:
   - "#Python/语法"
 cssclasses:
 aliases:
-updated: 2026-11-15 08:46
+updated: 2026-11-17 20:26
 ---
+# Python 语法（3）：文件操作
 ## 1. 定义
 
 Python 文件操作是通过内置函数或模块（如 open()、os、pathlib）与外部文件（文本文件 .txt/.csv、二进制文件 .jpg/.mp4 等）进行交互的过程，
