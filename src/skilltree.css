@@ -1,0 +1,74 @@
+/* 知识库：技能点树（一行一个分支 / 技能点，缩进 + 折线表示层级） */
+.skill-tree {
+  --tree-line: rgba(31, 36, 48, .16);
+  margin: 6px 0 26px;
+  padding: 22px 24px 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  animation: card-in .45s var(--ease) backwards;
+}
+[data-theme="dark"] .skill-tree { --tree-line: rgba(230, 237, 247, .20); }
+.skill-head { padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.skill-kicker {
+  display: inline-block;
+  font-size: 10px; font-weight: 800; letter-spacing: .18em;
+  color: var(--section-color, var(--brand));
+}
+.skill-title { margin: 6px 0 0; font-size: 22px; letter-spacing: .01em; }
+.skill-desc {
+  margin: 7px 0 0; max-width: 620px;
+  color: var(--text-soft); font-size: 13px; line-height: 1.75;
+}
+.skill-meta {
+  margin-top: 10px; color: var(--text-soft); font-size: 11.5px;
+  font-variant-numeric: tabular-nums; letter-spacing: .02em;
+}
+
+.skill-root, .skill-root ul { list-style: none; margin: 0; padding: 0; }
+.skill-root { margin-top: 14px; }
+.skill-root ul { margin-left: 11px; padding-left: 19px; border-left: 1px solid var(--tree-line); }
+.skill-node { position: relative; }
+.skill-root ul > .skill-node::before {
+  content: ""; position: absolute; left: -19px; top: 17px; width: 13px;
+  border-top: 1px solid var(--tree-line);
+  pointer-events: none;
+}
+.skill-row {
+  display: flex; align-items: center; gap: 9px;
+  width: 100%; max-width: 100%;
+  padding: 4px 9px; border-radius: 8px;
+  color: var(--text); font-size: 13.5px; line-height: 1.65;
+  text-decoration: none;
+  transition: background .16s ease, color .16s ease, transform .16s var(--ease);
+}
+.skill-row:hover, .skill-row:focus-visible {
+  background: var(--brand-soft); color: var(--brand); transform: translateX(2px);
+}
+.skill-mark {
+  flex: 0 0 auto; width: 7px; height: 7px; border-radius: 2px;
+  background: var(--section-color, var(--brand)); opacity: .75;
+}
+.is-leaf .skill-mark { width: 5px; height: 5px; border-radius: 50%; opacity: .45; }
+.is-branch > .skill-row { font-weight: 600; }
+.skill-name { flex: 0 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.skill-count {
+  flex: 0 0 auto; padding: 1px 7px;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: var(--bg-soft); color: var(--text-soft);
+  font-size: 9.5px; font-weight: 400; font-variant-numeric: tabular-nums;
+}
+.is-branch > .skill-row:hover .skill-count { color: var(--brand); border-color: var(--accent-border); }
+
+@media (max-width: 640px) {
+  .skill-tree { padding: 18px 14px 14px; }
+  .skill-row { font-size: 13px; min-width: 0; }
+  .skill-root ul { margin-left: 7px; padding-left: 13px; }
+  .skill-root ul > .skill-node::before { left: -13px; width: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-tree { animation: none; }
+  .skill-row { transition: none; }
+  .skill-row:hover, .skill-row:focus-visible { transform: none; }
+}

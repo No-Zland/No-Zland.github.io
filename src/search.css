@@ -66,10 +66,49 @@
   text-align: right;
 }
 
-/* 首页知识卫星图（canvas 3D：拖动旋转、滚轮缩放） */
-.satellite { margin: 2px 0 10px; position: relative; }
+/* 首页知识图谱：亮色 / 暗色两套底（canvas 3D：拖动旋转、滚轮缩放）
+   颜色全走 --sat-* 变量，canvas 里的文字、标签、连线跟着主题变 */
 .satellite {
-  background: radial-gradient(circle at 50% 46%, rgba(37, 99, 235, .07), rgba(124, 58, 237, .03) 42%, transparent 68%);
+  --sat-ink: #232a3d;
+  --sat-soft: #5f6b85;
+  --sat-chip: rgba(255, 255, 255, .9);
+  --sat-star: rgba(70, 84, 120, .38);
+  --sat-ring: rgba(70, 84, 120, .22);
+  --sat-tip-bg: rgba(255, 255, 255, .97);
+  --sat-tip-border: rgba(35, 42, 61, .14);
+  --sat-kicker: #5f4fd6;
+  --sat-btn-bg: rgba(255, 255, 255, .78);
+  --sat-btn-border: rgba(35, 42, 61, .14);
+  --sat-btn-color: #414b6b;
+  position: relative;
+  margin: 2px 0 58px;
+  border: 1px solid rgba(70, 84, 120, .14);
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 95% at 12% -10%, rgba(109, 90, 224, .13), transparent 58%),
+    radial-gradient(110% 90% at 92% 108%, rgba(14, 165, 183, .12), transparent 60%),
+    linear-gradient(168deg, #fbfcff 0%, #f4f6fd 52%, #eef2fa 100%);
+  box-shadow: 0 16px 38px rgba(40, 54, 90, .10);
+}
+[data-theme="dark"] .satellite {
+  --sat-ink: #e9eefb;
+  --sat-soft: #9db0cc;
+  --sat-chip: rgba(8, 13, 24, .74);
+  --sat-star: rgba(255, 255, 255, .8);
+  --sat-ring: rgba(148, 163, 184, .55);
+  --sat-tip-bg: rgba(9, 15, 28, .94);
+  --sat-tip-border: rgba(148, 163, 184, .35);
+  --sat-kicker: #c7b8ff;
+  --sat-btn-bg: rgba(9, 15, 28, .55);
+  --sat-btn-border: rgba(148, 163, 184, .32);
+  --sat-btn-color: #cfd9ee;
+  border-color: rgba(148, 163, 184, .18);
+  background:
+    radial-gradient(120% 95% at 12% -10%, rgba(109, 90, 224, .40), transparent 58%),
+    radial-gradient(110% 90% at 92% 108%, rgba(14, 165, 183, .28), transparent 60%),
+    linear-gradient(168deg, #0c1626 0%, #0a1120 46%, #070d18 100%);
+  box-shadow: 0 20px 46px rgba(7, 13, 26, .28);
 }
 .sat-canvas {
   display: block; width: 100%;
@@ -78,22 +117,18 @@
   -webkit-user-select: none; user-select: none;
 }
 .sat-canvas:active { cursor: grabbing; }
-.sat-core {
-  position: absolute; left: 50%; top: 50%;
-  transform: translate(-50%, -50%);
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-  pointer-events: none; text-align: center;
-  color: var(--text); text-shadow: 0 0 8px var(--bg), 0 0 16px var(--bg);
-}
-.sat-core strong { font-size: 15px; font-weight: 700; letter-spacing: .06em; }
-.sat-core span { font-size: 11px; color: var(--text-soft); }
 .sat-legend {
   display: flex; flex-wrap: wrap; gap: 14px; align-items: center;
-  margin-top: 6px; color: var(--text-soft); font-size: 12px;
+  margin: 2px 16px 12px; padding-right: 60px;
+  color: var(--sat-soft); font-size: 12px;
 }
 .sat-legend-item { display: inline-flex; align-items: center; gap: 6px; }
 .sat-legend-item i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-.sat-hint { margin-left: auto; opacity: .8; }
+.sat-hint { margin-left: auto; opacity: .72; }
+.sat-kicker {
+  padding-right: 12px; border-right: 1px solid var(--sat-btn-border);
+  color: var(--sat-kicker); font-size: 10.5px; font-weight: 800; letter-spacing: .18em;
+}
 /* 给爬虫和读屏留的降级链接列表 */
 .sat-sr {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
@@ -664,22 +699,23 @@ body.side-hidden .side-column { display: none; }
 .doc-body p.p-indent { text-indent: 2em; }
 
 
-/* 卫星图工具按钮 */
+/* 知识图谱工具按钮（跟着星图台的明暗走） */
 .satellite { position: relative; }
 .sat-tools {
-  position: absolute; right: 8px; top: 8px; z-index: 3;
+  position: absolute; right: 10px; top: 10px; z-index: 3;
   display: flex; flex-direction: column; gap: 6px;
 }
 .sat-tools button {
   width: 30px; height: 30px; border-radius: 8px;
-  border: 1px solid var(--border); background: var(--card); color: var(--text-soft);
+  border: 1px solid var(--sat-btn-border);
+  background: var(--sat-btn-bg); color: var(--sat-btn-color);
   font-size: 14px; line-height: 1; cursor: pointer;
-  box-shadow: var(--shadow);
-  transition: color .15s ease, border-color .15s ease;
+  backdrop-filter: blur(4px);
+  transition: color .15s ease, border-color .15s ease, background .15s ease;
 }
-.sat-tools button:hover { color: var(--brand); border-color: var(--brand); }
+.sat-tools button:hover { color: #ffffff; border-color: var(--sat-kicker); background: rgba(109, 90, 224, .55); }
 @media (max-width: 760px) {
-  .sat-tools { right: 4px; top: 4px; }
+  .sat-tools { right: 6px; top: 6px; }
   .sat-tools button { width: 28px; height: 28px; font-size: 13px; }
 }
 
@@ -756,7 +792,7 @@ body.side-hidden .side-tab { display: none; }
 }
 
 
-/* 卫星图更高一点 */
+/* 知识图谱更高一点 */
 .sat-canvas { height: clamp(520px, 70vh, 780px); }
 
 /* 侧栏把手：打开/收起都在视口垂直中点 */
@@ -774,8 +810,7 @@ body.side-hidden .side-tab { display: none; }
 }
 
 
-/* 图例不要被底部的亮度条压住 */
-.sat-legend { margin: 10px 0 58px; }
+/* 图例已收进星图台内部，底部间距由 .satellite 负责 */
 
 
 /* 顶栏统计 */

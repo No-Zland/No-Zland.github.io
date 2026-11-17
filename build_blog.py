@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 板块式个人博客静态生成器
-- 首页: 名言警句 + 知识卫星图（分类内环 + 文章外环，点一下直接进文章）
+- 首页: 名言警句 + 知识图谱（板块各自成簇、绕四周分布，没有固定中心，点一下直接进文章）
 - 板块页: 该板块下的分类列表
 - 分类页: 子分类列表，或文章阅读页
 - 阅读页: 一篇文章一页，左侧目录与上一篇/下一篇组件，不再截断文章
@@ -61,10 +61,10 @@ CERT_THUMBS = {}
 SECTION_SPECS = [
     {
         "slug": "01-个人知识体系的构建",
-        "title": "个人知识体系的构建",
+        "title": "知识库",
         "desc": "从计算机系统到应用开发的知识网络，按主题而非时间组织。",
         "color": "#2563eb",
-        "layout": "map",
+        "layout": "skilltree",
     },
     {
         "slug": "02-竞赛科研经历与复盘",
@@ -1520,7 +1520,7 @@ def search_overlay_html():
 """
 
 
-def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None, side_extra=""):
+def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None, side_extra="", show_nav=True):
     style_href = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "style.css"))) + "?v=" + ASSET_VERSION
     script_src = quote_url(rel_from(out_dir, os.path.join(ASSET_DIR, "app.js"))) + "?v=" + ASSET_VERSION
     music_base = "/assets/music"
@@ -1546,7 +1546,7 @@ def page(out_dir, title, body, with_math=False, is_home=False, parent_href=None,
         f'aria-label="返回上一级" data-i18n-title="back" data-i18n-aria-label="back"{back_hidden}>{BACK_SVG}</a>'
     )
     body_class = ' class="page-home"' if is_home else ""
-    nav_html = "" if is_home else side_nav_for(out_dir)
+    nav_html = "" if (is_home or not show_nav) else side_nav_for(out_dir)
     if nav_html:
         main_class = "main main-wide"
         side_html = (
@@ -1828,12 +1828,6 @@ def frontmatter_tags(path, limit=4):
     return tags[:limit]
 
 
-CAT_PALETTE = [
-    "#2563eb", "#7c3aed", "#0ea5b7", "#f59e0b",
-    "#ec4899", "#10b981", "#ef4444", "#6366f1",
-]
-
-
 def _lighten(hex_color, ratio):
     h = hex_color.lstrip("#")
     if len(h) != 6:
@@ -1879,7 +1873,6 @@ def build_satellite(sections, docs, dir_docs, child_dirs, only=None):
             % (section["color"], esc(section["title"]))
         )
 
-        cat_seq = 0
         for rel in sec_docs:
             parts = os.path.dirname(rel).split(os.sep)
             parent = sec_node
@@ -1891,12 +1884,11 @@ def build_satellite(sections, docs, dir_docs, child_dirs, only=None):
                 if path in index:
                     parent = index[path]
                     continue
+                # 同一个板块共用一种颜色，往下只做提亮，避免一簇里五颜六色
                 if depth == 2:
-                    color = CAT_PALETTE[cat_seq % len(CAT_PALETTE)]
-                    cat_seq += 1
+                    color = section["color"]
                 else:
-                    base = node_list[parent]["color"]
-                    color = _lighten(base, 0.18 if depth == 3 else 0.34)
+                    color = _lighten(section["color"], 0.16 if depth == 3 else 0.30)
                 node_list.append({
                     "name": name.lstrip("_"),
                     "color": color,
@@ -1921,13 +1913,13 @@ def build_satellite(sections, docs, dir_docs, child_dirs, only=None):
 
     return (
         '<div class="satellite" id="sections">\n'
-        '<canvas class="sat-canvas" role="img" aria-label="知识卫星图：中心是我，五层结构，拖动旋转、滚轮缩放"></canvas>\n'
+        '<canvas class="sat-canvas" role="img" aria-label="知识图谱：板块 → 分类 → 子分类 → 文章，拖动旋转、滚轮缩放"></canvas>\n'
         '<div class="sat-tools">'
         '<button type="button" data-sat-zoom="in" title="放大" aria-label="放大">＋</button>'
         '<button type="button" data-sat-zoom="out" title="缩小" aria-label="缩小">－</button>'
         '<button type="button" data-sat-zoom="reset" title="复位" aria-label="复位">⟲</button>'
         '</div>\n'
-        '<div class="sat-legend">' + "".join(legend) +
+        '<div class="sat-legend"><span class="sat-kicker">知识图谱</span>' + "".join(legend) +
         '<span class="sat-hint">拖动旋转 · 右键/双指平移 · 滚轮缩放 · 点一次聚焦，再点进入</span></div>\n'
         '<ul class="sat-sr">' + fallback + '</ul>\n'
         '<script type="application/json" class="sat-data">' + payload + '</script>\n'
@@ -2105,6 +2097,72 @@ def build_gallery(section, docs, dir_docs, child_dirs, dir_earliest, out_dir, im
     return '<div class="gallery-grid">' + "".join(cards) + "</div>"
 
 
+def build_skill_tree(section, docs, dir_docs, child_dirs, out_dir):
+    """知识库的技能点树：一行一个分支 / 一个技能点（文章），缩进与连线表示层级。"""
+    slug = section["slug"]
+
+    def branch_children(rel):
+        """只保留下面真有文章的目录，pics / _assets 这类纯图片目录不进树。"""
+        return [k for k in child_dirs.get(rel, []) if docs_under(docs, k)]
+
+    def page_href(rel):
+        """目录页：三层以内各有独立页，更深的并到第三层祖先页。"""
+        segs = [x for x in rel.split(os.sep) if x]
+        page = os.path.join(rel, "index.html") if len(segs) <= 3 else os.path.join(*segs[:3], "index.html")
+        return quote_url(rel_from(out_dir, os.path.join(SITE_DIR, page)))
+
+    def rows(rel):
+        out = []
+        for kid in sorted(branch_children(rel), key=lambda r: natural_key(os.path.basename(r))):
+            name = os.path.basename(kid).lstrip("_")
+            count = len(docs_under(docs, kid))
+            kids = rows(kid)
+            head = (
+                '<li class="skill-node is-branch"><a class="skill-row" href="%s">'
+                '<span class="skill-mark" aria-hidden="true"></span>'
+                '<span class="skill-name">%s</span>'
+                '<span class="skill-count">%d</span></a>'
+                % (page_href(kid), esc(name), count)
+            )
+            out.append(head + ("<ul>%s</ul>" % "".join(kids) if kids else "") + "</li>")
+        for rel_doc in sorted(dir_docs.get(rel, []), key=natural_key):
+            title = extract_title(
+                read_text(os.path.join(POST_DIR, rel_doc)),
+                os.path.splitext(os.path.basename(rel_doc))[0],
+            )
+            href = quote_url(rel_from(out_dir, os.path.join(SITE_DIR, doc_page_target(rel_doc, child_dirs))))
+            href += "#" + doc_anchor(rel_doc)
+            out.append(
+                '<li class="skill-node is-leaf"><a class="skill-row" href="%s">'
+                '<span class="skill-mark" aria-hidden="true"></span>'
+                '<span class="skill-name">%s</span></a></li>'
+                % (href, esc(title))
+            )
+        return out
+
+    branches = branch_children(slug)
+    total = len(docs_under(docs, slug))
+    return (
+        '<section class="skill-tree" style="--section-color:%s" aria-label="知识库目录">'
+        '<header class="skill-head">'
+        '<div class="skill-kicker">技能点树</div>'
+        '<h2 class="skill-title">%s</h2>'
+        '<p class="skill-desc">%s</p>'
+        '<div class="skill-meta">%d 个分支 · %d 个技能点</div>'
+        '</header>'
+        '<ul class="skill-root">%s</ul>'
+        '</section>'
+        % (
+            esc(section["color"]),
+            esc(section["title"]),
+            esc(section["desc"]),
+            len(branches),
+            total,
+            "".join(rows(slug)),
+        )
+    )
+
+
 def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, out_dir, images=None):
     items = []
     cats = section.get("cats", [])
@@ -2123,7 +2181,9 @@ def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, ou
         items.append(cat_item("散篇", "direct.html", len(direct), created, "未归入分类的散篇笔记", len(cats)))
 
     extra = ""
-    if layout == "map":
+    if layout == "skilltree":
+        extra = build_skill_tree(section, docs, dir_docs, child_dirs, out_dir)
+    elif layout == "map":
         extra = build_satellite(build_sections(l1), docs, dir_docs, child_dirs)
     elif layout == "timeline":
         extra = build_timeline(section, docs, dir_docs, child_dirs, dir_earliest, out_dir)
@@ -2147,7 +2207,7 @@ def build_section_page(section, l1, docs, dir_docs, child_dirs, dir_earliest, ou
 <div class="crumb"><a href="{home_href}">首页</a> / {esc(section["title"])}</div>
 {extra}
 """
-    return page(out_dir, section["title"], body, parent_href=home_href)
+    return page(out_dir, section["title"], body, parent_href=home_href, show_nav=layout != "skilltree")
 
 
 def build_shelf_grid(out_dir):
@@ -2517,11 +2577,12 @@ def main():
     agent_js = read_text(os.path.join(SRC_DIR, "agent.js"))
     quotes_js = read_text(os.path.join(SRC_DIR, "quotes.js"))
     satellite_js = read_text(os.path.join(SRC_DIR, "satellite.js"))
+    skilltree_css = read_text(os.path.join(SRC_DIR, "skilltree.css"))
     nav_sync_js = read_text(os.path.join(SRC_DIR, "nav-sync.js"))
     sidebar_js = read_text(os.path.join(SRC_DIR, "sidebar.js"))
     anti_crawler_js = read_text(os.path.join(SRC_DIR, "anti-crawler.js"))
     spa_js = read_text(os.path.join(SRC_DIR, "spa.js"))
-    style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css + "\n" + note_css + "\n" + agent_css
+    style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css + "\n" + note_css + "\n" + agent_css + "\n" + skilltree_css
     app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + satellite_js + "\n" + nav_sync_js + "\n" + sidebar_js + "\n" + note_js + "\n" + brightness_js + "\n" + agent_js + "\n" + anti_crawler_js + "\n" + spa_js
     write_text(os.path.join(ASSET_DIR, "style.css"), style_text)
     write_text(os.path.join(ASSET_DIR, "app.js"), app_text)
@@ -2612,7 +2673,7 @@ def main():
                     write_text(os.path.join(cat_out, "index.html"), html)
                     page_count += 1
         else:
-            custom = section.get("layout") in ("shelf", "gallery", "map", "timeline")
+            custom = section.get("layout") in ("shelf", "gallery", "map", "timeline", "skilltree")
             html = build_section_page(section, l1_sections, docs, dir_docs, child_dirs, dir_earliest, section_out, images)
             write_text(os.path.join(section_out, "index.html"), html)
             page_count += 1
