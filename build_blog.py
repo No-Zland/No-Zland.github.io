@@ -25,6 +25,18 @@ from datetime import datetime
 
 import markdown
 
+try:  # 代码块高亮；没装 pygments 时退化为无高亮，构建不中断
+    from pygments import highlight as pyg_highlight
+    from pygments.lexers import get_lexer_by_name
+    from pygments.formatters import HtmlFormatter
+    from pygments.style import Style
+    from pygments.token import (
+        Comment, Keyword, Name, Number, Operator, Punctuation, String, Generic, Error,
+    )
+    HAVE_PYGMENTS = True
+except ImportError:  # pragma: no cover
+    HAVE_PYGMENTS = False
+
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.join(ROOT, "src")
 POST_DIR = os.path.join(ROOT, "content", "post")
@@ -811,6 +823,74 @@ def indent_paragraphs(html_text, min_chars=24):
     return "".join(out)
 
 
+CODE_LANG_ALIASES = {
+    "c++": "cpp", "c#": "csharp", "js": "javascript", "ts": "typescript",
+    "py": "python", "sh": "bash", "shell": "bash", "ps": "powershell",
+    "ps1": "powershell", "kt": "kotlin", "md": "markdown",
+}
+SKIP_HIGHLIGHT = {"", "text", "plain", "plaintext", "output", "console", "csv", "log", "diff"}
+
+if HAVE_PYGMENTS:
+    class BlogCodeStyle(Style):
+        """与深色代码底搭配的高亮配色，和站点品牌色对齐。"""
+
+        background_color = "#12182a"
+        default_style = ""
+        styles = {
+            Comment: "italic #6b7a99",
+            Comment.Preproc: "#c792ea",
+            Keyword: "bold #c792ea",
+            Keyword.Type: "#ffcb6b",
+            Operator: "#89ddff",
+            Punctuation: "#a6accd",
+            Name: "#e6e9f0",
+            Name.Builtin: "#ffcb6b",
+            Name.Function: "#82aaff",
+            Name.Class: "#ffcb6b",
+            Name.Namespace: "#ffcb6b",
+            Name.Tag: "#f07178",
+            Name.Attribute: "#ffcb6b",
+            Name.Variable: "#e6e9f0",
+            String: "#a5e075",
+            String.Doc: "italic #a5e075",
+            Number: "#f78c6c",
+            Generic.Heading: "bold #82aaff",
+            Generic.Deleted: "#ff5370",
+            Generic.Inserted: "#a5e075",
+            Generic.Emph: "italic",
+            Generic.Strong: "bold",
+            Error: "#ff5370",
+        }
+
+CODE_BLOCK_RE = re.compile(
+    r'<pre><code(?: class="language-([\w+#.\-]+)")?>(.*?)</code></pre>', re.S
+)
+
+
+def highlight_code_blocks(html_text):
+    """给 ```lang 代码块上色；没有 pygments 或语言不认识时原样输出。"""
+    if not HAVE_PYGMENTS:
+        return html_text
+
+    def repl(m):
+        lang = (m.group(1) or "").strip().lower()
+        body = m.group(2)
+        plain = '<pre class="code"><code>%s</code></pre>' % body
+        lex_name = CODE_LANG_ALIASES.get(lang, lang)
+        if lex_name in SKIP_HIGHLIGHT:
+            return plain
+        try:
+            lexer = get_lexer_by_name(lex_name, stripnl=False)
+            colored = pyg_highlight(
+                html.unescape(body), lexer, HtmlFormatter(nowrap=True, style=BlogCodeStyle)
+            )
+        except Exception:
+            return plain
+        return '<pre class="code"><code class="hljs">%s</code></pre>' % colored
+
+    return CODE_BLOCK_RE.sub(repl, html_text)
+
+
 def convert_md(text):
     md = markdown.Markdown(
         extensions=[
@@ -828,6 +908,7 @@ def convert_md(text):
         output_format="html5",
     )
     html_out = md.convert(text)
+    html_out = highlight_code_blocks(html_out)
     # 表格单元格里连着几个空行会变成一串 <br>，塌缩成一个，避免行高爆炸
     html_out = re.sub(r"<img (?![^>]*\bloading=)", '<img loading="lazy" decoding="async" ', html_out)
     html_out = re.sub(
@@ -932,6 +1013,10 @@ html, body { margin: 0; padding: 0; }
   --accent-blue: #2563eb;
   --accent-bg: rgba(109, 90, 224, .07);
   --accent-border: rgba(109, 90, 224, .18);
+  --h1: #5340c9;
+  --h2: #1f6fe0;
+  --h3: #0f8fa3;
+  --h4: #a2560a;
   --code-bg: #f1f2f7;
   --code-color: #c0392b;
   --pre-bg: #1e2330;
@@ -958,6 +1043,10 @@ html, body { margin: 0; padding: 0; }
   --accent-blue: #5b8def;
   --accent-bg: rgba(212, 175, 55, .08);
   --accent-border: rgba(212, 175, 55, .20);
+  --h1: #b9a6ff;
+  --h2: #8ab4ff;
+  --h3: #63d3c6;
+  --h4: #e6bd7a;
   --code-bg: #20304a;
   --code-color: #ffb3a0;
   --pre-bg: #0b1422;
@@ -1083,12 +1172,18 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent-cyan); o
 
 /* Markdown 内容排版 */
 .doc-body { font-size: 15.5px; overflow-wrap: break-word; }
-.doc-body h1 { font-size: 23px; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin: 0 0 20px; }
-.doc-body h2 { font-size: 20px; margin: 26px 0 12px; }
-.doc-body h3 { font-size: 17px; margin: 22px 0 10px; }
+.doc-body h1 {
+  font-size: 23px; color: var(--h1); padding-bottom: 10px; margin: 0 0 20px;
+  border-bottom: 1px solid color-mix(in srgb, var(--h1) 35%, var(--border));
+}
+.doc-body h2 { font-size: 20px; margin: 26px 0 12px; color: var(--h2); }
+.doc-body h3 { font-size: 17px; margin: 22px 0 10px; color: var(--h3); }
+.doc-body h4, .doc-body h5, .doc-body h6 { margin: 18px 0 8px; color: var(--h4); }
+.doc-body h4 { font-size: 15.5px; }
+.doc-body h5, .doc-body h6 { font-size: 14.5px; }
 .doc-body h1:first-child { margin-top: 0; }
 .doc-body p { margin: 12px 0; }
-.doc-body img { max-width: 100%; height: auto; border-radius: 8px; }
+.doc-body img { display: block; margin: 14px auto; max-width: 100%; height: auto; border-radius: 8px; }
 .doc-body ul, .doc-body ol { padding-left: 24px; margin: 12px 0; }
 .doc-body li { margin: 4px 0; }
 .doc-body blockquote {
@@ -1099,12 +1194,17 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--accent-cyan); o
   background: var(--code-bg); color: var(--code-color); padding: 2px 6px;
   border-radius: 5px; font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size: 13.5px;
 }
-.doc-body pre {
+.doc-body pre, .doc-body pre.code {
   background: var(--pre-bg); color: var(--pre-color); padding: 16px 18px; border-radius: 10px;
   overflow: auto; margin: 16px 0;
+  border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
 }
 .doc-body pre code { background: transparent; color: inherit; padding: 0; font-size: 13px; }
-.doc-body table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 14px; display: block; overflow-x: auto; }
+.doc-body pre.code code.hljs { display: block; }
+.doc-body table {
+  border-collapse: collapse; width: fit-content; max-width: 100%;
+  margin: 16px auto; font-size: 14px; display: block; overflow-x: auto;
+}
 .doc-body th, .doc-body td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
 .doc-body th { background: var(--bg-soft); font-weight: 600; }
 .doc-body tr:nth-child(even) td { background: var(--bg-soft); }
@@ -2582,7 +2682,13 @@ def main():
     sidebar_js = read_text(os.path.join(SRC_DIR, "sidebar.js"))
     anti_crawler_js = read_text(os.path.join(SRC_DIR, "anti-crawler.js"))
     spa_js = read_text(os.path.join(SRC_DIR, "spa.js"))
-    style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css + "\n" + note_css + "\n" + agent_css + "\n" + skilltree_css
+    code_css = ""
+    if HAVE_PYGMENTS:
+        try:
+            code_css = HtmlFormatter(style=BlogCodeStyle).get_style_defs(".doc-body pre.code")
+        except Exception:
+            code_css = ""
+    style_text = CSS + "\n" + calendar_css + "\n" + search_css + "\n" + reading_css + "\n" + media_css + "\n" + music_css + "\n" + note_css + "\n" + agent_css + "\n" + skilltree_css + "\n" + code_css
     app_text = JS + "\n" + calendar_js + "\n" + search_js + "\n" + reading_mode_js + "\n" + media_js + "\n" + music_js + "\n" + quotes_js + "\n" + satellite_js + "\n" + nav_sync_js + "\n" + sidebar_js + "\n" + note_js + "\n" + brightness_js + "\n" + agent_js + "\n" + anti_crawler_js + "\n" + spa_js
     write_text(os.path.join(ASSET_DIR, "style.css"), style_text)
     write_text(os.path.join(ASSET_DIR, "app.js"), app_text)
