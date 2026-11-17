@@ -258,6 +258,8 @@ d:\My Personal Blogs\
 
 ![首页板块与名言警句](docs/previews/home.png)
 
+![知识图谱（暗色）](docs/previews/home-dark.png)
+
 ![板块页与层级导航](docs/previews/section.png)
 
 ![知识库技能点树](docs/previews/skilltree.png)
