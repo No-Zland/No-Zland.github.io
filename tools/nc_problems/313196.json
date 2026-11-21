@@ -1,0 +1,15 @@
+{
+ "pid": 313196,
+ "url": "https://ac.nowcoder.com/acm/problem/313196",
+ "title": "倍数",
+ "limits": "题号：NC313196\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "小苯有一个正整数  $n$ 。\n\n小苯可以将  $n$  的十进制表示中的数位任意重新排列，得到一个新的正整数（不能有前导零）。\n\n你的任务就是判断：是否存在一种重新排列方式，使得得到的数字是  $5$  的倍数。",
+ "input": "每个测试文件包含多组测试数据。第一行输入一个整数  $T\\left(1 \\leqq T \\leqq 10^4\\right)$  代表数据组数，每组测试数据描述如下：\n $\\hspace{23pt}\\bullet\\,$ 输入一个整数  $n\\left(1 \\leqq n \\leqq 10^9\\right)$ ，表示给定的正整数。",
+ "output": "对于每一组测试数据，新起一行，如果存在满足条件的排列方式，输出  $\\texttt{YES}$ ，否则输出  $\\texttt{NO}$ 。",
+ "samples": [
+  {
+   "input": "3\n5\n51\n123",
+   "output": "YES\nYES\nNO"
+  }
+ ]
+}

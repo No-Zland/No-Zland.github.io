@@ -1,0 +1,19 @@
+{
+ "pid": 295392,
+ "url": "https://ac.nowcoder.com/acm/problem/295392",
+ "title": "好字符串",
+ "limits": "题号：NC295392\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "给你一个长度为  $n$  的字符串  $s$ ，如果一个小写字母为好字符，当且仅当该小写字母对应的大写字母和它同时在字符串  $s$  中出现 或者 同时不在字符串  $s$  中出现；而如果一个字符串为好字符串，当且仅当  $26$  个小写字母  $\\texttt{`a'} \\sim \\texttt{`z'}$  都是好字符。 \n\n现在想知道字符串  $s$  是否为好字符串。",
+ "input": "第一行输入一个整数  $n$   $\\left ( 1\\leqq n\\leqq 100 \\right )$ ，表示字符串  $s$  的长度。 \n第二行输入一个长度为  $n$  的字符串  $s$ ，仅由大小写字母组成。",
+ "output": "如果字符串  $s$  为好字符串，输出  $\\text{YES}$ ，否则输出  $\\text{NO}$ 。注意输出均为大写字母。",
+ "samples": [
+  {
+   "input": "5\nAaBBb",
+   "output": "YES"
+  },
+  {
+   "input": "4\nabAA",
+   "output": "NO"
+  }
+ ]
+}

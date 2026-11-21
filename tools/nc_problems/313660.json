@@ -1,0 +1,15 @@
+{
+ "pid": 313660,
+ "url": "https://ac.nowcoder.com/acm/problem/313660",
+ "title": "Unique Number",
+ "limits": "题号：NC313660\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "小苯给定你一个长度为  $n$  的序列  $c_1, c_2, \\dots, c_n$ ，初始时所有  $c_i = 0$ 。\n\n你可以进行如下操作任意次（可以不执行）：\n\n $\\hspace{23pt}\\bullet\\,$ 选择一个前缀  $[1, i] \\left(1 \\leqq i \\leqq n \\right)$ ，并将前缀中所有元素的值增加  $1$ 。\n\n同时，你还会得到一个长度为  $n$  的“限制序列”  $d_1, d_2, \\dots, d_n$ 。\n\n你的任务就是求出：在保证操作过程中任意时刻，所有位置  $i$  均满足  $c_i \\leqq d_i$  的前提下，最终能使得序列  $c$  中不同数值的种类数最多是多少？",
+ "input": "每个测试文件均包含多组测试数据。第一行输入一个整数  $T\\left(1 \\leqq T \\leqq 10^5 \\right)$  代表数据组数，每组测试数据描述如下：\n\n第一行输入一个整数  $n\\left(1 \\leqq n \\leqq 2 \\times 10^5 \\right)$ 。\n第二行输入  $n$  个整数  $d_1, d_2, \\dots, d_n\\left(0 \\leqq d_i \\leqq 10^9 \\right)$ 。\n\n除此之外，保证单个测试文件的  $n$  之和不超过  $2 \\times 10^5$ 。",
+ "output": "对于每一组测试数据，新起一行输出一个整数，表示在操作过程中不违反限制的情况下，序列  $c$  最终能包含的不同数值的种类数的最大值。",
+ "samples": [
+  {
+   "input": "2\n4\n2 2 1 0\n3\n0 0 0",
+   "output": "3\n1"
+  }
+ ]
+}

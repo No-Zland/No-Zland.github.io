@@ -1,0 +1,32 @@
+{
+ "key": "13-comb",
+ "file": "13 组合计数与博弈论.md",
+ "title": "组合计数与博弈论",
+ "essence": "计数题先问「按什么分类不重不漏」，博弈题先问「必败态长什么样」。",
+ "points": [
+  "加法/乘法原理与「正难则反」",
+  "隔板法：把方程解变成插板",
+  "组合数预处理：阶乘 + 逆元，O(1) 查询",
+  "卡特兰数与括号/出栈模型",
+  "Nim 与 SG 函数：异或为 0 即必败"
+ ],
+ "nc": [
+  219585,
+  281118,
+  220778,
+  307228,
+  281340,
+  304877,
+  295401
+ ],
+ "lg": [
+  "P2822",
+  "P3807",
+  "P1044",
+  "P2197",
+  "P1247"
+ ],
+ "list_md": "- [x] [炒鸡简单加法](https://ac.nowcoder.com/acm/problem/219585) · 牛客\n- [x] [小轩的排列数](https://ac.nowcoder.com/acm/problem/281118) · 牛客\n- [ ] [CombinatoricsPuzzle](https://ac.nowcoder.com/acm/problem/220778) · 牛客 · 试过 2 次\n- [x] [小红的博弈](https://ac.nowcoder.com/acm/problem/307228) · 牛客\n- [ ] [小红和小紫的博弈游戏](https://ac.nowcoder.com/acm/problem/281340) · 牛客 · 试过 7 次\n- [x] [小苯的真假游戏](https://ac.nowcoder.com/acm/problem/304877) · 牛客\n- [x] [中位数](https://ac.nowcoder.com/acm/problem/295401) · 牛客\n- [ ] [【NOIP 2016 提高组】 组合数问题](https://www.luogu.com.cn/problem/P2822) · 洛谷\n- [ ] [【模板】卢卡斯定理 / Lucas 定理](https://www.luogu.com.cn/problem/P3807) · 洛谷\n- [ ] [【NOIP 2003 普及组】 栈](https://www.luogu.com.cn/problem/P1044) · 洛谷\n- [ ] [【模板】Nim 游戏](https://www.luogu.com.cn/problem/P2197) · 洛谷\n- [ ] [取火柴游戏](https://www.luogu.com.cn/problem/P1247) · 洛谷",
+ "total": 12,
+ "done": 5
+}

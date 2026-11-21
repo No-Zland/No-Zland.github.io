@@ -1,0 +1,19 @@
+{
+ "pid": 288793,
+ "url": "https://ac.nowcoder.com/acm/problem/288793",
+ "title": "夹心饼干",
+ "limits": "题号：NC288793\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "您将得到一个由三个字母组成的字符串  $s$ ，我们定义这个字符串是“夹心饼干”，当且仅当  $s$  的第一个字母与最后一个字母完全相同。\n\n请你判定  $s$  是否是“夹心饼干”。",
+ "input": "在一行上输入一个长度为  $3$ 、由大小写字母混合构成的字符串  $s$ 。",
+ "output": "如果字符串  $s$  是“夹心饼干”，直接输出  $\\rm YES$ ，否则输出  $\\rm NO$ 。",
+ "samples": [
+  {
+   "input": "ioi",
+   "output": "YES"
+  },
+  {
+   "input": "Ioi",
+   "output": "NO"
+  }
+ ]
+}

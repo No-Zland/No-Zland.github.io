@@ -1,0 +1,23 @@
+{
+ "pid": 311867,
+ "url": "https://ac.nowcoder.com/acm/problem/311867",
+ "title": "Get The Number",
+ "limits": "题号：NC311867\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n            Special Judge, 64bit IO Format: %lld",
+ "description": "小白月赛起步早但频率低\n\n牛客周赛起步晚但频率高\n\n终于，在  $2026$  年  $1$  月中下旬的周末，两者产生了交集， $\\rm Round127$  真是个神秘的场次呢...\n\n\t\n\n\t小苯有三个正整数  $A,B,C$ ，他可以使用恰好一次四则运算（加法、减法、乘法、除法）将  $A$  和  $B$  组合起来，得到一个新的整数。\n\n具体来说，四种操作如下：\n\n $\\hspace{23pt}1.\\ A + B$ \n\n $\\hspace{23pt}2.\\ A - B$ \n\n $\\hspace{23pt}3.\\ A \\times B$ \n\n $\\hspace{23pt}4.\\ A \\div B$ （仅当  $A$  能被  $B$  整除时，注意：除法必须保证能整除，且结果仍为整数。）\n\n你的任务就是判断  $C$  是否等于上面四个算式之一的结果。",
+ "input": "$\\hspace{23pt}$ 一行三个正整数  $A,B,C\\ (1 \\leq A,B,C \\leq 10)$ 。",
+ "output": "如果  $C$  可以通过一次四则运算得到，输出一行  $\\texttt{\"YES\"}$ ，否则输出一行  $\\texttt{\"NO\"}$ 。",
+ "samples": [
+  {
+   "input": "3 5 8",
+   "output": "YES"
+  },
+  {
+   "input": "10 2 5",
+   "output": "YES"
+  },
+  {
+   "input": "10 2 6",
+   "output": "NO"
+  }
+ ]
+}

@@ -1,0 +1,34 @@
+{
+ "key": "14-dp1",
+ "file": "14 DP 入门：状态、线性与背包.md",
+ "title": "DP 入门：状态、线性与背包",
+ "essence": "DP 的本质是「把重复的子问题记下来」；写 DP 只做三件事：定义状态、写转移、定顺序。",
+ "points": [
+  "状态设计的四个追问：阶段/状态/决策/边界",
+  "无后效性与最优子结构",
+  "线性 DP：LIS、LCS、最大子段和",
+  "01/完全/多重/分组背包的遍历顺序与原因",
+  "滚动数组与空间优化，方案数 vs 最值"
+ ],
+ "nc": [
+  54633,
+  296097,
+  229915,
+  295891
+ ],
+ "lg": [
+  "P1216",
+  "P1048",
+  "P1616",
+  "P1060",
+  "P1049",
+  "P1020",
+  "P1091",
+  "P1280",
+  "P1439",
+  "P1541"
+ ],
+ "list_md": "- [x] [纪念品](https://ac.nowcoder.com/acm/problem/54633) · 牛客\n- [x] [外卖券](https://ac.nowcoder.com/acm/problem/296097) · 牛客\n- [x] [分糖果（candy）](https://ac.nowcoder.com/acm/problem/229915) · 牛客\n- [x] [小红的数组构造](https://ac.nowcoder.com/acm/problem/295891) · 牛客\n- [ ] [【IOI 1994 / USACO1.5】 数字三角形 Number Triangles](https://www.luogu.com.cn/problem/P1216) · 洛谷\n- [ ] [【NOIP 2005 普及组】 采药](https://www.luogu.com.cn/problem/P1048) · 洛谷\n- [ ] [疯狂的采药](https://www.luogu.com.cn/problem/P1616) · 洛谷\n- [ ] [【NOIP 2006 普及组】 开心的金明](https://www.luogu.com.cn/problem/P1060) · 洛谷\n- [ ] [【NOIP 2001 普及组】 装箱问题](https://www.luogu.com.cn/problem/P1049) · 洛谷\n- [ ] [【NOIP 1999 提高组】 导弹拦截](https://www.luogu.com.cn/problem/P1020) · 洛谷\n- [ ] [【NOIP 2004 提高组】 合唱队形](https://www.luogu.com.cn/problem/P1091) · 洛谷\n- [ ] [【CHCI 2002 National Competition #2 Juniors】 尼克的任务](https://www.luogu.com.cn/problem/P1280) · 洛谷\n- [ ] [两个排列的最长公共子序列](https://www.luogu.com.cn/problem/P1439) · 洛谷\n- [ ] [【NOIP 2010 提高组】 乌龟棋](https://www.luogu.com.cn/problem/P1541) · 洛谷",
+ "total": 14,
+ "done": 4
+}

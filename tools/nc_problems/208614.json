@@ -1,0 +1,19 @@
+{
+ "pid": 208614,
+ "url": "https://ac.nowcoder.com/acm/problem/208614",
+ "title": "打印图形",
+ "limits": "题号：NC208614\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "小红特别喜欢打印图形，特别是打印有规律的图形，请你找出下列图形的规律，并按照输入打印图形。   n = 1时\n \n        X  \n      n = 2时\n \n           X  \n      XXX  \n        X  \n      \n n = 3时\n \n \n            X  \n       XXX   \n     XXXXX  \n       XXX   \n         X",
+ "input": "一个正整数n（1<=n<=100)",
+ "output": "输出打印的图形",
+ "samples": [
+  {
+   "input": "1",
+   "output": "X"
+  },
+  {
+   "input": "2",
+   "output": "X\nXXX\n X"
+  }
+ ]
+}

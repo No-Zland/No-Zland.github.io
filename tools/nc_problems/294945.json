@@ -1,0 +1,19 @@
+{
+ "pid": 294945,
+ "url": "https://ac.nowcoder.com/acm/problem/294945",
+ "title": "经典校招题",
+ "limits": "题号：NC294945\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 1024 M，其他语言2048 M\n\n             64bit IO Format: %lld",
+ "description": "有这样一个经典的题目：一共有  $n$  阶台阶，现在你位于第  $0$  阶，每次可以向上走  $1$  阶或  $2$  阶。\n\n现在，我们想要知道，最少需要走几次才能到达第  $n$  阶。",
+ "input": "输入一个整数  $n \\left(1 \\leqq n \\leqq 10^5\\right)$  代表台阶数。",
+ "output": "输出一个整数，表示最少需要走几次。",
+ "samples": [
+  {
+   "input": "5",
+   "output": "3"
+  },
+  {
+   "input": "6",
+   "output": "3"
+  }
+ ]
+}

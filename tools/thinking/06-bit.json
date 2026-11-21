@@ -1,0 +1,32 @@
+{
+ "key": "06-bit",
+ "file": "06 位运算、进制与高精度.md",
+ "title": "位运算、进制与高精度",
+ "essence": "位运算考的是对二进制表示的直觉，高精度考的是「把竖式翻译成数组」。",
+ "points": [
+  "补码、溢出与无符号/有符号的坑",
+  "lowbit、子集枚举、异或的消去律",
+  "进制转换：短除法与秦九韶",
+  "高精度加/减/乘的竖式模板与进位处理",
+  "什么时候用 __int128、什么时候必须高精度"
+ ],
+ "nc": [
+  279352,
+  232831,
+  280630,
+  281126,
+  281560,
+  208128,
+  282473,
+  287476
+ ],
+ "lg": [
+  "P1601",
+  "P1303",
+  "P1045",
+  "P1100"
+ ],
+ "list_md": "- [x] [位运算符](https://ac.nowcoder.com/acm/problem/279352) · 牛客\n- [x] [补码](https://ac.nowcoder.com/acm/problem/232831) · 牛客\n- [x] [2的幂次方](https://ac.nowcoder.com/acm/problem/280630) · 牛客\n- [x] [k进制转换](https://ac.nowcoder.com/acm/problem/281126) · 牛客\n- [x] [进制转换](https://ac.nowcoder.com/acm/problem/281560) · 牛客\n- [x] [循环右移](https://ac.nowcoder.com/acm/problem/208128) · 牛客\n- [x] [3个1](https://ac.nowcoder.com/acm/problem/282473) · 牛客\n- [ ] [加法和异或](https://ac.nowcoder.com/acm/problem/287476) · 牛客 · 试过 9 次\n- [ ] [高精度加法](https://www.luogu.com.cn/problem/P1601) · 洛谷\n- [ ] [A*B Problem](https://www.luogu.com.cn/problem/P1303) · 洛谷\n- [ ] [【NOIP 2003 普及组】 麦森数](https://www.luogu.com.cn/problem/P1045) · 洛谷\n- [ ] [高低位交换](https://www.luogu.com.cn/problem/P1100) · 洛谷",
+ "total": 12,
+ "done": 7
+}

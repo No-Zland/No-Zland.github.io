@@ -1,0 +1,15 @@
+{
+ "pid": 288243,
+ "url": "https://ac.nowcoder.com/acm/problem/288243",
+ "title": "加法入门",
+ "limits": "题号：NC288243\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 1024 M，其他语言2048 M\n\n            Special Judge, 64bit IO Format: %lld",
+ "description": "教会了猫猫数数，Askalana决定教她一些更进一步的东西。\n\n本题与《B. 数数入门》共享部分题目背景，这一部分我们使用特殊的格式标注。\n\n〖引用开始〗 \n\n\tAskalana 搭建了一个  $n$  层的麻将塔。从上往下数，第  $i$  层由  $i$  块麻将组成。每一块麻将上面都刻了一个整数，记第  $i$  层从左往右数第  $j$  块麻将上的数字为  $a_{i,j}$ 。如下所示：\n\t\n\t\t $\\begin{array}{c}\na_{1,1}\\\\ \na_{2,1} \\hspace{20pt} a_{2,2} \\\\ \na_{3,1} \\hspace{20pt} a_{3,2} \\hspace{20pt} a_{3,3} \\\\\n\\vdots \\hspace{35pt} \\vdots \\hspace{35pt} \\vdots \\hspace{35pt} \\vdots \\\\ \na_{n,1} \\hspace{23pt} a_{n,2} \\hspace{23pt} \\cdots \\hspace{23pt} a_{n,n} \n\\end{array}$ \n\n\t\n除最下层外，每块麻将的左、右两角分别由其两块麻将支撑；如果一座麻将塔中，每一块麻将左下、右下支撑它的麻将上的整数均不小于它自身，那么称这座麻将塔是“平衡的”。更具体地，对于任意的  $a_{i,j} \\left(1 \\leqq i \\lt n;\\ 1 \\leqq j \\leqq i\\right)$ ，若都有  $a_{i, j} \\leqq a_{i+1, j}$  且  $a_{i, j} \\leqq a_{i+1, j+1}$ ，那么这座麻将塔是“平衡的”。\n\n〖引用结束〗 \n\t\n\n在本题中，每一块麻将上的整数都各不相同，且为  $1$  到  $\\tfrac{n \\times (n+1)}{2}$  中的一个。Askalana 按整数从小到大的顺序，自上而下、自左而右的搭出了一座麻将塔。如下所示：\n\n\t\n\t\t\n\t\t\t $\\begin{array}{c} \n1 \\\\ \n2 \\hspace{40pt} 3 \\\\ \n4 \\hspace{40pt} 5 \\hspace{40pt} 6 \\\\ \n\\vdots \\hspace{47pt} \\vdots \\hspace{47pt} \\vdots \\hspace{47pt} \\vdots \\\\ \n{\\tfrac{n \\times (n-1)}{2} + 1} \\quad {\\tfrac{n \\times (n-1)}{2} + 2} \\qquad \\cdots \\qquad {\\tfrac{n \\times (n-1)}{2}+n}\n\\end{array}$",
+ "input": "每个测试文件均包含多组测试数据。第一行输入一个整数  $T\\left(1\\leqq T\\leqq 10^5\\right)$  代表数据组数，每组测试数据描述如下：\n在一行上输入三个整数  $n, l, r\\left(2\\leqq n\\leqq 10^9;\\ 1\\leqq l \\lt r\\leqq \\tfrac{n \\times (n+1)}{2}\\right)$  代表麻将塔的层数、翻转的区间。",
+ "output": "对于每一组测试数据，新起一行。如果反转后的数组搭出的麻将塔是“平衡的”，输出  $\\rm{Yes}$ ，否则  $\\rm{No}$ 。您可以以任何大小写形式输出答案，例如， $\\rm yEs$ 、 $\\rm yes$  和  $\\rm YeS$  都将被视为肯定的回答。",
+ "samples": [
+  {
+   "input": "3\n5 1 15\n5 2 3\n5 2 4",
+   "output": "No\nYes\nNo"
+  }
+ ]
+}

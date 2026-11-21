@@ -1,0 +1,23 @@
+{
+ "pid": 214022,
+ "url": "https://ac.nowcoder.com/acm/problem/214022",
+ "title": "中位数",
+ "limits": "题号：NC214022\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "今天又是开心的一天，WYJ决定吃一顿好的（划掉）和LK一起van游戏\n 游戏规则如下：\n WYJ给出N个数字，LK要找出N个数字的中位数。\n 要是能找出中位数，WYJ就请LK吃饭，否则LK就要请WYJ吃饭，但是LK从小不好好学习，不知道中位数是什么，并且LK很小气，一听到要请吃饭，立马抓住在一旁吃瓜的你。\n 现在请你来和WYJ一起van游戏",
+ "input": "第一行输入一个数N用来表示数组的长度（N<=100）\n第二行输入N个数字，并以一个空格隔开",
+ "output": "输出N个数字的中位数，若为小数则保留两位小数，若为整数则直接输出",
+ "samples": [
+  {
+   "input": "5\n1 4 5 3 2",
+   "output": "3"
+  },
+  {
+   "input": "8\n1 6 4 7 8 2 3 5",
+   "output": "4.50"
+  },
+  {
+   "input": "8\n4 1 6 5 8 9 16 10",
+   "output": "7"
+  }
+ ]
+}

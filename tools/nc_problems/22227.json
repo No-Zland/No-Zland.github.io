@@ -1,0 +1,15 @@
+{
+ "pid": 22227,
+ "url": "https://ac.nowcoder.com/acm/problem/22227",
+ "title": "约瑟夫环",
+ "limits": "题号：NC22227\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "有  $n$  个人（编号  $0\\sim n-1$ ）围成一圈，从编号为  $k$  的人开始报数，报数依次为  $1,2,\\dots,m$ ，报到  $m$  的人出队。下次从出队者的下一个人开始重新报数，循环往复，直到队伍中只剩最后一个人，该人即\"大王\"。\n\n给定三个正整数  $n,k,m$ ，请输出最后剩下的\"大王\"编号。",
+ "input": "在一行中输入三个整数  $n\\left(2 \\leqq n \\leqq 100 \\right),k\\left(0 \\leqq k \\leqq n-1\\right),m\\left(1 \\leqq m \\leqq 100\\right)$ ，用空格隔开。",
+ "output": "输出一个整数，表示最后剩下的\"大王\"编号。",
+ "samples": [
+  {
+   "input": "5 1 2",
+   "output": "3"
+  }
+ ]
+}

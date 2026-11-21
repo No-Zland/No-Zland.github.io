@@ -1,0 +1,19 @@
+{
+ "pid": 289264,
+ "url": "https://ac.nowcoder.com/acm/problem/289264",
+ "title": "和猫猫一起起舞！",
+ "limits": "题号：NC289264\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 1024 M，其他语言2048 M\n\n            Special Judge, 64bit IO Format: %lld",
+ "description": "你和Askalana撸猫正欢之时，一名强盗闯了进来，对你和Askalana开始了魔法加特林连射。\n\n强盗射出了  $1$  发魔法，魔法会从上下左右四个方向之一（对应使用  $\\texttt{`U'}$ 、 $\\texttt{`D'}$ 、 $\\texttt{`L'}$ 、 $\\texttt{`R'}$  表示）来袭，你不会护盾法术，所以你需要向垂直于魔法来袭的方向的方向躲避魔法。\n\n请直接输出你将要躲避的方向。",
+ "input": "在一行上输入一个字符，代表魔法袭来的方向。我们保证这个字符为  $\\texttt{`U'}$ 、 $\\texttt{`D'}$ 、 $\\texttt{`L'}$ 、 $\\texttt{`R'}$  中的一个。",
+ "output": "输出  $\\texttt{`U'}$ 、 $\\texttt{`D'}$ 、 $\\texttt{`L'}$ 、 $\\texttt{`R'}$  中的一个，代表你将要躲避的方向。\n\n你可以以任何大小写形式输出答案。\n如果存在多个解决方案，您可以输出任意一个，系统会自动判定是否正确。注意，自测运行功能可能因此返回错误结果，请自行检查答案正确性。",
+ "samples": [
+  {
+   "input": "U",
+   "output": "R"
+  },
+  {
+   "input": "L",
+   "output": "D"
+  }
+ ]
+}

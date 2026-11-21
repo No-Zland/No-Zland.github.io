@@ -1,0 +1,15 @@
+{
+ "pid": 14399,
+ "url": "https://ac.nowcoder.com/acm/problem/14399",
+ "title": "素数判断",
+ "limits": "题号：NC14399\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 32 M，其他语言64 M\n\n             64bit IO Format: %lld",
+ "description": "给出一个数x，判断它是否为素数，并输出所有它的素因子。",
+ "input": "第1行输入组数T，代表有T组数据。\n第2-T+1行每行输入一个数x表示对应询问。\n数据保证：2≤x≤109",
+ "output": "对于每组询问输出两行表示结果。\n第1行，如果x是素数，输出“isprime”（不含双引号），否则输出“noprime”（不含双引号）。\n第2行，输出x的素因子。",
+ "samples": [
+  {
+   "input": "3\n2\n9\n10",
+   "output": "isprime\n2\nnoprime\n3\nnoprime\n2 5"
+  }
+ ]
+}

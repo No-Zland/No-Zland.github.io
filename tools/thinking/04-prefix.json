@@ -1,0 +1,32 @@
+{
+ "key": "04-prefix",
+ "file": "04 前缀和、差分与双指针.md",
+ "title": "前缀和、差分与双指针",
+ "essence": "前缀和把「区间求和」变成两个前缀相减，差分把「区间加」变成两个端点修改，双指针靠单调性把 O(n^2) 压成 O(n)。",
+ "points": [
+  "一维/二维前缀和与容斥",
+  "差分数组：区间加、还原、配合二分",
+  "双指针的合法性前提：移动一端时另一端的单调性",
+  "滑动窗口维护「窗口内计数/最值」",
+  "前缀和 + 哈希表：统计和为 k 的子数组"
+ ],
+ "nc": [
+  295889,
+  295893,
+  281405,
+  281550,
+  295891
+ ],
+ "lg": [
+  "P1115",
+  "P2367",
+  "P3397",
+  "P2004",
+  "P1102",
+  "P1147",
+  "P1638"
+ ],
+ "list_md": "- [x] [小红的数组查询（一）](https://ac.nowcoder.com/acm/problem/295889) · 牛客\n- [x] [小红的数组查询（二）](https://ac.nowcoder.com/acm/problem/295893) · 牛客\n- [ ] [小红的前缀询问](https://ac.nowcoder.com/acm/problem/281405) · 牛客 · 试过 12 次\n- [x] [小红走网格](https://ac.nowcoder.com/acm/problem/281550) · 牛客\n- [x] [小红的数组构造](https://ac.nowcoder.com/acm/problem/295891) · 牛客\n- [ ] [最大子段和](https://www.luogu.com.cn/problem/P1115) · 洛谷\n- [ ] [语文成绩](https://www.luogu.com.cn/problem/P2367) · 洛谷\n- [ ] [地毯](https://www.luogu.com.cn/problem/P3397) · 洛谷\n- [ ] [领地选择](https://www.luogu.com.cn/problem/P2004) · 洛谷\n- [ ] [A-B 数对](https://www.luogu.com.cn/problem/P1102) · 洛谷\n- [ ] [连续正整数和](https://www.luogu.com.cn/problem/P1147) · 洛谷\n- [ ] [逛画展](https://www.luogu.com.cn/problem/P1638) · 洛谷",
+ "total": 12,
+ "done": 4
+}

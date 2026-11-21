@@ -1,0 +1,23 @@
+{
+ "pid": 311813,
+ "url": "https://ac.nowcoder.com/acm/problem/311813",
+ "title": "小红的大小再判断",
+ "limits": "题号：NC311813\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "小红拿到了一个字符串，她希望你判断该字符串反转 $^\\texttt{[1]}$ 后的字典序 $^\\texttt{[2]}$ 和原串哪个更大。你能帮帮她吗？\n\n【名词解释】\n\n反转 $^\\texttt{[1]}$ ：将字符串从右往左重新书写，例如  $s_1s_2\\dots s_n$  反转后得到  $s_n s_{n-1} \\dots s_1$ 。\n\n字符串的字典序 $^\\texttt{[2]}$ 比较：从左到右逐个比较两个字符串的字符。如果在某个位置上字符不同，比较这两个字符的字母表顺序，字母序大的字符串字典序也大。",
+ "input": "在一行上输入一个长度为  ${\\rm length}(s)$ ，仅由英文小写字母构成的字符串  $s\\left(1 \\leqq {\\rm length}(s) \\leqq 10^5\\right)$ 。",
+ "output": "如果原串字典序更大，输出  $\\texttt{left}$ ；如果反转后的字典序更大，输出  $\\texttt{right}$ ；如果原串和反转后的字符串字典序相同，则输出  $\\texttt{equal}$ 。",
+ "samples": [
+  {
+   "input": "abc",
+   "output": "right"
+  },
+  {
+   "input": "now",
+   "output": "right"
+  },
+  {
+   "input": "a",
+   "output": "equal"
+  }
+ ]
+}

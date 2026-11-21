@@ -1,0 +1,29 @@
+{
+ "key": "08-dsu",
+ "file": "08 并查集、哈希与离散化.md",
+ "title": "并查集、哈希与离散化",
+ "essence": "并查集维护「连通/同类」，哈希把「大值域」压成「小下标」，离散化是哈希思想在保序上的版本。",
+ "points": [
+  "路径压缩 + 按秩合并，复杂度为什么是反阿克曼",
+  "种类并查集与带权并查集（食物链模型）",
+  "哈希表去重与计数，冲突处理",
+  "离散化三步：排序、去重、lower_bound",
+  "字符串哈希入门：进制与双模"
+ ],
+ "nc": [
+  16643,
+  281108,
+  281572,
+  295392
+ ],
+ "lg": [
+  "P3367",
+  "P1551",
+  "P2024",
+  "P1525",
+  "P3370"
+ ],
+ "list_md": "- [x] [【NOIP2007】统计数字](https://ac.nowcoder.com/acm/problem/16643) · 牛客\n- [x] [排序](https://ac.nowcoder.com/acm/problem/281108) · 牛客\n- [x] [排序](https://ac.nowcoder.com/acm/problem/281572) · 牛客\n- [x] [好字符串](https://ac.nowcoder.com/acm/problem/295392) · 牛客\n- [ ] [【模板】并查集](https://www.luogu.com.cn/problem/P3367) · 洛谷\n- [ ] [亲戚](https://www.luogu.com.cn/problem/P1551) · 洛谷\n- [ ] [【NOI2001】 食物链](https://www.luogu.com.cn/problem/P2024) · 洛谷\n- [ ] [【NOIP 2010 提高组】 关押罪犯](https://www.luogu.com.cn/problem/P1525) · 洛谷\n- [ ] [【模板】字符串哈希](https://www.luogu.com.cn/problem/P3370) · 洛谷",
+ "total": 9,
+ "done": 4
+}

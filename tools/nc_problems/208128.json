@@ -1,0 +1,15 @@
+{
+ "pid": 208128,
+ "url": "https://ac.nowcoder.com/acm/problem/208128",
+ "title": "循环右移",
+ "limits": "题号：NC208128\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "有一个二进制数的字符串，想把字符串循环右移k位，然后得到一个新的二进制数，求这个数的十进制值是多少。给定一个二进制字符串str和循环位移位数k，返回循环后的二进制数的十进制值。",
+ "input": "",
+ "output": "",
+ "samples": [
+  {
+   "input": "\"10110\",2",
+   "output": "21"
+  }
+ ]
+}

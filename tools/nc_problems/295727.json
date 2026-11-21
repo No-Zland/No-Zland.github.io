@@ -1,0 +1,23 @@
+{
+ "pid": 295727,
+ "url": "https://ac.nowcoder.com/acm/problem/295727",
+ "title": "红橙",
+ "limits": "题号：NC295727\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "在魔法学院的竞技场上，小红和小橙正在进行一场别开生面的魔法对决。在这个魔法对决里，不同的魔法有着相互克制的关系。水魔法克制火魔法，火魔法克制冰魔法，冰魔法克制水魔法。每种魔法用一个数字表示： $0$  代表水魔法， $1$  代表火魔法， $2$  代表冰魔法。 \n\n\t请你判断并输出最终谁赢得了这一轮魔法对决。如果两人使用的魔法相同，则判定为平局。",
+ "input": "在一行上输入两个整数  $x,y \\left(0 \\leq x,y \\leq 2\\right)$ ，分别表示小红和小橙所使用的魔法类型。",
+ "output": "如果小红赢了，输出  $\\text{Hongwins}$ （TXT文本复制：Hongwins）；如果小橙赢了，输出  $\\text{chengwins}$ （TXT文本复制：chengwins）；如果两人平局，输出  $\\text{Draw}$ （TXT文本复制：Draw）。",
+ "samples": [
+  {
+   "input": "1 2",
+   "output": "Hongwins"
+  },
+  {
+   "input": "2 1",
+   "output": "chengwins"
+  },
+  {
+   "input": "0 0",
+   "output": "Draw"
+  }
+ ]
+}

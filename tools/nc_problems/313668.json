@@ -1,0 +1,19 @@
+{
+ "pid": 313668,
+ "url": "https://ac.nowcoder.com/acm/problem/313668",
+ "title": "Nowcoder Weekly Contest",
+ "limits": "题号：NC313668\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "牛客周赛对于 rating 不超过  $1599$  的选手是 rated 的（即比赛会影响选手的 rating）。\n\n现在给定小苯当前的 rating，请你判断他打这场牛客周赛是否 rated。",
+ "input": "输入一个整数  $x\\left(0\\leqq x \\leqq 4 \\times 10^3 \\right)$ ，表示小苯当前的 rating。",
+ "output": "如果小苯打这场比赛是 rated，输出  $\\texttt{Rated}$ ，否则输出  $\\texttt{Unrated}$ 。",
+ "samples": [
+  {
+   "input": "1500",
+   "output": "Rated"
+  },
+  {
+   "input": "1600",
+   "output": "Unrated"
+  }
+ ]
+}

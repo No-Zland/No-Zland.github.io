@@ -1,0 +1,15 @@
+{
+ "pid": 313181,
+ "url": "https://ac.nowcoder.com/acm/problem/313181",
+ "title": "对和",
+ "limits": "题号：NC313181\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "小苯有一个长度为  $n$  的数组  $a_1, a_2, \\dots, a_n$ 。他定义数组的“和谐值”为：\n\n\t\n\n $\\displaystyle H(a) = \\sum_{i=1}^{n} \\sum_{j=i+1}^{n} \\left\\lfloor \\frac{a_i + a_j}{2} \\right\\rfloor$ \n\n你的任务是求出“和谐值”  $H(a)$ 。\n\n【名词解释】\n\n $\\lfloor x \\rfloor$ ：代表对  $x$  进行下取整操作，得到不超过  $x$  的最大整数。",
+ "input": "每个测试文件均包含多组测试数据。第一行输入一个整数  $T\\left(1 \\leqq T \\leqq 10^5\\right)$  代表数据组数，每组测试数据描述如下：\n $\\hspace{23pt}\\bullet\\,$ 第一行输入一个整数  $n\\left(1 \\leqq n \\leqq 2 \\times 10^5\\right)$ ，表示数组的长度。\n $\\hspace{23pt}\\bullet\\,$ 第二行输入  $n$  个整数  $a_1, a_2, \\dots, a_n\\left(1 \\leqq a_i \\leqq 10^6\\right)$ ，表示数组的元素。\n除此之外，保证单个测试文件的  $n$  之和不超过  $2 \\times 10^5$ 。",
+ "output": "对于每一组测试数据，新起一行输出一个整数，表示该数组的“和谐值”。",
+ "samples": [
+  {
+   "input": "3\n3\n1 2 3\n4\n5 5 5 5\n2\n100000 1",
+   "output": "5\n30\n50000"
+  }
+ ]
+}

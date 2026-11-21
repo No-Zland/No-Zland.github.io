@@ -1,0 +1,114 @@
+[
+ {
+  "key": "01-sim",
+  "file": "01 模拟与枚举：把题意逐字翻译成代码.md",
+  "title": "模拟与枚举：把题意逐字翻译成代码",
+  "total": 12,
+  "done": 8
+ },
+ {
+  "key": "02-greedy",
+  "file": "02 贪心与构造：先猜后证.md",
+  "title": "贪心与构造：先猜后证",
+  "total": 12,
+  "done": 7
+ },
+ {
+  "key": "03-rec",
+  "file": "03 递推、递归与分治.md",
+  "title": "递推、递归与分治",
+  "total": 11,
+  "done": 7
+ },
+ {
+  "key": "04-prefix",
+  "file": "04 前缀和、差分与双指针.md",
+  "title": "前缀和、差分与双指针",
+  "total": 12,
+  "done": 4
+ },
+ {
+  "key": "05-binary",
+  "file": "05 二分：从有序查找到答案二分.md",
+  "title": "二分：从有序查找到答案二分",
+  "total": 8,
+  "done": 2
+ },
+ {
+  "key": "06-bit",
+  "file": "06 位运算、进制与高精度.md",
+  "title": "位运算、进制与高精度",
+  "total": 12,
+  "done": 7
+ },
+ {
+  "key": "07-stack",
+  "file": "07 栈、队列、堆与单调结构.md",
+  "title": "栈、队列、堆与单调结构",
+  "total": 10,
+  "done": 4
+ },
+ {
+  "key": "08-dsu",
+  "file": "08 并查集、哈希与离散化.md",
+  "title": "并查集、哈希与离散化",
+  "total": 9,
+  "done": 4
+ },
+ {
+  "key": "09-graph",
+  "file": "09 图论基础：存储、遍历与拓扑排序.md",
+  "title": "图论基础：存储、遍历与拓扑排序",
+  "total": 6,
+  "done": 1
+ },
+ {
+  "key": "10-sp",
+  "file": "10 最短路与最小生成树.md",
+  "title": "最短路与最小生成树",
+  "total": 10,
+  "done": 2
+ },
+ {
+  "key": "11-tree",
+  "file": "11 树：直径、LCA 与树上差分.md",
+  "title": "树：直径、LCA 与树上差分",
+  "total": 7,
+  "done": 1
+ },
+ {
+  "key": "12-number",
+  "file": "12 数论：gcd、筛法、同余与快速幂.md",
+  "title": "数论：gcd、筛法、同余与快速幂",
+  "total": 16,
+  "done": 8
+ },
+ {
+  "key": "13-comb",
+  "file": "13 组合计数与博弈论.md",
+  "title": "组合计数与博弈论",
+  "total": 12,
+  "done": 5
+ },
+ {
+  "key": "14-dp1",
+  "file": "14 DP 入门：状态、线性与背包.md",
+  "title": "DP 入门：状态、线性与背包",
+  "total": 14,
+  "done": 4
+ },
+ {
+  "key": "15-dp2",
+  "file": "15 DP 进阶：区间、树形、状压与数位.md",
+  "title": "DP 进阶：区间、树形、状压与数位",
+  "total": 13,
+  "done": 3
+ },
+ {
+  "key": "16-string",
+  "file": "16 字符串：哈希、KMP 与 Trie.md",
+  "title": "字符串：哈希、KMP 与 Trie",
+  "total": 10,
+  "done": 6
+ }
+]

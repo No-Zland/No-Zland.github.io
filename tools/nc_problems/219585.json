@@ -1,0 +1,19 @@
+{
+ "pid": 219585,
+ "url": "https://ac.nowcoder.com/acm/problem/219585",
+ "title": "炒鸡简单加法",
+ "limits": "题号：NC219585\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "给出 $d_{}$ 的值，问有多少个 $(a_{}, b, c)$ 序列使得 $a_{}+b+c=d$ 。 $(a_1,b_1,c_1)$ 序列与 $(a_2,b_2,c_2)$ 序列不同当且仅当 $a_1 \\neq a_2$  或  $b_1 \\neq b_2$  或  $c_1 \\neq c_2$ 。",
+ "input": "输入一个整数d。",
+ "output": "输出一个数字代表序列的个数，因数据过大，请对答案模998244353。",
+ "samples": [
+  {
+   "input": "2",
+   "output": "6"
+  },
+  {
+   "input": "0",
+   "output": "1"
+  }
+ ]
+}

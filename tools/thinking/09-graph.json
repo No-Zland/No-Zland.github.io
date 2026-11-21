@@ -1,0 +1,26 @@
+{
+ "key": "09-graph",
+ "file": "09 图论基础：存储、遍历与拓扑排序.md",
+ "title": "图论基础：存储、遍历与拓扑排序",
+ "essence": "图论先解决「怎么存」，再解决「怎么走」；拓扑排序是 DAG 上一切 DP 的前提。",
+ "points": [
+  "邻接表/链式前向星/邻接矩阵的取舍",
+  "DFS 与 BFS：连通块、二分图染色、环检测",
+  "网格图的方向数组与边界处理",
+  "拓扑排序（Kahn）与 DAG 上最长路",
+  "什么时候要把图反过来建"
+ ],
+ "nc": [
+  281550
+ ],
+ "lg": [
+  "P5318",
+  "P3916",
+  "P4017",
+  "P1113",
+  "P1807"
+ ],
+ "list_md": "- [x] [小红走网格](https://ac.nowcoder.com/acm/problem/281550) · 牛客\n- [ ] [【深基18.例3】查找文献](https://www.luogu.com.cn/problem/P5318) · 洛谷\n- [ ] [图的遍历](https://www.luogu.com.cn/problem/P3916) · 洛谷\n- [ ] [最大食物链计数](https://www.luogu.com.cn/problem/P4017) · 洛谷\n- [ ] [【USACO02FEB】 杂务](https://www.luogu.com.cn/problem/P1113) · 洛谷\n- [ ] [最长路](https://www.luogu.com.cn/problem/P1807) · 洛谷",
+ "total": 6,
+ "done": 1
+}

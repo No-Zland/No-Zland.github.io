@@ -1,0 +1,15 @@
+{
+ "pid": 295891,
+ "url": "https://ac.nowcoder.com/acm/problem/295891",
+ "title": "小红的数组构造",
+ "limits": "题号：NC295891\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 1024 M，其他语言2048 M\n\n             64bit IO Format: %lld",
+ "description": "小红拿到了一个长度为  $n$  的数组  $a_1,a_2,\\dots,a_n$ 。她会进行  $q$  次查询，每次输入两个正整数  $l,r$ ，她希望你构造一个长度为  $r-l+1$  的数组，满足该数组的前缀和数组恰好是原数组  $a$  的  $[l,r]$  区间对应的连续子数组。换句话说，记新数组为  $b_1,b_2,\\dots,b_{r-l+1}$ ，则有\n\n\t\n\n $\\begin{cases}\n    a_1=b_l \\\\ \n    a_2=b_l+b_{l+1} \\\\ \n    \\dots \\\\ \n    a_{r-l+1}=b_l+b_{l+1}+\\dots+b_{r-l+1}\n\\end{cases}$ \n\n我们可以证明，答案一定存在且唯一。你能帮帮她吗？ \n\n【名词解释】\n\n我们定义，前缀和数组为数组的“前  $i$  项和”构成的数组。例如  $\\{1,2,2,1\\}$  的前缀和数组是  $\\{1,1+2=3,3+2=5,5+1=6\\}$  即  $\\{1,3,5,6\\}$ 。",
+ "input": "第一行输入一个整数  $n \\left(1\\leqq n \\leqq 100\\right)$ ，代表数组长度。\n第二行输入  $n$  个整数  $a_1,a_2,\\dots,a_n \\left(1\\leqq a_i \\leqq 10^9\\right)$ ，代表小红拿到的的数组。\n第三行输入一个整数  $q \\left(1\\leqq q \\leqq 100\\right)$ ，代表询问次数。\n此后  $q$  行，第  $i$  行输入两个正整数  $l_i,r_i \\left(1\\leqq l_i \\leqq r_i \\leqq n\\right)$ ，代表第  $i$  次询问。",
+ "output": "对于第  $i$  次询问，新起一行，在同一行上输出  $r_i-l_i+1$  个整数，代表小红构造的数组。\n我们可以证明，该数组一定存在且唯一。",
+ "samples": [
+  {
+   "input": "5\n1 3 5 2 1\n2\n1 3\n3 4",
+   "output": "1 2 2\n5 -3"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "pid": 289788,
+ "url": "https://ac.nowcoder.com/acm/problem/289788",
+ "title": "小红的陡峭值（三）easy",
+ "limits": "题号：NC289788\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 1024 M，其他语言2048 M\n\n             64bit IO Format: %lld",
+ "description": "本题为《D. 小红的陡峭值（三）hard》的简单版本，两题的唯一区别在于本题的数据范围更小。\n\n小红定义一个字符串的陡峭值为：每两个相邻字符，Ascii 码差值的绝对值之和。例如， $\\texttt{\"bca\"}$  的陡峭值是  $|\\texttt{`c'}-\\texttt{`b'}|+|\\texttt{`a'}-\\texttt{`c'}|=1 + 2 = 3$ 。 \n\n现在小红拿到了一个长度为  $n$ ，仅由小写字母构成的字符串  $s$ 。她希望你求出这个字符串所有长度为  $k$  的连续子串的陡峭值之和，你能帮帮她吗？\n\n连续子串为从原字符串中，连续的选择一段字符（可以全选、可以不选）得到的新字符串。",
+ "input": "第一行输入两个正整数  $n,k \\left(2\\leqq k\\leqq n \\leqq \\pmb{10^3}\\right)$  代表字符串的长度、子串的长度。\n第二行输入一个长度为  $n$ ，仅由小写字母组成的字符串  $s$ 。",
+ "output": "输出一个整数，代表所有长度为  $k$  的连续子串的陡峭值之和。",
+ "samples": [
+  {
+   "input": "3 2\nbca",
+   "output": "3"
+  }
+ ]
+}

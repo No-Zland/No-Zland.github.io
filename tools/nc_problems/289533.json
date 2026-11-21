@@ -1,0 +1,15 @@
+{
+ "pid": 289533,
+ "url": "https://ac.nowcoder.com/acm/problem/289533",
+ "title": "小柒的数字",
+ "limits": "题号：NC289533\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 1024 M，其他语言2048 M\n\n             64bit IO Format: %lld",
+ "description": "小柒现在有两个数字  $x,y$  满足  $2 \\times x\\leq y$ 。小柒想知道，在  $[1,n]$  的范围内，有多少个整数  $z$  满足  $\\big\\lfloor \\tfrac{z}{x} \\big\\rfloor = \\big\\lfloor \\tfrac{z}{y} \\big\\rfloor$ 。\n\n在这里， $\\lfloor x \\rfloor$  代表对  $x$  进行下取整操作。",
+ "input": "每个测试文件均包含多组测试数据。第一行输入一个整数  $T\\left(1\\leq T\\leq 10^5\\right)$  代表数据组数，每组测试数据描述如下：\n在一行上输入三个整数  $x,y,n\\left(1\\leq 2 \\times x\\leq y\\leq 10^9;\\ 1\\leq n\\leq 10^9\\right)$ 。",
+ "output": "对于每一组测试数据，新起一行输出一个整数，代表满足条件的数字  $z$  的个数。",
+ "samples": [
+  {
+   "input": "3\n2 4 3\n1 3 1000\n1000 10000 100",
+   "output": "1\n0\n100"
+  }
+ ]
+}

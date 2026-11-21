@@ -1,0 +1,15 @@
+{
+ "pid": 303468,
+ "url": "https://ac.nowcoder.com/acm/problem/303468",
+ "title": "刚刚好",
+ "limits": "题号：NC303468\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n            Special Judge, 64bit IO Format: %lld",
+ "description": "我们的代码到这刚刚好，剩不多也不少，还能忘掉。\n\n请确保你的代码长度为  $1024$  ，其他随意。\n\n注意，换行符等格式符号，也会被计算。",
+ "input": "本题无输入。",
+ "output": "想输出也可以输出，不重要。",
+ "samples": [
+  {
+   "input": "无",
+   "output": "无"
+  }
+ ]
+}

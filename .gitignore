@@ -50,3 +50,7 @@ content/post/**/资源包_*/
 # 书架里的教材 PDF：体积太大，只在本地保留
 content/post/**/书架/*.pdf
 content/post/**/书架/**/*.pdf
+
+# 题库流水线脚本的编译产物与临时抓取页面（仅本地，不入库）
+tools/nc_gen/build/
+tools/_*.html

@@ -1,0 +1,23 @@
+{
+ "pid": 21874,
+ "url": "https://ac.nowcoder.com/acm/problem/21874",
+ "title": "好串",
+ "limits": "题号：NC21874\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "牛牛喜欢跟字符串玩耍，他学会了一种新操作：在当前字符串中任意位置（包括开头和结尾）插入子串  $\\texttt{ab}$ 。\n\n牛牛称一个字符串为 好串，当且仅当它可以通过若干次上述操作从 空串 生成。\n\n例如， $\\texttt{ab}$ 、 $\\texttt{aabb}$ 、 $\\texttt{aababb}$  都是好串，而  $\\texttt{aab}$ 、 $\\texttt{ba}$ 、 $\\texttt{abbb}$  不是好串。\n\n现给定一个字符串  $s$ ，请判断字符串  $s$  是否是好串。",
+ "input": "在一行中输入一个仅由小写字母组成字符串  $s$ （ $1 \\leqq |s| \\leqq 10^5$ ）。",
+ "output": "如果字符串  $s$  是好串，输出  $\\texttt{Good}$ ；否则输出  $\\texttt{Bad}$ 。",
+ "samples": [
+  {
+   "input": "ab",
+   "output": "Good"
+  },
+  {
+   "input": "aab",
+   "output": "Bad"
+  },
+  {
+   "input": "abaababababbaabbaaaabaababaabbabaaabbbbbbbb",
+   "output": "Bad"
+  }
+ ]
+}

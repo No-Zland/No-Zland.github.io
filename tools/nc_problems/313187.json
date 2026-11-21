@@ -1,0 +1,19 @@
+{
+ "pid": 313187,
+ "url": "https://ac.nowcoder.com/acm/problem/313187",
+ "title": "ICPC Time",
+ "limits": "题号：NC313187\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "众所周知，一场 ICPC 区域赛的时长是  $5$  小时。\n\n现在给定一个整数  $n\\left(0 \\leqq n \\leqq 23\\right)$ ，表示区域赛的开始时间（ $n$  时  $0$  分  $0$  秒）。\n\n你的任务就是求出：本场区域赛结束时的小时数（注意：按  $24$  小时制计时，即从  $0$  点开始到  $23$  点为一天，答案可能到第二天）。",
+ "input": "输入一个整数  $n\\left(0 \\leqq n \\leqq 23\\right)$ ，表示区域赛的开始时间。",
+ "output": "输出一个整数，表示结束时刻的小时数（ $0 \\leqq$  答案  $\\leqq 23$ ）。",
+ "samples": [
+  {
+   "input": "9",
+   "output": "14"
+  },
+  {
+   "input": "23",
+   "output": "4"
+  }
+ ]
+}

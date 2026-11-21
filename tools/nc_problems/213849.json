@@ -1,0 +1,19 @@
+{
+ "pid": 213849,
+ "url": "https://ac.nowcoder.com/acm/problem/213849",
+ "title": "优秀的拆分（power）",
+ "limits": "题号：NC213849\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "题目数据为官方数据，可以提交测试，结果仅供参考，不代表官方成绩，最终成绩以官方发布的最终成绩为准。  \n   一般来说，一个正整数可以拆分成若干个正整数的和。例如， $1 = 1，10 =\n1 + 2 + 3 + 4&preview=true$  等。  \n 对于正整数  $𝑛&preview=true$  的一种特定拆分，我们称它为“优秀的”，当且仅当在这种拆分下， $𝑛&preview=true$  被分解为了若干个不同的  $2&preview=true$  的正整数次幂。注意，一个数  $𝑥&preview=true$  能被表示成  $2&preview=true$  的正整数次幂，当且仅当  $𝑥&preview=true$  能通过正整数个  $2&preview=true$  相乘在一起得到。\n 例如， $10 = 8 + 2 = 2^3 + 2^1&preview=true$  是一个优秀的拆分。但是， $7 = 4 + 2 + 1 = 2^2 + 2^1 + 2^0&preview=true$  就不是一个优秀的拆分，因为  $1&preview=true$  不是  $2&preview=true$  的正整数次幂。\n 现在，给定正整数  $𝑛&preview=true$ ，你需要判断这个数的所有拆分中，是否存在优秀的拆分。若存在，请你给出具体的拆分方案。",
+ "input": "输入只有一行，一个正整数  $𝑛&preview=true$ ，代表需要判断的数。",
+ "output": "如果这个数的所有拆分中，存在优秀的拆分。那么，你需要从大到小输出这个拆分中的每一个数，相邻两个数之间用一个空格隔开。可以证明，在规定了拆分数字的顺序后，该拆分方案是唯一的。若不存在优秀的拆分，输出“-1”（不包含双引号）。",
+ "samples": [
+  {
+   "input": "6",
+   "output": "4 2"
+  },
+  {
+   "input": "7",
+   "output": "-1"
+  }
+ ]
+}

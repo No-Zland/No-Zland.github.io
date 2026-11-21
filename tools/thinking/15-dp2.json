@@ -1,0 +1,33 @@
+{
+ "key": "15-dp2",
+ "file": "15 DP 进阶：区间、树形、状压与数位.md",
+ "title": "DP 进阶：区间、树形、状压与数位",
+ "essence": "四种进阶 DP 的区别只在「状态长什么样」：区间是端点、树形是子树、状压是集合、数位是前缀。",
+ "points": [
+  "区间 DP：按长度枚举，断点合并",
+  "树形 DP：后序合并子树，树形背包",
+  "状压 DP：用二进制表示集合，枚举子集",
+  "数位 DP：记忆化模板（limit / lead / 前一位）",
+  "四种模型的识别信号与复杂度"
+ ],
+ "nc": [
+  295946,
+  289292,
+  293399,
+  294580
+ ],
+ "lg": [
+  "P1880",
+  "P1063",
+  "P1004",
+  "P1352",
+  "P2014",
+  "P1879",
+  "P1896",
+  "P2602",
+  "P2657"
+ ],
+ "list_md": "- [ ] [小红的区间修改（一）](https://ac.nowcoder.com/acm/problem/295946) · 牛客 · 试过 18 次\n- [x] [泉神，启动！！！](https://ac.nowcoder.com/acm/problem/289292) · 牛客\n- [x] [小苯的区间选数2.0](https://ac.nowcoder.com/acm/problem/293399) · 牛客\n- [x] [大卫的密码 (Easy Version)](https://ac.nowcoder.com/acm/problem/294580) · 牛客\n- [ ] [【NOI1995】 石子合并](https://www.luogu.com.cn/problem/P1880) · 洛谷\n- [ ] [【NOIP 2006 提高组】 能量项链](https://www.luogu.com.cn/problem/P1063) · 洛谷\n- [ ] [【NOIP 2000 提高组】 方格取数](https://www.luogu.com.cn/problem/P1004) · 洛谷\n- [ ] [没有上司的舞会](https://www.luogu.com.cn/problem/P1352) · 洛谷\n- [ ] [ERR HTTP Error 429: Too Many Requests](https://www.luogu.com.cn/problem/P2014) · 洛谷\n- [ ] [ERR HTTP Error 429: Too Many Requests](https://www.luogu.com.cn/problem/P1879) · 洛谷\n- [ ] [ERR HTTP Error 429: Too Many Requests](https://www.luogu.com.cn/problem/P1896) · 洛谷\n- [ ] [【ZJOI2010】 数字计数](https://www.luogu.com.cn/problem/P2602) · 洛谷\n- [ ] [【SCOI2009】 windy 数](https://www.luogu.com.cn/problem/P2657) · 洛谷",
+ "total": 13,
+ "done": 3
+}

@@ -1,0 +1,36 @@
+{
+ "key": "12-number",
+ "file": "12 数论：gcd、筛法、同余与快速幂.md",
+ "title": "数论：gcd、筛法、同余与快速幂",
+ "essence": "数论题的共同套路是「先分解/取模，把大问题变成小问题」，核心工具只有 gcd、筛法、快速幂、逆元、扩欧。",
+ "points": [
+  "辗转相除与 gcd/lcm 的性质",
+  "埃氏筛与线性筛，积性函数入门",
+  "唯一分解定理与约数个数/和",
+  "同余、逆元（费马小定理 / 扩欧）",
+  "裴蜀定理、扩欧求解、CRT 简介"
+ ],
+ "nc": [
+  14399,
+  16414,
+  280481,
+  280507,
+  280624,
+  280778,
+  16499,
+  26005,
+  303596,
+  303589
+ ],
+ "lg": [
+  "P3383",
+  "P1226",
+  "P3811",
+  "P1082",
+  "P4549",
+  "P1495"
+ ],
+ "list_md": "- [x] [素数判断](https://ac.nowcoder.com/acm/problem/14399) · 牛客\n- [x] [【NOIP2017】小凯的疑惑](https://ac.nowcoder.com/acm/problem/16414) · 牛客\n- [x] [最大公约数和最小公倍数](https://ac.nowcoder.com/acm/problem/280481) · 牛客\n- [x] [判断素数](https://ac.nowcoder.com/acm/problem/280507) · 牛客\n- [ ] [素数](https://ac.nowcoder.com/acm/problem/280624) · 牛客 · 试过 11 次\n- [x] [既约分数](https://ac.nowcoder.com/acm/problem/280778) · 牛客\n- [x] [【NOIP2014】解方程](https://ac.nowcoder.com/acm/problem/16499) · 牛客\n- [x] [天神的密码](https://ac.nowcoder.com/acm/problem/26005) · 牛客\n- [x] [小苯的GCD疑问2.0](https://ac.nowcoder.com/acm/problem/303596) · 牛客\n- [ ] [小苯的GCD疑问1.0](https://ac.nowcoder.com/acm/problem/303589) · 牛客 · 试过 11 次\n- [ ] [【模板】线性筛素数](https://www.luogu.com.cn/problem/P3383) · 洛谷\n- [ ] [【模板】快速幂](https://www.luogu.com.cn/problem/P1226) · 洛谷\n- [ ] [【模板】模意义下的乘法逆元](https://www.luogu.com.cn/problem/P3811) · 洛谷\n- [ ] [【NOIP 2012 提高组】 同余方程](https://www.luogu.com.cn/problem/P1082) · 洛谷\n- [ ] [【模板】裴蜀定理](https://www.luogu.com.cn/problem/P4549) · 洛谷\n- [ ] [【模板】中国剩余定理（CRT）/ 曹冲养猪](https://www.luogu.com.cn/problem/P1495) · 洛谷",
+ "total": 16,
+ "done": 8
+}

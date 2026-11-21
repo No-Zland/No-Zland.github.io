@@ -1,0 +1,19 @@
+{
+ "pid": 295394,
+ "url": "https://ac.nowcoder.com/acm/problem/295394",
+ "title": "平均数",
+ "limits": "题号：NC295394\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "班上有  $n$  名同学，其中每位同学都有一个数值，但是每位同学并不会告诉你这个数值为多少，他们只会告诉你这个数值是否大于 / 等于 / 小于这  $n$  个数值的平均数，具体地：\n\n $\\hspace{23pt}\\bullet\\,$ 若  $a_i=-1$ ，表示第  $i$  名同学的数值小于平均数；\n\n $\\hspace{23pt}\\bullet\\,$ 若  $a_i=0$ ，表示第  $i$  名同学的数值等于平均数；\n\n $\\hspace{23pt}\\bullet\\,$ 若  $a_i=1$ ，表示第  $i$  名同学的数值大于平均数。\n\n其中平均数指的是这  $n$  个数值的平均数值（保留小数点，不四舍五入），如  $\\{3,4,5,6\\}$  的平均数为  $\\tfrac{3+4+5+6}{4}=4.5$ 。 \n\n但是，它们其中，有些人可能会说谎，请你检查并判断：若给定的这  $n$  个数  $a_i$  满足平均数的情况，则输出  $\\text{YES}$ ，否则输出  $\\text{NO}$ 。",
+ "input": "第一行输入一个整数  $n$   $\\left ( 1\\leqq n\\leqq 10^5 \\right )$ ，表示数组  $a$  的长度。 \n第二行输入  $n$  个整数  $a_1,a_2,\\dots,a_n$   $\\left ( -1\\leqq a_i\\leqq 1 \\right )$ ，表示每一个同学的数字与平均数的关系。",
+ "output": "如果给定的这  $n$  个数  $a_i$  满足平均数的情况，则输出  $\\text{YES}$ ，否则输出  $\\text{NO}$ 。注意输出均为大写字母。",
+ "samples": [
+  {
+   "input": "4\n0 0 0 0",
+   "output": "YES"
+  },
+  {
+   "input": "5\n1 1 1 1 1",
+   "output": "NO"
+  }
+ ]
+}

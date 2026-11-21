@@ -1,0 +1,19 @@
+{
+ "pid": 281325,
+ "url": "https://ac.nowcoder.com/acm/problem/281325",
+ "title": "小红的对错判断",
+ "limits": "题号：NC281325\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "小红在判题的时候，经常发现选手把\"Yes\"输出成\"YES\"或者\"yes\"，她希望写一个spj（special judge）来判断选手是否输出了\"Yes\"。你能帮帮她吗？",
+ "input": "一个长度不超过3的、仅由小写字母或者大写字母组成。",
+ "output": "若字符串可以通过大小写转换变成\"Yes\"，则输出\"accept\"。否则输出\"wrong answer\"。",
+ "samples": [
+  {
+   "input": "yEs",
+   "output": "accept"
+  },
+  {
+   "input": "No",
+   "output": "wrong answer"
+  }
+ ]
+}

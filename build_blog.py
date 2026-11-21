@@ -891,7 +891,52 @@ def highlight_code_blocks(html_text):
     return CODE_BLOCK_RE.sub(repl, html_text)
 
 
-def convert_md(text):
+CHILD_DIRS = {}
+
+
+def dir_page_target(d):
+    """目录对应的页面：有子目录时是 direct.html，否则 index.html。"""
+    if not d:
+        return "index.html"
+    return d.replace(os.sep, "/") + ("/direct.html" if CHILD_DIRS.get(d) else "/index.html")
+
+
+def rewrite_local_md_links(html_text, rel):
+    """把 Markdown 相对链接改写成页面锚点，网页端可直接跳转。"""
+    cur_dir = os.path.dirname(rel)
+    cur_page = doc_page_target(rel, CHILD_DIRS)
+    cur_page_dir = os.path.dirname(cur_page)
+    site = os.path.abspath(SITE_DIR)
+
+    def rel_href(target_page):
+        p = os.path.relpath(os.path.join(site, target_page),
+                            os.path.join(site, cur_page_dir.replace("/", os.sep)))
+        return urllib.parse.quote(p.replace(os.sep, "/"), safe="/")
+
+    def repl(m):
+        href = html.unescape(m.group(1))
+        if re.match(r"^[a-zA-Z][\w+.-]*:", href) or href.startswith("#"):
+            return m.group(0)
+        path = urllib.parse.unquote(href.split("#")[0].split("?")[0])
+        if not path.lower().endswith(".md"):
+            return m.group(0)
+        target = os.path.normpath(os.path.join(cur_dir, path.replace("/", os.sep)))
+        if not os.path.isfile(os.path.join(POST_DIR, target)):
+            return m.group(0)
+        base = os.path.basename(target).lower()
+        if base in ("_index.md", "index.md"):
+            page = dir_page_target(os.path.dirname(target))
+            return 'href="%s"' % rel_href(page)
+        tgt_page = doc_page_target(target, CHILD_DIRS)
+        anchor = "#" + doc_anchor(target)
+        if tgt_page == cur_page:
+            return 'href="%s"' % anchor
+        return 'href="%s"' % (rel_href(tgt_page) + anchor)
+
+    return re.sub(r'href="([^"]*\.md)"', repl, html_text)
+
+
+def convert_md(text, rel=None):
     md = markdown.Markdown(
         extensions=[
             "tables",
@@ -908,6 +953,8 @@ def convert_md(text):
         output_format="html5",
     )
     html_out = md.convert(text)
+    if rel:
+        html_out = rewrite_local_md_links(html_out, rel)
     html_out = highlight_code_blocks(html_out)
     # 表格单元格里连着几个空行会变成一串 <br>，塌缩成一个，避免行高爆炸
     html_out = re.sub(r"<img (?![^>]*\bloading=)", '<img loading="lazy" decoding="async" ', html_out)
@@ -929,7 +976,7 @@ def render_doc(rel, out_dir, images):
     processed = preprocess(raw, md_dir, out_dir, images)
     processed = normalize_math(processed)
     processed = fix_tables(processed)
-    body = convert_md(processed)
+    body = convert_md(processed, rel)
     DOC_TITLE[rel] = title
     DOC_TEXT[rel] = html_to_text(body)[:SEARCH_TEXT_LIMIT]
     return {"rel": rel, "title": title, "body": body}
@@ -2650,6 +2697,8 @@ def main():
     CERT_THUMBS = _load_cert_thumbs()
     docs, images, dir_earliest, image_dirs, dir_image_counts = scan()
     dir_docs, child_dirs = build_tree(docs, image_dirs)
+    global CHILD_DIRS
+    CHILD_DIRS = child_dirs
 
     # 默认不删除 site 根目录：Hugo server 可能占用文件。需要全量清理时使用 --clean。
     if "--clean" in sys.argv and os.path.exists(SITE_DIR):

@@ -1,0 +1,27 @@
+{
+ "key": "11-tree",
+ "file": "11 树：直径、LCA 与树上差分.md",
+ "title": "树：直径、LCA 与树上差分",
+ "essence": "树是没有环的图，任何两点路径唯一；于是「路径问题」可以拆成「到根的路径」用差分解决。",
+ "points": [
+  "DFS 序、子树区间与时间戳",
+  "树的直径：两遍 DFS 的适用条件",
+  "LCA 倍增：fa[k][u] 的预处理与查询",
+  "树上差分：点差分与边差分",
+  "换根 DP 的「先求全树、再挪根」思想"
+ ],
+ "nc": [
+  293975,
+  281354
+ ],
+ "lg": [
+  "P3379",
+  "P1352",
+  "P1122",
+  "P3128",
+  "P3258"
+ ],
+ "list_md": "- [x] [树到云端](https://ac.nowcoder.com/acm/problem/293975) · 牛客\n- [ ] [小红的树上路径查询（easy）](https://ac.nowcoder.com/acm/problem/281354) · 牛客 · 试过 1 次\n- [ ] [【模板】最近公共祖先（LCA）](https://www.luogu.com.cn/problem/P3379) · 洛谷\n- [ ] [没有上司的舞会](https://www.luogu.com.cn/problem/P1352) · 洛谷\n- [ ] [最大子树和](https://www.luogu.com.cn/problem/P1122) · 洛谷\n- [ ] [【USACO15DEC】 Max Flow P](https://www.luogu.com.cn/problem/P3128) · 洛谷\n- [ ] [【JLOI2014】 松鼠的新家](https://www.luogu.com.cn/problem/P3258) · 洛谷",
+ "total": 7,
+ "done": 1
+}

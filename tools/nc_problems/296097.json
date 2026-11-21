@@ -1,0 +1,19 @@
+{
+ "pid": 296097,
+ "url": "https://ac.nowcoder.com/acm/problem/296097",
+ "title": "外卖券",
+ "limits": "题号：NC296097\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 1024 M，其他语言2048 M\n\n             64bit IO Format: %lld",
+ "description": "小歪正在点外卖，他有一张仅可单独使用的八折优惠券和一张仅可单独使用无门槛  $5$  元优惠券，他想知道，如果要购买  $x$  元的外卖，使用哪一张券会使得最终支付的金额最小。",
+ "input": "在一行上输入一个整数  $x\\left(5\\leqq x\\leqq 10^9\\right)$ ，表示外卖的价格。",
+ "output": "如果使用八折优惠券更划算，输出  $8$ ；如果使用无门槛  $5$  元优惠券更划算，输出  $5$ ；如果两种优惠券都一样划算，输出  $0$ 。",
+ "samples": [
+  {
+   "input": "5",
+   "output": "5"
+  },
+  {
+   "input": "500",
+   "output": "8"
+  }
+ ]
+}

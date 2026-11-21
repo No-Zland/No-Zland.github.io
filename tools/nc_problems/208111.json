@@ -1,0 +1,19 @@
+{
+ "pid": 208111,
+ "url": "https://ac.nowcoder.com/acm/problem/208111",
+ "title": "凯撒密码",
+ "limits": "题号：NC208111\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "一段由凯撒密码加密过的密文，凯撒密码指的是将字符偏移一定的单位，例如若偏移量为2，则a替换为c，b替换为d，c替换为e，...，z替换为b。若加密nowcoder，则密文为pqyeqfgt。现在发现加密包括数字、大写字母、小写字母，即0-9、A-Z、a-z的排列顺序进行偏移，现在截获了对方的一段密文以及偏移量，给定一段密文str和偏移量d，求对应的明文。",
+ "input": "",
+ "output": "",
+ "samples": [
+  {
+   "input": "\"pqyeqfgt\",2",
+   "output": "\"nowcoder\""
+  },
+  {
+   "input": "\"123ABCabc\",3",
+   "output": "\"yz0789XYZ\""
+  }
+ ]
+}

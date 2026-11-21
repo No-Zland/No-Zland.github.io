@@ -1,0 +1,30 @@
+{
+ "key": "07-stack",
+ "file": "07 栈、队列、堆与单调结构.md",
+ "title": "栈、队列、堆与单调结构",
+ "essence": "栈处理「最近相关性」，队列处理「先进先出」，单调栈/队列处理「找左右第一个更大/更小」，堆处理「动态最值」。",
+ "points": [
+  "括号匹配与合法性判定",
+  "表达式求值：双栈法与优先级",
+  "单调栈：左右第一个更小/更大的统一模板",
+  "单调队列：滑动窗口最值，队头过期、队尾弹劣",
+  "堆的懒惰删除与「堆 + 哈希」"
+ ],
+ "nc": [
+  282083,
+  21874,
+  293873,
+  282461,
+  214022
+ ],
+ "lg": [
+  "P1449",
+  "P1739",
+  "P1886",
+  "P5788",
+  "P3378"
+ ],
+ "list_md": "- [x] [括号串匹配](https://ac.nowcoder.com/acm/problem/282083) · 牛客\n- [x] [好串](https://ac.nowcoder.com/acm/problem/21874) · 牛客\n- [ ] [Tk王国的括号](https://ac.nowcoder.com/acm/problem/293873) · 牛客 · 试过 5 次\n- [x] [求序列的中位数](https://ac.nowcoder.com/acm/problem/282461) · 牛客\n- [x] [中位数](https://ac.nowcoder.com/acm/problem/214022) · 牛客\n- [ ] [后缀表达式](https://www.luogu.com.cn/problem/P1449) · 洛谷\n- [ ] [表达式括号匹配](https://www.luogu.com.cn/problem/P1739) · 洛谷\n- [ ] [【模板】单调队列 / 滑动窗口](https://www.luogu.com.cn/problem/P1886) · 洛谷\n- [ ] [【模板】单调栈](https://www.luogu.com.cn/problem/P5788) · 洛谷\n- [ ] [【模板】堆](https://www.luogu.com.cn/problem/P3378) · 洛谷",
+ "total": 10,
+ "done": 4
+}

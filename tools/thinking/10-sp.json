@@ -1,0 +1,30 @@
+{
+ "key": "10-sp",
+ "file": "10 最短路与最小生成树.md",
+ "title": "最短路与最小生成树",
+ "essence": "最短路回答「从 A 到 B 最少花多少」，最小生成树回答「连通所有点最少花多少」，两者都靠「贪心 + 松弛」。",
+ "points": [
+  "Dijkstra 堆优化：为什么不能有负权",
+  "Floyd 与传递闭包，k 为什么必须写最外层",
+  "Bellman-Ford/SPFA 判负环，SPFA 何时会退化",
+  "0-1 BFS 与双端队列",
+  "Kruskal（排序 + 并查集）与 Prim，瓶颈生成树"
+ ],
+ "nc": [
+  216216,
+  294756
+ ],
+ "lg": [
+  "P3371",
+  "P4779",
+  "P1339",
+  "P1119",
+  "P3385",
+  "P3366",
+  "P1546",
+  "P1195"
+ ],
+ "list_md": "- [x] [最长的最短路](https://ac.nowcoder.com/acm/problem/216216) · 牛客\n- [x] [MST(a.k.a. Most Shortened Terms)](https://ac.nowcoder.com/acm/problem/294756) · 牛客\n- [ ] [【模板】单源最短路径（弱化版）](https://www.luogu.com.cn/problem/P3371) · 洛谷\n- [ ] [【模板】单源最短路径（标准版）](https://www.luogu.com.cn/problem/P4779) · 洛谷\n- [ ] [【USACO09OCT】 Heat Wave G](https://www.luogu.com.cn/problem/P1339) · 洛谷\n- [ ] [灾后重建](https://www.luogu.com.cn/problem/P1119) · 洛谷\n- [ ] [【模板】负环](https://www.luogu.com.cn/problem/P3385) · 洛谷\n- [ ] [【模板】最小生成树](https://www.luogu.com.cn/problem/P3366) · 洛谷\n- [ ] [【USACO3.1】 最短网络 Agri-Net](https://www.luogu.com.cn/problem/P1546) · 洛谷\n- [ ] [口袋的天空](https://www.luogu.com.cn/problem/P1195) · 洛谷",
+ "total": 10,
+ "done": 2
+}

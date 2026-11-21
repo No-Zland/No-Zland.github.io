@@ -1,0 +1,15 @@
+{
+ "pid": 295893,
+ "url": "https://ac.nowcoder.com/acm/problem/295893",
+ "title": "小红的数组查询（二）",
+ "limits": "题号：NC295893\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 1024 M，其他语言2048 M\n\n             64bit IO Format: %lld",
+ "description": "本题与《A. 小红的数组查询（一）》共享部分题目背景，但是所求内容不同，我们建议您重新阅读题面。\n\n小红拿到了一个长度为  $10^{100}$  的数组，其构成如下：\n\n $\\hspace{23pt}\\bullet\\,$ 数组的第一个元素  $a_1=1$ ；\n\n $\\hspace{23pt}\\bullet\\,$ 对于  $2 \\leqq i \\leqq 10^{100}$ ， $a_i=(a_{i-1}+d) \\bmod p$ 。\n\n现在小红想知道， $l$  到  $r$  之间有多少种不同元素。共有  $q$  次询问。",
+ "input": "第一行输入两个整数  $d,p \\left(1\\leqq d,p \\leqq 10^9\\right)$ ，表示数组公差、模数。\n第二行输入一个整数  $q \\left(1\\leqq q \\leqq 10^5\\right)$ ，表示询问次数。\n此后  $q$  行，第  $i$  行输入两个整数  $l_i,r_i \\left(1\\leqq l_i \\leqq r_i \\leqq 10^{18}\\right)$ ，表示第  $i$  次询问的区间。",
+ "output": "对于每一次询问，新起一行，输出一个整数，代表区间内元素的种类数。",
+ "samples": [
+  {
+   "input": "3 4\n2\n1 2\n1 100000000000",
+   "output": "2\n4"
+  }
+ ]
+}

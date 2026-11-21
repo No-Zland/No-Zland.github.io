@@ -1,0 +1,15 @@
+{
+ "pid": 294005,
+ "url": "https://ac.nowcoder.com/acm/problem/294005",
+ "title": "露西的蛋糕",
+ "limits": "题号：NC294005\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "给你条宽度为  $1$ ，长度为  $2^n$  个单位长度的纸条。进行  $m$  次如下的对半折叠操作：\n\n $\\hspace{23pt}\\bullet\\,$ 每次都将当前纸条的后半截翻折到前半截之上。\n\n完成  $m$  次折叠后，在折叠后的纸条正面距离左侧  $x$  个单位长度的位置进行染色，求染色的部分在折叠前、距离原纸条左侧的单位长度。\n\n下图为  $n=3,m=2$  的折叠过程：\n\n\t\n![](https://uploadfiles.nowcoder.com/images/20250513/0_1747128132199/D3FAC90B0F8994BE1DAE0203983107CB)",
+ "input": "在一行上输入三个正整数  $n,m,x \\left(0\\le n-m\\le 40;\\ 1\\le n,m\\le 10^9;\\ 1\\le x\\le 2^{n-m} \\right)$ 。",
+ "output": "输出一个正整数，表示染色的部分在折叠前距离原纸条左侧的单位长度。",
+ "samples": [
+  {
+   "input": "3 2 1",
+   "output": "4"
+  }
+ ]
+}

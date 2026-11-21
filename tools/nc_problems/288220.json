@@ -1,0 +1,23 @@
+{
+ "pid": 288220,
+ "url": "https://ac.nowcoder.com/acm/problem/288220",
+ "title": "麻将入门",
+ "limits": "题号：NC288220\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 1024 M，其他语言2048 M\n\n            Special Judge, 64bit IO Format: %lld",
+ "description": "大家都说养一只猫可以有效缓解压力，于是，鸭梨山大的 Askalana 养了一只猫娘。\n\nAskalana 想教她的猫打麻将。但是，猫猫小姐还不会认花色，所以，在本题中我们只关心数字。\n\n麻将中，同类牌中三个一样的或连续的数字被称为一副牌，有四副牌再加上一对作为将就能构成最基础的和牌。\n\n但灵智初开的猫娘小姐还不识数，请你帮帮她，看看她的牌能否构成一副牌吧！\n\n对于 Askalana 挑选出的三张牌，我们只关心其上面的数字。Askalana 保证数字仅为  $1$  到  $9$  之间的整数。你需要判定这三张牌是否构成一副牌。\n\n更具体地，记给定的三张牌分别为  $a,b,c$ ，保证  $a \\leqq b \\leqq c$ 。它们被称作一副牌，当且仅当满足以下条件之一：\n\n $\\hspace{23pt}\\bullet\\,$ 三张牌相同，此时构成一副刻子，即  $a=b=c$ ；\n\n $\\hspace{23pt}\\bullet\\,$ 三张牌连续，此时构成一副顺子，即  $b=a+1$  且  $c=b+1$ 。",
+ "input": "在一行上输入三个正整数  $a,b,c \\left(1 \\leqq a \\leqq b \\leqq c \\leqq 9\\right)$ ，表示猫娘小姐拿到的牌。",
+ "output": "如果猫娘小姐拿到的三张麻将能构成刻子或顺子，输出  $\\rm Yes$ ，否则输出  $\\rm No$ 。您可以以任何大小写形式输出答案，例如， $\\rm yEs$ 、 $\\rm yes$  和  $\\rm YeS$  都将被视为肯定的回答。",
+ "samples": [
+  {
+   "input": "1 2 3",
+   "output": "Yes"
+  },
+  {
+   "input": "8 8 8",
+   "output": "Yes"
+  },
+  {
+   "input": "2 3 3",
+   "output": "No"
+  }
+ ]
+}

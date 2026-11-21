@@ -1,0 +1,27 @@
+{
+ "pid": 293968,
+ "url": "https://ac.nowcoder.com/acm/problem/293968",
+ "title": "信条",
+ "limits": "题号：NC293968\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "信条-TeneT\n\n定义一个字符串  $t$  是「廻文串」，当且仅当其满足以下条件之一：\n\n $\\hspace{23pt}\\bullet\\,$  $|t| = 1$ ，即  $t$  是一个单字符；\n\n $\\hspace{23pt}\\bullet\\,$  $t$  由非空字符串  $w$  和其反转  $w'$  拼接两遍构成，即  $t = ww'ww'$ ，更具体地说，记  $w$  的长度为  $k$ ，则： $t = \\underbrace{w_1 w_2 \\cdots w_k}_{w} \\underbrace{w_k \\cdots w_2 w_1}_{w'} \\underbrace{w_1 w_2 \\cdots w_k}_{w} \\underbrace{w_k \\cdots w_2 w_1}_{w'}$ ，长度为  $4 \\times k$ 。\n\n定义一个字符串的连续子串是「廻文子串」，当且仅当其是「廻文串」。 \n\n现在，给定一个字符串  $s$ ，下标从  $1$  开始，请你求解：\n\n $\\hspace{23pt}\\bullet\\,$  $s$  一共有多少个「廻文子串」；\n\n $\\hspace{23pt}\\bullet\\,$ 最少需要多少个「廻文子串」才能够覆盖这个字符串（不要求恰好覆盖，即可以存在选中的廻文子串之间存在重叠），更具体地——对于字符串  $s$  的  $k$  个 廻文子串  $\\{s[l_i..r_i]\\}_{i=1}^k$ ，若对于任意  $p \\in [1, |s|]$ ，存在  $i \\in [1, k]$  使得  $l_i \\leq p \\leq r_i$ ，则称这  $k$  个子串覆盖了  $s$ ；能取到的最小的  $k$  即为答案，也可以称为最小覆盖数。",
+ "input": "输入一个长度为  $4 \\leqq {\\rm length}(s) \\leqq 5\\times 10^5$ ，由小写字母构成的字符串  $s$ 。",
+ "output": "在一行上输出两个整数，分别表示  $s$  一共有多少个「廻文子串」、 $s$  的最小覆盖数。",
+ "samples": [
+  {
+   "input": "abbaccabbabbbbabb",
+   "output": "18 14"
+  },
+  {
+   "input": "aaaaa",
+   "output": "7 2"
+  },
+  {
+   "input": "aabbbbbbba",
+   "output": "14 5"
+  },
+  {
+   "input": "hhiihhhhhh",
+   "output": "13 6"
+  }
+ ]
+}

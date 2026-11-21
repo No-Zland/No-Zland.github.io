@@ -1,0 +1,31 @@
+{
+ "key": "03-rec",
+ "file": "03 递推、递归与分治.md",
+ "title": "递推、递归与分治",
+ "essence": "递推关心「从已知推未知」，递归关心「把问题缩到子问题」，分治关心「子问题答案怎么合并」。",
+ "points": [
+  "递推三要素：初始项、转移式、边界",
+  "递归树与记忆化：什么时候会指数爆炸",
+  "分治的合并代价与主定理直觉",
+  "汉诺塔、卡特兰数这类「递归计数」的套路",
+  "递归改迭代：栈模拟与尾递归"
+ ],
+ "nc": [
+  232608,
+  281106,
+  282419,
+  201839,
+  282087,
+  281116,
+  16490
+ ],
+ "lg": [
+  "P1255",
+  "P1044",
+  "P1028",
+  "P1464"
+ ],
+ "list_md": "- [x] [斐波那契](https://ac.nowcoder.com/acm/problem/232608) · 牛客\n- [x] [斐波那契数列](https://ac.nowcoder.com/acm/problem/281106) · 牛客\n- [x] [爬楼梯](https://ac.nowcoder.com/acm/problem/282419) · 牛客\n- [x] [牛牛的汉诺塔](https://ac.nowcoder.com/acm/problem/201839) · 牛客\n- [x] [汉诺塔](https://ac.nowcoder.com/acm/problem/282087) · 牛客\n- [x] [杨辉三角](https://ac.nowcoder.com/acm/problem/281116) · 牛客\n- [x] [金币](https://ac.nowcoder.com/acm/problem/16490) · 牛客\n- [ ] [数楼梯](https://www.luogu.com.cn/problem/P1255) · 洛谷\n- [ ] [【NOIP 2003 普及组】 栈](https://www.luogu.com.cn/problem/P1044) · 洛谷\n- [ ] [【NOIP 2001 普及组】 数的计算](https://www.luogu.com.cn/problem/P1028) · 洛谷\n- [ ] [【PacNW 1999】 Function](https://www.luogu.com.cn/problem/P1464) · 洛谷",
+ "total": 11,
+ "done": 7
+}

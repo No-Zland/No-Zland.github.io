@@ -1,0 +1,15 @@
+{
+ "pid": 232608,
+ "url": "https://ac.nowcoder.com/acm/problem/232608",
+ "title": "斐波那契",
+ "limits": "题号：NC232608\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "小蒜蒜最近学习了斐波那契数列。 斐波那契数列是指这样的数列：数列的第一个和第二个数都为 1，接下来每个数都等于前面 2 个数之和。",
+ "input": "输入一行，包含一个正整数 k。（1 ≤ k ≤ 50）",
+ "output": "输出一行，包含一个正整数，表示斐波那契数列中的第 k 个数",
+ "samples": [
+  {
+   "input": "19",
+   "output": "4181"
+  }
+ ]
+}

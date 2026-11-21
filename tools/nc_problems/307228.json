@@ -1,0 +1,19 @@
+{
+ "pid": 307228,
+ "url": "https://ac.nowcoder.com/acm/problem/307228",
+ "title": "小红的博弈",
+ "limits": "题号：NC307228\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "小红正在和小紫玩游戏。\n\n\t现在有  $n$  个石子，小红每次可以拿  $1$  或  $2$  个，小紫每次可以拿任意个，由小红先手，轮流行动。若轮到某人时无石子可取，则输掉游戏。\n\n我们认为小红和小紫都会以最优策略进行游戏，请问谁会赢？",
+ "input": "第一行输入一个整数  $n \\left(1 \\leqq n \\leqq10\\right)$ 。",
+ "output": "如果小红会赢，请输出  $\\texttt{red}$ ，否则输出  $\\texttt{purple}$ 。",
+ "samples": [
+  {
+   "input": "1",
+   "output": "red"
+  },
+  {
+   "input": "3",
+   "output": "purple"
+  }
+ ]
+}

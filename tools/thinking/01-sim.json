@@ -1,0 +1,32 @@
+{
+ "key": "01-sim",
+ "file": "01 模拟与枚举：把题意逐字翻译成代码.md",
+ "title": "模拟与枚举：把题意逐字翻译成代码",
+ "essence": "模拟是照着题面写，枚举是把所有可能试一遍；这类题不考算法，考边界和代码组织。",
+ "points": [
+  "输入解析与格式化输出：多组数据、EOF、前导零、浮点精度",
+  "边界清单：n=0/1、负数、最大值、空输入",
+  "枚举的复杂度估算与剪枝：什么时候 O(n^2) 能过",
+  "图形打印：先找行规律、把缩进和字符数参数化",
+  "数组模拟与方向数组：网格题的统一写法"
+ ],
+ "nc": [
+  279332,
+  279336,
+  281069,
+  281110,
+  279979,
+  282081,
+  281063,
+  279370
+ ],
+ "lg": [
+  "P1046",
+  "P1980",
+  "P1553",
+  "P1328"
+ ],
+ "list_md": "- [x] [输出Mr.Robot！](https://ac.nowcoder.com/acm/problem/279332) · 牛客\n- [x] [字符分行输出](https://ac.nowcoder.com/acm/problem/279336) · 牛客\n- [x] [螺旋矩阵](https://ac.nowcoder.com/acm/problem/281069) · 牛客\n- [x] [矩阵转置](https://ac.nowcoder.com/acm/problem/281110) · 牛客\n- [x] [简易计算器](https://ac.nowcoder.com/acm/problem/279979) · 牛客\n- [x] [打印沙漏](https://ac.nowcoder.com/acm/problem/282081) · 牛客\n- [x] [输出 GPLT](https://ac.nowcoder.com/acm/problem/281063) · 牛客\n- [x] [打折](https://ac.nowcoder.com/acm/problem/279370) · 牛客\n- [ ] [【NOIP 2005 普及组】 陶陶摘苹果](https://www.luogu.com.cn/problem/P1046) · 洛谷\n- [ ] [【NOIP 2013 普及组】 计数问题](https://www.luogu.com.cn/problem/P1980) · 洛谷\n- [ ] [数字反转（升级版）](https://www.luogu.com.cn/problem/P1553) · 洛谷\n- [ ] [【NOIP 2014 提高组】 生活大爆炸版石头剪刀布](https://www.luogu.com.cn/problem/P1328) · 洛谷",
+ "total": 12,
+ "done": 8
+}

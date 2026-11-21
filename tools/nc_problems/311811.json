@@ -1,0 +1,15 @@
+{
+ "pid": 311811,
+ "url": "https://ac.nowcoder.com/acm/problem/311811",
+ "title": "小红的大小判断",
+ "limits": "题号：NC311811\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "小红拿到了一个正整数  $x$ ，她希望你帮她判断  $x$  和  $x^2$  哪个更大。请你帮帮她。",
+ "input": "输入一个正整数  $x \\left(1 \\leqq x \\leqq 10^5\\right)$ 。",
+ "output": "如果  $x$  更大，输出  $\\texttt{left}$ ；如果  $x^2$  更大，输出  $\\texttt{right}$ ；如果两数相等，输出  $\\texttt{equal}$ 。",
+ "samples": [
+  {
+   "input": "3",
+   "output": "right"
+  }
+ ]
+}

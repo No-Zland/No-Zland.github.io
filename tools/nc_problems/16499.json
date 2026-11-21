@@ -1,0 +1,23 @@
+{
+ "pid": 16499,
+ "url": "https://ac.nowcoder.com/acm/problem/16499",
+ "title": "[NOIP2014]解方程",
+ "limits": "题号：NC16499\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 128 M，其他语言256 M\n\n             64bit IO Format: %lld",
+ "description": "已知多项式方程： \n   a0+a1x+a2x2+...+anxn=0\n \n   求这个方程在[1, m]内的整数解（n和m均为正整数）。",
+ "input": "第一行包含2个整数n、m，每两个整数之间用一个空格隔开。\n接下来的n+1行每行包含一个整数，依次为a0,a1,a2,……,an。",
+ "output": "第一行输出方程在[1, m]内的整数解的个数。\n接下来每行一个整数，按照从小到大的顺序依次输出方程在[1, m]内的一个整数解。",
+ "samples": [
+  {
+   "input": "2 10\n1\n-2\n1",
+   "output": "1\n1"
+  },
+  {
+   "input": "2 10\n2 \n-3\n1",
+   "output": "2\n1\n2"
+  },
+  {
+   "input": "2 10\n1\n3\n2",
+   "output": "0"
+  }
+ ]
+}

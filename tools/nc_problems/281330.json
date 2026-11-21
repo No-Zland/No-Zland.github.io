@@ -1,0 +1,15 @@
+{
+ "pid": 281330,
+ "url": "https://ac.nowcoder.com/acm/problem/281330",
+ "title": "小红的幂表达",
+ "limits": "题号：NC281330\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "小红拿到了一个正整数，请你帮小红将其表示为幂（ $a^b$ ）的形式。",
+ "input": "一个正整数 $x$ \n $2\\leq x \\leq 10^5$",
+ "output": "第一行输出 $x$ 。\n接下来每一行输出一个幂的表达式。\n请按指数从小到大的顺序输出。",
+ "samples": [
+  {
+   "input": "16",
+   "output": "16\n=16^1\n=4^2\n=2^4"
+  }
+ ]
+}

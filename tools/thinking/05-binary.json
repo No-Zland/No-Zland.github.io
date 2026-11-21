@@ -1,0 +1,28 @@
+{
+ "key": "05-binary",
+ "file": "05 二分：从有序查找到答案二分.md",
+ "title": "二分：从有序查找到答案二分",
+ "essence": "二分不只用于有序数组：只要答案具有单调性，就能二分答案，再用 check 把「判定」变成「求解」。",
+ "points": [
+  "lower_bound/upper_bound 的手写与边界",
+  "整数二分两种写法：l=mid / l=mid+1，如何避免死循环",
+  "二分答案的三件套：答案范围、check 函数、单调性证明",
+  "实数二分与固定迭代次数",
+  "二分 + 贪心 / 二分 + 最短路 / 二分 + 并查集"
+ ],
+ "nc": [
+  282219,
+  280574
+ ],
+ "lg": [
+  "P2249",
+  "P2678",
+  "P1182",
+  "P2440",
+  "P3853",
+  "P1024"
+ ],
+ "list_md": "- [x] [查找书籍](https://ac.nowcoder.com/acm/problem/282219) · 牛客\n- [x] [方程的解](https://ac.nowcoder.com/acm/problem/280574) · 牛客\n- [ ] [【深基13.例1】查找](https://www.luogu.com.cn/problem/P2249) · 洛谷\n- [ ] [【NOIP 2015 提高组】 跳石头](https://www.luogu.com.cn/problem/P2678) · 洛谷\n- [ ] [数列分段 Section II](https://www.luogu.com.cn/problem/P1182) · 洛谷\n- [ ] [木材加工](https://www.luogu.com.cn/problem/P2440) · 洛谷\n- [ ] [【TJOI2007】 路标设置](https://www.luogu.com.cn/problem/P3853) · 洛谷\n- [ ] [【NOIP 2001 提高组】 一元三次方程求解](https://www.luogu.com.cn/problem/P1024) · 洛谷",
+ "total": 8,
+ "done": 2
+}

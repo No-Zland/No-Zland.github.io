@@ -1,0 +1,15 @@
+{
+ "pid": 288241,
+ "url": "https://ac.nowcoder.com/acm/problem/288241",
+ "title": "数数入门",
+ "limits": "题号：NC288241\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 1024 M，其他语言2048 M\n\n            Special Judge, 64bit IO Format: %lld",
+ "description": "好吧，麻将这些东西对于还不认识数字的小猫咪有些太难了，Askalana 决定从一些简单易懂的方面开始教她。\n\nAskalana 搭建了一个  $n$  层的麻将塔。从上往下数，第  $i$  层由  $i$  块麻将组成。每一块麻将上面都刻了一个整数，记第  $i$  层从左往右数第  $j$  块麻将上的数字为  $a_{i,j}$ 。如下所示：\n\n\t $\\begin{array}{c}\na_{1,1}\\\\ \na_{2,1} \\hspace{20pt} a_{2,2} \\\\ \na_{3,1} \\hspace{20pt} a_{3,2} \\hspace{20pt} a_{3,3} \\\\\n\\vdots \\hspace{35pt} \\vdots \\hspace{35pt} \\vdots \\hspace{35pt} \\vdots \\\\ \na_{n,1} \\hspace{23pt} a_{n,2} \\hspace{23pt} \\cdots \\hspace{23pt} a_{n,n} \n\\end{array}$ \n\n除最下层外，每块麻将的左、右两角分别由其两块麻将支撑；如果一座麻将塔中，每一块麻将左下、右下支撑它的麻将上的整数均不小于它自身，那么称这座麻将塔是“平衡的”。更具体地，对于任意的  $a_{i,j} \\left(1 \\leqq i \\lt n;\\ 1 \\leqq j \\leqq i\\right)$ ，若都有  $a_{i, j} \\leqq a_{i+1, j}$  且  $a_{i, j} \\leqq a_{i+1, j+1}$ ，那么这座麻将塔是“平衡的”。否则该麻将塔就会倒塌，而猫猫小姐因为没学会也没有她的小鱼干吃。\n\n作为来 Askalana 家撸猫的你当然不想看到可爱的猫猫因为吃不到小鱼干哭啦，请帮帮她判断一下麻将塔是否是“平衡的”吧~",
+ "input": "每个测试文件均包含多组测试数据。第一行输入一个整数  $T\\left(1\\leqq T\\leqq 10^3\\right)$  代表数据组数，每组测试数据描述如下：\n第一行输入一个正整数  $n \\left(1\\leqq n \\leqq 10^3\\right)$  代表麻将塔的层数。\n此后  $n$  行，第  $i$  行输入  $i$  个正整数  $a_{i,1}, a_{i,2}, \\dots, a_{i,i} \\left(1\\leqq a_{i,j} \\leqq 9\\right)$  表示麻将塔第  $i$  层从左到右的麻将数值。\n\n除此之外，保证单个测试文件的  $n$  之和不超过  $10^3$ 。",
+ "output": "对于每一组测试数据，新起一行。如果麻将塔平衡，输出  $\\rm Yes$ ，否则输出  $\\rm No$ 。您可以以任何大小写形式输出答案，例如， $\\rm yEs$ 、 $\\rm yes$  和  $\\rm YeS$  都将被视为肯定的回答。",
+ "samples": [
+  {
+   "input": "2\n4\n1\n2 3\n4 5 6\n7 8 9 9\n4\n9\n9 8\n7 6 5\n4 3 2 1",
+   "output": "Yes\nNo"
+  }
+ ]
+}

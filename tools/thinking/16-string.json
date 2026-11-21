@@ -1,0 +1,30 @@
+{
+ "key": "16-string",
+ "file": "16 字符串：哈希、KMP 与 Trie.md",
+ "title": "字符串：哈希、KMP 与 Trie",
+ "essence": "字符串题的三条路：哈希做「快速比较」，KMP 做「失配后不回头」，Trie 做「公共前缀」。",
+ "points": [
+  "字符串哈希：进制、双模、子串哈希",
+  "KMP 的 next 数组到底表示什么",
+  "Trie 的插入/查询与 0-1 Trie",
+  "回文判定与 Manacher 的直觉",
+  "字典序最小/最大的贪心构造"
+ ],
+ "nc": [
+  208111,
+  282083,
+  21874,
+  281546,
+  282215,
+  281576
+ ],
+ "lg": [
+  "P3375",
+  "P3370",
+  "P2580",
+  "P8306"
+ ],
+ "list_md": "- [x] [凯撒密码](https://ac.nowcoder.com/acm/problem/208111) · 牛客\n- [x] [括号串匹配](https://ac.nowcoder.com/acm/problem/282083) · 牛客\n- [x] [好串](https://ac.nowcoder.com/acm/problem/21874) · 牛客\n- [x] [相同的字符](https://ac.nowcoder.com/acm/problem/281546) · 牛客\n- [x] [比较字符串](https://ac.nowcoder.com/acm/problem/282215) · 牛客\n- [x] [字符串操作](https://ac.nowcoder.com/acm/problem/281576) · 牛客\n- [ ] [【模板】KMP](https://www.luogu.com.cn/problem/P3375) · 洛谷\n- [ ] [【模板】字符串哈希](https://www.luogu.com.cn/problem/P3370) · 洛谷\n- [ ] [于是他错误的点名开始了](https://www.luogu.com.cn/problem/P2580) · 洛谷\n- [ ] [【模板】字典树 / Trie](https://www.luogu.com.cn/problem/P8306) · 洛谷",
+ "total": 10,
+ "done": 6
+}

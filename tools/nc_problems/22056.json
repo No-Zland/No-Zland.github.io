@@ -1,0 +1,23 @@
+{
+ "pid": 22056,
+ "url": "https://ac.nowcoder.com/acm/problem/22056",
+ "title": "箭形图案",
+ "limits": "题号：NC22056\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "KiKi学习了循环，BoBo老师给他出了一系列打印图案的练习，该任务是打印用“*”组成的箭形图案。",
+ "input": "本题多组输入，每行一个整数（2~20）。",
+ "output": "针对每行输入，输出用“*”组成的箭形。",
+ "samples": [
+  {
+   "input": "2",
+   "output": "*\n  **\n***\n  **\n    *"
+  },
+  {
+   "input": "3",
+   "output": "*\n    **\n  ***\n****\n  ***\n    **\n      *"
+  },
+  {
+   "input": "4",
+   "output": "*\n      **\n    ***\n  ****\n*****\n  ****\n    ***\n      **\n        *"
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "pid": 204433,
+ "url": "https://ac.nowcoder.com/acm/problem/204433",
+ "title": "阶乘",
+ "limits": "题号：NC204433\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "给定一个正整数  ${p}$ \n 求一个最小的正整数  ${n}$ ，使得  ${n!}$  是  ${p}$  的倍数",
+ "input": "第一行输入一个正整数 ${T}$ 表示测试数据组数\n接下来 ${T}$ 行，每行一个正整数 ${p}$",
+ "output": "输出 ${T}$ 行，对于每组测试数据输出满足条件的最小的 ${n}$",
+ "samples": [
+  {
+   "input": "4\n1\n2\n4\n8",
+   "output": "1\n2\n4\n4"
+  }
+ ]
+}

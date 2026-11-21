@@ -1,0 +1,19 @@
+{
+ "pid": 312251,
+ "url": "https://ac.nowcoder.com/acm/problem/312251",
+ "title": "红美铃的访客登记",
+ "limits": "题号：NC312251\n\n                        时间限制：C/C++/Rust/Pascal 1秒，其他语言2秒\n\n            空间限制：C/C++/Rust/Pascal 256 M，其他语言512 M\n\n             64bit IO Format: %lld",
+ "description": "红美铃负责红魔馆的门卫工作。为了向大小姐汇报，她每天都会记录来访者的总数。\n\n由于美铃在登记簿上预留了固定的格子，当访客数量较少时，她会在数字前面填充若干个  $\\texttt{0}$  来补齐位数。例如，如果访客只有  $9$  人，她可能会记录为  $\\texttt{009}$ 。现在，美铃需要将这些记录整理成标准的正整数格式，即去掉所有无意义的前导零（leading zeros）。\n\n给定一个表示正整数的字符串  $s$ ，请你帮美铃输出其去掉前导零后的结果。",
+ "input": "在一行上输入一个长度为  $\\textrm{length}(s)$ 、仅由数字字符组成的字符串  $s \\left(1 \\leqq \\textrm{length}(s) \\leqq 100\\right)$ 。保证字符串  $s$  所代表的数值  $\\textrm{value}(s)$  为正整数，且满足  $1 \\leqq \\textrm{value}(s) \\leqq 10^9$ 。",
+ "output": "输出一个整数，表示去掉前导零后的整数形式。",
+ "samples": [
+  {
+   "input": "009",
+   "output": "9"
+  },
+  {
+   "input": "20260208",
+   "output": "20260208"
+  }
+ ]
+}

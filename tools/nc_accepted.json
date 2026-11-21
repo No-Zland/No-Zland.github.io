@@ -1,0 +1,1654 @@
+[
+ {
+  "pid": 279332,
+  "title": "输出Mr.Robot！",
+  "firstAC": "2024-09-23 13:25:20",
+  "attempts": 2,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279334,
+  "title": "输出和",
+  "firstAC": "2024-09-23 13:31:46",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279336,
+  "title": "字符分行输出",
+  "firstAC": "2024-09-23 13:48:17",
+  "attempts": 2,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279338,
+  "title": "大写字母",
+  "firstAC": "2024-09-23 13:57:19",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279342,
+  "title": "商、余",
+  "firstAC": "2024-09-23 17:57:46",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279352,
+  "title": "位运算符",
+  "firstAC": "2024-09-23 18:02:03",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279354,
+  "title": "计算摄氏温度",
+  "firstAC": "2024-09-23 18:05:20",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279340,
+  "title": "圆",
+  "firstAC": "2024-09-23 18:17:38",
+  "attempts": 6,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279372,
+  "title": "心理阴影面积",
+  "firstAC": "2024-09-25 22:04:01",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279654,
+  "title": "2.比较大小",
+  "firstAC": "2024-09-25 22:04:20",
+  "attempts": 2,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279368,
+  "title": "等差数列",
+  "firstAC": "2024-09-25 22:11:20",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279374,
+  "title": "两小时学完C语言",
+  "firstAC": "2024-09-25 22:12:18",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279656,
+  "title": "3.计算平均分",
+  "firstAC": "2024-09-26 16:28:38",
+  "attempts": 2,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279652,
+  "title": "4.整数的各位数字",
+  "firstAC": "2024-09-26 16:37:36",
+  "attempts": 2,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279658,
+  "title": "5.计算存款利息",
+  "firstAC": "2024-09-26 16:49:40",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 279666,
+  "title": "7.计算ASCII值",
+  "firstAC": "2024-09-26 16:55:00",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 279366,
+  "title": "8.输出菱形图案",
+  "firstAC": "2024-09-26 17:05:04",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 279660,
+  "title": "6.大写字母转小写字母",
+  "firstAC": "2024-09-26 17:51:01",
+  "attempts": 4,
+  "lang": "C"
+ },
+ {
+  "pid": 279995,
+  "title": "分行输出",
+  "firstAC": "2024-09-28 09:11:54",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 279961,
+  "title": "小写字母转大写字母",
+  "firstAC": "2024-09-28 09:18:15",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 279993,
+  "title": "Mr.Robot！",
+  "firstAC": "2024-09-28 09:35:26",
+  "attempts": 9,
+  "lang": "C"
+ },
+ {
+  "pid": 279967,
+  "title": "计算平均分",
+  "firstAC": "2024-09-28 09:37:02",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 279965,
+  "title": "比较大小",
+  "firstAC": "2024-09-28 09:42:33",
+  "attempts": 5,
+  "lang": "C"
+ },
+ {
+  "pid": 279972,
+  "title": "输出菱形图案",
+  "firstAC": "2024-09-28 09:44:12",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 279975,
+  "title": "等差数列",
+  "firstAC": "2024-09-28 09:46:59",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 279977,
+  "title": "a3+b2",
+  "firstAC": "2024-09-28 09:56:14",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 279989,
+  "title": "高速公路超速处罚",
+  "firstAC": "2024-09-28 10:06:14",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 279987,
+  "title": "256MB",
+  "firstAC": "2024-09-28 11:09:51",
+  "attempts": 11,
+  "lang": "C"
+ },
+ {
+  "pid": 279981,
+  "title": "共轭复数",
+  "firstAC": "2024-09-28 11:46:23",
+  "attempts": 4,
+  "lang": "C"
+ },
+ {
+  "pid": 279985,
+  "title": "闰年还是平年?",
+  "firstAC": "2024-09-28 12:53:13",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 279830,
+  "title": "四季",
+  "firstAC": "2024-10-03 17:35:34",
+  "attempts": 7,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279856,
+  "title": "Switch计算器",
+  "firstAC": "2024-10-03 17:39:39",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279850,
+  "title": "后天",
+  "firstAC": "2024-10-03 17:45:29",
+  "attempts": 2,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279852,
+  "title": "A除以B",
+  "firstAC": "2024-10-03 17:52:01",
+  "attempts": 6,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279840,
+  "title": "一个月多少天呢？",
+  "firstAC": "2024-10-03 20:13:34",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 279991,
+  "title": "时间显示",
+  "firstAC": "2024-10-03 20:14:52",
+  "attempts": 6,
+  "lang": "C"
+ },
+ {
+  "pid": 280251,
+  "title": "小猴子和小桃子",
+  "firstAC": "2024-10-03 20:28:58",
+  "attempts": 5,
+  "lang": "C"
+ },
+ {
+  "pid": 279834,
+  "title": "回文",
+  "firstAC": "2024-10-03 23:20:08",
+  "attempts": 13,
+  "lang": "C"
+ },
+ {
+  "pid": 279848,
+  "title": "露露宝宝",
+  "firstAC": "2024-10-03 23:52:20",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 279832,
+  "title": "小小拖拉机",
+  "firstAC": "2024-10-04 00:19:50",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 280545,
+  "title": "大小写转换",
+  "firstAC": "2024-10-06 09:32:09",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280547,
+  "title": "月份判断季节",
+  "firstAC": "2024-10-06 09:38:47",
+  "attempts": 3,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280549,
+  "title": "整数倍",
+  "firstAC": "2024-10-06 09:40:10",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280560,
+  "title": "三目",
+  "firstAC": "2024-10-06 09:52:52",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280562,
+  "title": "邮快递",
+  "firstAC": "2024-10-06 10:01:15",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280576,
+  "title": "3,5,7",
+  "firstAC": "2024-10-06 11:01:04",
+  "attempts": 2,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280572,
+  "title": "计算",
+  "firstAC": "2024-10-06 11:17:55",
+  "attempts": 2,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280554,
+  "title": "分段函数",
+  "firstAC": "2024-10-06 12:00:34",
+  "attempts": 5,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280558,
+  "title": "苹果和虫子",
+  "firstAC": "2024-10-06 12:03:24",
+  "attempts": 8,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280568,
+  "title": "圆塔",
+  "firstAC": "2024-10-06 12:21:08",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 280566,
+  "title": "三角形面积",
+  "firstAC": "2024-10-06 12:32:50",
+  "attempts": 7,
+  "lang": "C"
+ },
+ {
+  "pid": 280586,
+  "title": "隔了多少天",
+  "firstAC": "2024-10-06 13:01:05",
+  "attempts": 4,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280471,
+  "title": "1-15",
+  "firstAC": "2024-10-07 19:37:22",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 280485,
+  "title": "小乐乐求和",
+  "firstAC": "2024-10-07 19:54:13",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 280495,
+  "title": "水仙花数",
+  "firstAC": "2024-10-07 19:59:12",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 280497,
+  "title": "反向输出一个四位数",
+  "firstAC": "2024-10-07 20:01:24",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280505,
+  "title": "找最小值",
+  "firstAC": "2024-10-07 20:02:32",
+  "attempts": 1,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280507,
+  "title": "判断素数",
+  "firstAC": "2024-10-07 20:15:17",
+  "attempts": 5,
+  "lang": "C"
+ },
+ {
+  "pid": 280479,
+  "title": "鸡兔同笼",
+  "firstAC": "2024-10-07 20:17:00",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 280499,
+  "title": "小泽宝宝算多少人被请家长",
+  "firstAC": "2024-10-07 20:29:03",
+  "attempts": 4,
+  "lang": "C"
+ },
+ {
+  "pid": 280483,
+  "title": "二进制",
+  "firstAC": "2024-10-07 20:31:03",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 280501,
+  "title": "跟奥巴马一起画方块",
+  "firstAC": "2024-10-07 20:32:43",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 208614,
+  "title": "打印图形",
+  "firstAC": "2024-10-07 20:34:39",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 280481,
+  "title": "最大公约数和最小公倍数",
+  "firstAC": "2024-10-07 20:43:50",
+  "attempts": 5,
+  "lang": "C"
+ },
+ {
+  "pid": 280473,
+  "title": "不能被13整除",
+  "firstAC": "2024-10-07 20:47:36",
+  "attempts": 4,
+  "lang": "C"
+ },
+ {
+  "pid": 280475,
+  "title": "买苹果",
+  "firstAC": "2024-10-07 20:56:05",
+  "attempts": 5,
+  "lang": "C"
+ },
+ {
+  "pid": 280616,
+  "title": "奇数累加",
+  "firstAC": "2024-10-13 09:01:28",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 280618,
+  "title": "笨乐乐",
+  "firstAC": "2024-10-13 09:03:10",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 280620,
+  "title": "反向输出",
+  "firstAC": "2024-10-13 09:05:50",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 280626,
+  "title": "最大公约数和最小公倍数",
+  "firstAC": "2024-10-13 09:45:12",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 280628,
+  "title": "奥巴马",
+  "firstAC": "2024-10-13 09:53:22",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 280630,
+  "title": "2的幂次方",
+  "firstAC": "2024-10-13 09:57:50",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281049,
+  "title": "鸡哥的家乡",
+  "firstAC": "2024-10-13 10:13:30",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 280923,
+  "title": "连续因子",
+  "firstAC": "2024-10-13 11:30:14",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 280622,
+  "title": "十进制改二进制",
+  "firstAC": "2024-10-13 12:01:38",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 280778,
+  "title": "既约分数",
+  "firstAC": "2024-10-13 12:45:22",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 281047,
+  "title": "烧烤大学跑步打卡",
+  "firstAC": "2024-10-13 12:46:56",
+  "attempts": 7,
+  "lang": "C"
+ },
+ {
+  "pid": 281100,
+  "title": "图书购买",
+  "firstAC": "2024-10-16 14:56:05",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281102,
+  "title": "删除数组指定下标元素",
+  "firstAC": "2024-10-16 14:56:29",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281104,
+  "title": "一维数组的逆置",
+  "firstAC": "2024-10-16 14:57:00",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281106,
+  "title": "斐波那契数列",
+  "firstAC": "2024-10-16 14:57:42",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281108,
+  "title": "排序",
+  "firstAC": "2024-10-16 14:59:49",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281071,
+  "title": "奇偶分家",
+  "firstAC": "2024-10-16 15:01:52",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281124,
+  "title": "字符串操作",
+  "firstAC": "2024-10-16 15:10:33",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281116,
+  "title": "杨辉三角",
+  "firstAC": "2024-10-16 15:11:53",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281061,
+  "title": "查验身份证",
+  "firstAC": "2024-10-16 15:16:00",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281063,
+  "title": "输出 GPLT",
+  "firstAC": "2024-10-16 15:16:48",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281067,
+  "title": "情人节",
+  "firstAC": "2024-10-16 15:17:48",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281069,
+  "title": "螺旋矩阵",
+  "firstAC": "2024-10-16 15:29:12",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281110,
+  "title": "矩阵转置",
+  "firstAC": "2024-10-16 15:47:52",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281126,
+  "title": "k进制转换",
+  "firstAC": "2024-10-16 20:19:41",
+  "attempts": 9,
+  "lang": "C"
+ },
+ {
+  "pid": 220413,
+  "title": "楠姐的成绩统计",
+  "firstAC": "2024-10-16 20:46:47",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 15455,
+  "title": "水仙花",
+  "firstAC": "2024-10-16 20:53:10",
+  "attempts": 4,
+  "lang": "C"
+ },
+ {
+  "pid": 54503,
+  "title": "小乐乐定闹钟",
+  "firstAC": "2024-10-16 20:56:34",
+  "attempts": 9,
+  "lang": "C"
+ },
+ {
+  "pid": 208111,
+  "title": "凯撒密码",
+  "firstAC": "2024-10-17 01:57:20",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 22056,
+  "title": "箭形图案",
+  "firstAC": "2024-10-17 02:19:28",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 219585,
+  "title": "炒鸡简单加法",
+  "firstAC": "2024-10-17 13:22:15",
+  "attempts": 36,
+  "lang": "C"
+ },
+ {
+  "pid": 26005,
+  "title": "天神的密码",
+  "firstAC": "2024-10-17 16:54:42",
+  "attempts": 9,
+  "lang": "C"
+ },
+ {
+  "pid": 281574,
+  "title": "图书购买",
+  "firstAC": "2024-10-19 09:04:05",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281546,
+  "title": "相同的字符",
+  "firstAC": "2024-10-19 09:09:53",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 281560,
+  "title": "进制转换",
+  "firstAC": "2024-10-19 09:21:47",
+  "attempts": 9,
+  "lang": "C"
+ },
+ {
+  "pid": 281562,
+  "title": "杨辉三角",
+  "firstAC": "2024-10-19 09:45:52",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281576,
+  "title": "字符串操作",
+  "firstAC": "2024-10-19 09:55:14",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281566,
+  "title": "超级手机号",
+  "firstAC": "2024-10-19 10:05:17",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 262172,
+  "title": "图像相似度",
+  "firstAC": "2024-10-19 10:15:41",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 261964,
+  "title": "成绩统计",
+  "firstAC": "2024-10-19 10:20:31",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281568,
+  "title": "整数的持续性",
+  "firstAC": "2024-10-19 10:55:54",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281572,
+  "title": "排序",
+  "firstAC": "2024-10-19 11:01:04",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 262156,
+  "title": "ISBN号码",
+  "firstAC": "2024-10-19 11:18:31",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 281132,
+  "title": "斐波那契数列（函数）",
+  "firstAC": "2024-10-20 12:48:33",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281134,
+  "title": "自助点餐系统",
+  "firstAC": "2024-10-20 13:06:28",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281136,
+  "title": "冒泡升序",
+  "firstAC": "2024-10-20 13:08:01",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281140,
+  "title": "选择升序",
+  "firstAC": "2024-10-20 13:08:23",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281114,
+  "title": "玉玉的西格玛",
+  "firstAC": "2024-10-20 13:08:45",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281122,
+  "title": "周老板计算函数",
+  "firstAC": "2024-10-20 13:11:00",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 281128,
+  "title": "小信信的四叶玫瑰数",
+  "firstAC": "2024-10-20 13:11:58",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 281120,
+  "title": "小嘉函数实现阶乘",
+  "firstAC": "2024-10-20 13:13:11",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 281112,
+  "title": "小翔使用函数求和",
+  "firstAC": "2024-10-20 13:16:58",
+  "attempts": 4,
+  "lang": "C"
+ },
+ {
+  "pid": 281118,
+  "title": "小轩的排列数",
+  "firstAC": "2024-10-20 13:32:02",
+  "attempts": 5,
+  "lang": "C"
+ },
+ {
+  "pid": 281325,
+  "title": "小红的对错判断",
+  "firstAC": "2024-10-20 19:08:15",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 281330,
+  "title": "小红的幂表达",
+  "firstAC": "2024-10-20 20:10:35",
+  "attempts": 5,
+  "lang": "C"
+ },
+ {
+  "pid": 262164,
+  "title": "数星星",
+  "firstAC": "2024-10-22 13:41:46",
+  "attempts": 22,
+  "lang": "C++"
+ },
+ {
+  "pid": 22227,
+  "title": "约瑟夫环",
+  "firstAC": "2024-10-25 10:12:24",
+  "attempts": 4,
+  "lang": "C"
+ },
+ {
+  "pid": 282010,
+  "title": "计算阶乘和",
+  "firstAC": "2024-10-26 09:02:51",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 282095,
+  "title": "语音输入数字",
+  "firstAC": "2024-10-26 11:55:47",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 282093,
+  "title": "到底有多六",
+  "firstAC": "2024-10-26 12:31:57",
+  "attempts": 7,
+  "lang": "C"
+ },
+ {
+  "pid": 282087,
+  "title": "汉诺塔",
+  "firstAC": "2024-10-26 12:37:34",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 282083,
+  "title": "括号串匹配",
+  "firstAC": "2024-10-27 00:12:18",
+  "attempts": 8,
+  "lang": "C"
+ },
+ {
+  "pid": 282089,
+  "title": "A-B",
+  "firstAC": "2024-10-27 01:36:54",
+  "attempts": 10,
+  "lang": "C"
+ },
+ {
+  "pid": 282081,
+  "title": "打印沙漏",
+  "firstAC": "2024-10-27 14:58:51",
+  "attempts": 31,
+  "lang": "C"
+ },
+ {
+  "pid": 279979,
+  "title": "简易计算器",
+  "firstAC": "2024-10-27 20:52:16",
+  "attempts": 9,
+  "lang": "C"
+ },
+ {
+  "pid": 279370,
+  "title": "打折",
+  "firstAC": "2024-10-27 21:24:09",
+  "attempts": 22,
+  "lang": "C"
+ },
+ {
+  "pid": 280564,
+  "title": "奖金",
+  "firstAC": "2024-10-27 21:48:27",
+  "attempts": 24,
+  "lang": "GCC"
+ },
+ {
+  "pid": 280574,
+  "title": "方程的解",
+  "firstAC": "2024-10-27 22:15:54",
+  "attempts": 15,
+  "lang": "C"
+ },
+ {
+  "pid": 282209,
+  "title": "交换变量",
+  "firstAC": "2024-10-28 17:09:11",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 282211,
+  "title": "指针打印数组内容",
+  "firstAC": "2024-10-28 17:11:56",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 282213,
+  "title": "求字符串长度",
+  "firstAC": "2024-10-28 17:22:50",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 282215,
+  "title": "比较字符串",
+  "firstAC": "2024-10-28 18:21:41",
+  "attempts": 34,
+  "lang": "C"
+ },
+ {
+  "pid": 282217,
+  "title": "计算平均分",
+  "firstAC": "2024-10-28 20:06:44",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 282219,
+  "title": "查找书籍",
+  "firstAC": "2024-10-28 20:17:29",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 282221,
+  "title": "枚举求星期",
+  "firstAC": "2024-10-28 20:25:07",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 282473,
+  "title": "3个1",
+  "firstAC": "2024-11-02 09:11:58",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 282486,
+  "title": "多项式求值",
+  "firstAC": "2024-11-02 09:54:31",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 282419,
+  "title": "爬楼梯",
+  "firstAC": "2025-02-19 20:04:28",
+  "attempts": 12,
+  "lang": "C"
+ },
+ {
+  "pid": 282413,
+  "title": "阶乘计算升级版",
+  "firstAC": "2025-02-19 21:15:31",
+  "attempts": 15,
+  "lang": "C"
+ },
+ {
+  "pid": 282480,
+  "title": "李白打酒2",
+  "firstAC": "2025-02-22 19:19:52",
+  "attempts": 7,
+  "lang": "G++"
+ },
+ {
+  "pid": 282463,
+  "title": "龟兔赛跑",
+  "firstAC": "2025-02-22 19:48:52",
+  "attempts": 2,
+  "lang": "C"
+ },
+ {
+  "pid": 214022,
+  "title": "中位数",
+  "firstAC": "2025-02-22 21:02:30",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 282476,
+  "title": "丢手绢",
+  "firstAC": "2025-02-22 22:52:00",
+  "attempts": 7,
+  "lang": "C"
+ },
+ {
+  "pid": 282488,
+  "title": "打印沙漏",
+  "firstAC": "2025-02-23 00:45:50",
+  "attempts": 16,
+  "lang": "C"
+ },
+ {
+  "pid": 282461,
+  "title": "求序列的中位数",
+  "firstAC": "2025-02-23 00:48:48",
+  "attempts": 17,
+  "lang": "C"
+ },
+ {
+  "pid": 282557,
+  "title": "摆积木",
+  "firstAC": "2025-02-23 04:24:38",
+  "attempts": 13,
+  "lang": "C"
+ },
+ {
+  "pid": 282109,
+  "title": "月饼",
+  "firstAC": "2025-02-23 18:43:59",
+  "attempts": 27,
+  "lang": "C"
+ },
+ {
+  "pid": 282107,
+  "title": "N 个数求和",
+  "firstAC": "2025-02-23 18:54:33",
+  "attempts": 11,
+  "lang": "GCC"
+ },
+ {
+  "pid": 288793,
+  "title": "夹心饼干",
+  "firstAC": "2025-02-23 19:10:39",
+  "attempts": 3,
+  "lang": "C"
+ },
+ {
+  "pid": 282033,
+  "title": "Hanoi 双塔问题",
+  "firstAC": "2025-02-25 08:39:26",
+  "attempts": 21,
+  "lang": "C"
+ },
+ {
+  "pid": 288220,
+  "title": "麻将入门",
+  "firstAC": "2025-02-25 09:06:54",
+  "attempts": 1,
+  "lang": "C"
+ },
+ {
+  "pid": 288241,
+  "title": "数数入门",
+  "firstAC": "2025-02-25 10:16:36",
+  "attempts": 12,
+  "lang": "C"
+ },
+ {
+  "pid": 288078,
+  "title": "数组数组",
+  "firstAC": "2025-03-01 07:00:46",
+  "attempts": 7,
+  "lang": "C++"
+ },
+ {
+  "pid": 287364,
+  "title": "三角形",
+  "firstAC": "2025-03-02 16:20:27",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 289264,
+  "title": "和猫猫一起起舞！",
+  "firstAC": "2025-03-02 19:42:15",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 289268,
+  "title": "冒险猫猫参上！！",
+  "firstAC": "2025-03-02 19:53:15",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 289292,
+  "title": "泉神，启动！！！",
+  "firstAC": "2025-03-03 06:12:42",
+  "attempts": 8,
+  "lang": "C++"
+ },
+ {
+  "pid": 201839,
+  "title": "牛牛的汉诺塔",
+  "firstAC": "2025-03-06 08:35:52",
+  "attempts": 12,
+  "lang": "C++"
+ },
+ {
+  "pid": 289734,
+  "title": "签到1",
+  "firstAC": "2025-03-09 15:39:12",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 289515,
+  "title": "小红的陡峭值（一）",
+  "firstAC": "2025-03-09 19:19:12",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 289788,
+  "title": "小红的陡峭值（三）easy",
+  "firstAC": "2025-03-09 20:42:55",
+  "attempts": 11,
+  "lang": "C++"
+ },
+ {
+  "pid": 287339,
+  "title": "春",
+  "firstAC": "2025-03-11 21:21:38",
+  "attempts": 5,
+  "lang": "C++"
+ },
+ {
+  "pid": 288243,
+  "title": "加法入门",
+  "firstAC": "2025-03-13 02:20:35",
+  "attempts": 70,
+  "lang": "C++"
+ },
+ {
+  "pid": 289533,
+  "title": "小柒的数字",
+  "firstAC": "2025-03-14 20:05:09",
+  "attempts": 7,
+  "lang": "C++"
+ },
+ {
+  "pid": 293611,
+  "title": "小s的签到题",
+  "firstAC": "2025-05-12 09:48:56",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 294730,
+  "title": "One Must Imagine Time Tight,",
+  "firstAC": "2025-05-18 12:28:53",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 294756,
+  "title": "MST(a.k.a. Most Shortened Terms)",
+  "firstAC": "2025-05-18 12:56:35",
+  "attempts": 3,
+  "lang": "C++"
+ },
+ {
+  "pid": 294762,
+  "title": "The Journey Onwards...",
+  "firstAC": "2025-05-18 13:27:35",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 294945,
+  "title": "经典校招题",
+  "firstAC": "2025-05-25 21:30:33",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 294005,
+  "title": "露西的蛋糕",
+  "firstAC": "2025-05-29 10:51:12",
+  "attempts": 10,
+  "lang": "C++"
+ },
+ {
+  "pid": 294580,
+  "title": "大卫的密码 (Easy Version)",
+  "firstAC": "2025-05-29 11:28:44",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 293990,
+  "title": "大卫的密码 (Hard Version)",
+  "firstAC": "2025-05-29 11:53:41",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 293975,
+  "title": "树到云端",
+  "firstAC": "2025-05-29 11:54:56",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 293964,
+  "title": "火之歌",
+  "firstAC": "2025-05-29 11:56:45",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 293968,
+  "title": "信条",
+  "firstAC": "2025-05-29 13:29:17",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 295392,
+  "title": "好字符串",
+  "firstAC": "2025-05-30 20:05:57",
+  "attempts": 4,
+  "lang": "C++"
+ },
+ {
+  "pid": 295394,
+  "title": "平均数",
+  "firstAC": "2025-05-30 20:50:53",
+  "attempts": 7,
+  "lang": "C++"
+ },
+ {
+  "pid": 232831,
+  "title": "补码",
+  "firstAC": "2025-06-08 19:13:14",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 231718,
+  "title": "简单的排序问题",
+  "firstAC": "2025-06-08 19:22:46",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 208128,
+  "title": "循环右移",
+  "firstAC": "2025-06-08 19:37:08",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 231339,
+  "title": "隐藏的南通",
+  "firstAC": "2025-06-08 19:43:46",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 216216,
+  "title": "最长的最短路",
+  "firstAC": "2025-06-08 20:02:00",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 295889,
+  "title": "小红的数组查询（一）",
+  "firstAC": "2025-06-12 21:40:38",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 295891,
+  "title": "小红的数组构造",
+  "firstAC": "2025-06-12 22:02:17",
+  "attempts": 2,
+  "lang": "C++"
+ },
+ {
+  "pid": 295893,
+  "title": "小红的数组查询（二）",
+  "firstAC": "2025-06-14 12:20:21",
+  "attempts": 59,
+  "lang": "C++"
+ },
+ {
+  "pid": 296097,
+  "title": "外卖券",
+  "firstAC": "2025-06-15 20:14:37",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 294819,
+  "title": "袋鼠将军的部下选择",
+  "firstAC": "2025-06-15 20:36:22",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 295727,
+  "title": "红橙",
+  "firstAC": "2025-06-16 09:40:30",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 295729,
+  "title": "黄",
+  "firstAC": "2025-06-16 11:08:01",
+  "attempts": 5,
+  "lang": "C++"
+ },
+ {
+  "pid": 229915,
+  "title": "分糖果（candy）",
+  "firstAC": "2025-09-16 23:47:23",
+  "attempts": 3,
+  "lang": "C++"
+ },
+ {
+  "pid": 229919,
+  "title": "插入排序（sort）",
+  "firstAC": "2025-09-17 00:56:46",
+  "attempts": 4,
+  "lang": "C++"
+ },
+ {
+  "pid": 204433,
+  "title": "阶乘",
+  "firstAC": "2025-09-25 01:55:06",
+  "attempts": 4,
+  "lang": "C++"
+ },
+ {
+  "pid": 302603,
+  "title": "牛可乐打怪",
+  "firstAC": "2025-10-24 20:39:16",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 303468,
+  "title": "刚刚好",
+  "firstAC": "2025-10-24 21:07:00",
+  "attempts": 11,
+  "lang": "G++"
+ },
+ {
+  "pid": 305093,
+  "title": "ICPC Penalty",
+  "firstAC": "2025-10-26 19:02:56",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 305091,
+  "title": "小苯的无限数组",
+  "firstAC": "2025-10-26 19:04:12",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 304877,
+  "title": "小苯的真假游戏",
+  "firstAC": "2025-10-26 19:06:25",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 293399,
+  "title": "小苯的区间选数2.0",
+  "firstAC": "2025-10-26 19:47:24",
+  "attempts": 8,
+  "lang": "G++"
+ },
+ {
+  "pid": 303596,
+  "title": "小苯的GCD疑问2.0",
+  "firstAC": "2025-10-26 20:16:59",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 313187,
+  "title": "ICPC Time",
+  "firstAC": "2026-02-22 19:18:58",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 313196,
+  "title": "倍数",
+  "firstAC": "2026-02-22 19:28:10",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 313179,
+  "title": "邻合",
+  "firstAC": "2026-02-23 02:01:48",
+  "attempts": 12,
+  "lang": "G++"
+ },
+ {
+  "pid": 313181,
+  "title": "对和",
+  "firstAC": "2026-02-23 02:12:24",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 299283,
+  "title": "镜像",
+  "firstAC": "2026-02-23 02:22:41",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 313185,
+  "title": "差异",
+  "firstAC": "2026-02-23 02:25:19",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 295401,
+  "title": "中位数",
+  "firstAC": "2026-03-05 19:17:45",
+  "attempts": 3,
+  "lang": "G++"
+ },
+ {
+  "pid": 311811,
+  "title": "小红的大小判断",
+  "firstAC": "2026-03-05 21:53:11",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 312251,
+  "title": "红美铃的访客登记",
+  "firstAC": "2026-03-05 21:56:45",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 288797,
+  "title": "食堂大作战1.0",
+  "firstAC": "2026-03-05 22:23:21",
+  "attempts": 33,
+  "lang": "G++"
+ },
+ {
+  "pid": 283789,
+  "title": "构造C的歪",
+  "firstAC": "2026-03-06 00:02:28",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 311813,
+  "title": "小红的大小再判断",
+  "firstAC": "2026-03-06 00:07:22",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 311867,
+  "title": "Get The Number",
+  "firstAC": "2026-03-06 00:14:40",
+  "attempts": 2,
+  "lang": "G++"
+ },
+ {
+  "pid": 307228,
+  "title": "小红的博弈",
+  "firstAC": "2026-03-06 00:17:11",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 281550,
+  "title": "小红走网格",
+  "firstAC": "2026-03-06 01:21:19",
+  "attempts": 5,
+  "lang": "G++"
+ },
+ {
+  "pid": 313668,
+  "title": "Nowcoder Weekly Contest",
+  "firstAC": "2026-03-09 00:55:25",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 313658,
+  "title": "ICPC Medal",
+  "firstAC": "2026-03-09 01:17:14",
+  "attempts": 10,
+  "lang": "G++"
+ },
+ {
+  "pid": 313660,
+  "title": "Unique Number",
+  "firstAC": "2026-03-09 03:32:17",
+  "attempts": 17,
+  "lang": "G++"
+ },
+ {
+  "pid": 14386,
+  "title": "水仙花数",
+  "firstAC": "2026-03-09 13:31:30",
+  "attempts": 1,
+  "lang": "G++"
+ },
+ {
+  "pid": 14399,
+  "title": "素数判断",
+  "firstAC": "2026-03-11 14:46:45",
+  "attempts": 9,
+  "lang": "G++"
+ },
+ {
+  "pid": 16414,
+  "title": "[NOIP2017]小凯的疑惑",
+  "firstAC": "2026-03-11 23:56:42",
+  "attempts": 5,
+  "lang": "G++"
+ },
+ {
+  "pid": 16490,
+  "title": "金币",
+  "firstAC": "2026-03-12 09:55:55",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 16499,
+  "title": "[NOIP2014]解方程",
+  "firstAC": "2026-03-12 16:40:28",
+  "attempts": 16,
+  "lang": "G++"
+ },
+ {
+  "pid": 16643,
+  "title": "[NOIP2007]统计数字",
+  "firstAC": "2026-03-13 17:25:57",
+  "attempts": 8,
+  "lang": "C++"
+ },
+ {
+  "pid": 21874,
+  "title": "好串",
+  "firstAC": "2026-03-13 18:05:37",
+  "attempts": 2,
+  "lang": "C++"
+ },
+ {
+  "pid": 54631,
+  "title": "数字游戏",
+  "firstAC": "2026-03-16 14:24:24",
+  "attempts": 1,
+  "lang": "C++"
+ },
+ {
+  "pid": 54632,
+  "title": "公交换乘",
+  "firstAC": "2026-03-16 17:51:33",
+  "attempts": 3,
+  "lang": "C++"
+ },
+ {
+  "pid": 54633,
+  "title": "纪念品",
+  "firstAC": "2026-03-16 20:57:02",
+  "attempts": 2,
+  "lang": "C++"
+ },
+ {
+  "pid": 54635,
+  "title": "格雷码（code)",
+  "firstAC": "2026-03-17 13:21:01",
+  "attempts": 3,
+  "lang": "C++"
+ },
+ {
+  "pid": 213849,
+  "title": "优秀的拆分（power）",
+  "firstAC": "2026-03-17 15:52:11",
+  "attempts": 5,
+  "lang": "C++"
+ },
+ {
+  "pid": 232608,
+  "title": "斐波那契",
+  "firstAC": "2026-11-03 19:17:37",
+  "attempts": 1,
+  "lang": "G++"
+ }
+]

@@ -1,0 +1,32 @@
+{
+ "key": "02-greedy",
+ "file": "02 贪心与构造：先猜后证.md",
+ "title": "贪心与构造：先猜后证",
+ "essence": "贪心不是想到就写，而是先证明「换掉最优解里的某一项不会更差」；构造题先手玩小数据找模式。",
+ "points": [
+  "交换论证：怎么用一句话证明贪心正确",
+  "排序后贪心的三类模型：区间调度按右端点、接水按时间、合并按权值",
+  "反悔贪心：用堆把「反悔」变成一次 push",
+  "构造题：从小样例手玩出通项，再分奇偶/模数讨论",
+  "贪心失效的典型反例与何时改用 DP"
+ ],
+ "nc": [
+  280475,
+  281049,
+  282109,
+  288797,
+  313658,
+  283789,
+  289268
+ ],
+ "lg": [
+  "P1094",
+  "P1223",
+  "P1803",
+  "P5019",
+  "P1090"
+ ],
+ "list_md": "- [x] [买苹果](https://ac.nowcoder.com/acm/problem/280475) · 牛客\n- [x] [鸡哥的家乡](https://ac.nowcoder.com/acm/problem/281049) · 牛客\n- [x] [月饼](https://ac.nowcoder.com/acm/problem/282109) · 牛客\n- [x] [食堂大作战1.0](https://ac.nowcoder.com/acm/problem/288797) · 牛客\n- [x] [ICPC Medal](https://ac.nowcoder.com/acm/problem/313658) · 牛客\n- [x] [构造C的歪](https://ac.nowcoder.com/acm/problem/283789) · 牛客\n- [x] [冒险猫猫参上！！](https://ac.nowcoder.com/acm/problem/289268) · 牛客\n- [ ] [【NOIP 2007 普及组】 纪念品分组](https://www.luogu.com.cn/problem/P1094) · 洛谷\n- [ ] [排队接水](https://www.luogu.com.cn/problem/P1223) · 洛谷\n- [ ] [凌乱的yyy / 线段覆盖](https://www.luogu.com.cn/problem/P1803) · 洛谷\n- [ ] [【NOIP 2018 提高组】 铺设道路](https://www.luogu.com.cn/problem/P5019) · 洛谷\n- [ ] [【NOIP 2004 提高组】 合并果子](https://www.luogu.com.cn/problem/P1090) · 洛谷",
+ "total": 12,
+ "done": 7
+}
